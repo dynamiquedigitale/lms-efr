@@ -23,6 +23,11 @@ export const APP_ID = import.meta.env.VITE_APP_ID || APP_NAME.toLowerCase().repl
 export const AVAILABLE_LOCALES = import.meta.env.VITE_AVAILABLE_LOCALES || ['fr', 'en']
 
 /**
+ * @var {string[]} DEFAULT_LOCALE Langue par défaut
+ */
+export const DEFAULT_LOCALE = import.meta.env.VITE_DEFAULT_LOCALE || 'fr'
+
+/**
  * @var {string[]} ROUTES_EMPTY_LAYOUT Routes qui utiliseront le layout 'empty'
  */
 export const ROUTES_EMPTY_LAYOUT = import.meta.env.VITE_ROUTES_EMPTY_LAYOUT || ['login', 'register', 'signin', 'signup', 'init']
