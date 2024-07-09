@@ -28,8 +28,9 @@ return [
     'disks' => [
         'local' => [
             'driver' => 'local',
-            'root' => storage_path('app'),
-            'throw' => false,
+			'root'   => storage_path('app'),
+			'url'    => config('app.base_url') . '/file',
+			'throw'  => false,
         ],
 
         'public' => [
