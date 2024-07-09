@@ -34,8 +34,9 @@ return [
      * @var array<string, array<int, string>|string>
      * @phpstan-var array<string, string|list<string>>
      */
-    'psr4' => [
-        APP_NAMESPACE => APP_PATH, // Pour l'espace de noms d'application personnalisé
+	'psr4' => [
+		'App\Admin'   => ROOTPATH . 'modules' . DS . 'Admin' . DS,
+		APP_NAMESPACE => APP_PATH,                                   // Pour l'espace de noms d'application personnalisé
     ],
 
     /**

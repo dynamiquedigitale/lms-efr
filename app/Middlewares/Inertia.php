@@ -32,7 +32,8 @@ class Inertia extends Middleware
     public function share(ServerRequestInterface $request): array
     {
         return array_merge(parent::share($request), [
-
+			'user'  => fn () => auth()->user(),
+			'flash' => fn() => session()->getFlashdata()
         ]);
     }
 }

@@ -2,13 +2,20 @@
 
 namespace App\Controllers;
 
-use BlitzPHP\Schild\Validation\ValidationRules;
-
 class HomeController extends AppController
 {
     public function index()
     {
-        return inertia('Home');
+		$user = auth()->user();
+
+		if ($user->inGroup('admin')) {
+			return redirect()->route('admin.home');
+		}
+		if ($user->inGroup('enseignant')) {
+			return redirect()->route('enseignant.home');
+		}
+		
+		return redirect()->route('apprenant.home');
     }
 
 	/**
@@ -36,7 +43,7 @@ class HomeController extends AppController
 		if (null === $user = auth()->user()) {
 			return redirect()->route('login');
 		}
-		
+
 		if ($this->request->boolean('isMagicLogin')) {
 			session()->setTempdata('magicLogin', true);
 		}

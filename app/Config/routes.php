@@ -5,12 +5,9 @@
 use BlitzPHP\Facades\Route;
 
 auth()->routes($routes);
-Route::name('reset-password')->form('reset-password', 'Home::resetPassword');
+Route::name('reset-password')->form('reset-password', 'HomeController::resetPassword');
+Route::get('file/(:any)', static fn ($path) => service('container')->call(App\Controllers\FileViewerController::class, [$path]));
 
 Route::middleware(['session', 'force-reset'])->group(function () {
     Route::name('home')->get('/', 'Home::index');
-
-	Route::prefix('/admin')->namespace('\App\Controllers\Admin')->group(function () {
-		Route::name('admin.home')->get('/', 'Home::index');
-	});
 });

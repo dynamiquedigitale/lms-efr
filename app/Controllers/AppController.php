@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use BlitzPHP\Controllers\ApplicationController;
+use BlitzPHP\Controllers\ResourcePresenter;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
@@ -14,7 +14,7 @@ use Psr\Log\LoggerInterface;
  *
  * Pour des raisons de sécurité, assurez-vous de déclarer toutes les nouvelles méthodes comme protégées ou privées.
  */
-abstract class AppController extends ApplicationController
+abstract class AppController extends ResourcePresenter
 {
     /**
      * Un tableau d'helpers à charger automatiquement lors de l'instanciation de la classe.

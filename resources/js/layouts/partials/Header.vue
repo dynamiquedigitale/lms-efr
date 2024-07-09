@@ -189,11 +189,11 @@
                 <li class="nav-item dropdown dropdown-user">
                     <a class="nav-link dropdown-toggle dropdown-user-link" id="dropdown-user" href="#" data-bs-toggle="dropdown">
                         <div class="user-nav d-sm-flex d-none">
-                            <span class="user-name fw-bolder">John Doe</span>
-							<span class="user-status">Admin</span>
+                            <span class="user-name fw-bolder">{{ `${user.prenom} ${user.nom}` }}</span>
+							<span class="user-status">{{ user.role }}</span>
                         </div>
                         <span class="avatar">
-							<img class="round" src="../../../app-assets/images/portrait/small/avatar-s-11.jpg" alt="avatar" height="40" width="40" />
+							<img class="round" :src="user.avatar" :alt="user.nom" height="40" width="40" />
 							<span class="avatar-status-online"></span
                         ></span>
                     </a>
@@ -391,4 +391,9 @@
 
 <script setup>
 defineOptions({ name: 'AppHeader' })
+
+import { computed } from 'vue'
+import { usePage } from '@inertiajs/inertia-vue3'
+
+const user = computed(() => usePage().props.value.user)
 </script>
