@@ -12,8 +12,19 @@ class AuthListener implements EventListenerInterface
     {
         set_time_limit(0);
 
+		$this->onRegister($event);
         $this->onMagicLogin($event);
     }
+
+	private function onRegister(EventManagerInterface $event): void
+	{
+		$event->attach('register', function(EventInterface $eventInterface) {
+			/** @var \App\Entities\User $user */
+			$user = $eventInterface->getTarget();
+
+			$user->addGroup('apprenant');
+		});
+	}
 
     private function onMagicLogin(EventManagerInterface $event): void
     {
