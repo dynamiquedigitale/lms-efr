@@ -23,4 +23,60 @@ return [
     // --------------------------------------------------------------------
     // REGLES
     // --------------------------------------------------------------------
+
+	/**
+	 * Regles de validation de l'inscription
+	 */
+	'register' => [
+		'nom' => [
+			'label'    => __('Nom'),
+			'rules'    => ['required', 'string', 'max:64'],
+			'messages' => [],
+		],
+		'prenom' => [
+			'label'    => __('Prenom'),
+			'rules'    => ['nullable', 'string', 'max:64'],
+			'messages' => [],
+		],
+		'tel' => [
+			'label'    => __('Téléphone'),
+			'rules'    => ['required', 'string', 'phone', 'unique:users'],
+			'messages' => [],
+		],
+		'email' => [
+			'label'    => lang('Auth.email'),
+			'rules'    => ['required', 'email', 'unique:auth_identities,secret'],
+			'messages' => [],
+		],
+		'password' => [
+			'label'    => lang('Auth.password'),
+			'rules'    => ['required', 'password'],
+			'messages' => [
+				'required' => lang('Auth.errorPasswordEmpty'),
+			],	
+		],
+		/**
+		 * Permet a Schild d'automatiquement inserer un matricule a l'utilisateur lors de l'inscription
+		 */
+		'matricule' => [
+			'rules' => ['default:' . \App\Entities\Apprenant::genereteRef(), 'string'], 
+		],
+	],
+	/**
+	 * Regles de validation de la connexion
+	 */
+	'login' => [
+		'login' => [
+			'label'    => __('Email ou téléphone'),
+			'rules'    => ['required', 'string'],
+			'messages' => [],
+		],
+		'password' => [
+			'label'    => lang('Auth.password'),
+			'rules'    => ['required', 'password'],
+			'messages' => [
+				'required' => lang('Auth.errorPasswordEmpty'),
+			],	
+		],
+	]
 ];

@@ -87,7 +87,8 @@ return [
      * @phpstan-var list<string>
      */
     'helpers' => [
-        'path'
+        'path',
+		'app',
     ],
 
     /**

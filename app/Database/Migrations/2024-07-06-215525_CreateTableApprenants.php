@@ -17,7 +17,7 @@ class CreateTableApprenants extends Migration
 			$table->foreignId('enseignant_id')->nullable()->constrained();
 			$table->foreignId('created_by')->nullable()->constrained('users');
 			$table->date('date_naiss')->nullable();
-			$table->enum('statut', [S::ACTIVE, S::INCOMPLETE, S::PROSPECTING, S::INACTIVE, S::BLOCKED])->default(S::ACTIVE);
+			$table->enum('statut', [S::ACTIVE, S::INCOMPLETE, S::PENDING, S::INACTIVE, S::BLOCKED])->default(S::ACTIVE);
     
             return $table;
         });

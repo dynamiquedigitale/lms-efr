@@ -1,18 +1,16 @@
-<?php
-/*
-| -------------------------------------------------- -----------------
-| PARAMÈTRES D'ITINÉRAIRE DE L'APPLICATION
-| -------------------------------------------------- -----------------
-| Ce fichier contiendra les paramètres de routage de votre application.
-|
-| Pour des instructions complètes, veuillez consulter la « Configuration de l'itinéraire » dans le guide de l'utilisateur.
-*/
+<?php 
 
 /** @var BlitzPHP\Router\RouteCollection $routes */
 
-/**
- * --------------------------------------------------------------------
- * Définition des routes
- * --------------------------------------------------------------------
- */
-$routes->get('/', 'HomeController::index');
+use BlitzPHP\Facades\Route;
+
+auth()->routes($routes);
+Route::name('reset-password')->form('reset-password', 'Home::resetPassword');
+
+Route::middleware(['session', 'force-reset'])->group(function () {
+    Route::name('home')->get('/', 'Home::index');
+
+	Route::prefix('/admin')->namespace('\App\Controllers\Admin')->group(function () {
+		Route::name('admin.home')->get('/', 'Home::index');
+	});
+});

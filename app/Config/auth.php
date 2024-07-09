@@ -11,18 +11,15 @@ declare(strict_types=1);
  * the LICENSE file that was distributed with this source code.
  */
 
+use App\Models\UserModel;
 use BlitzPHP\Schild\Authentication\Actions\ActionInterface;
 use BlitzPHP\Schild\Authentication\AuthenticatorInterface;
-use BlitzPHP\Schild\Authentication\Authenticators\AccessTokens;
-use BlitzPHP\Schild\Authentication\Authenticators\HmacSha256;
-use BlitzPHP\Schild\Authentication\Authenticators\JWT;
 use BlitzPHP\Schild\Authentication\Authenticators\Session;
 use BlitzPHP\Schild\Authentication\Passwords\CompositionValidator;
 use BlitzPHP\Schild\Authentication\Passwords\DictionaryValidator;
 use BlitzPHP\Schild\Authentication\Passwords\NothingPersonalValidator;
 use BlitzPHP\Schild\Authentication\Passwords\PwnedValidator;
 use BlitzPHP\Schild\Authentication\Passwords\ValidatorInterface;
-use BlitzPHP\Schild\Models\UserModel;
 
 return [
     /**
@@ -31,17 +28,17 @@ return [
      * --------------------------------------------------------------------
      */
     'views' => [
-        'login'                       => '\BlitzPHP\Schild\Views\login',
-        'register'                    => '\BlitzPHP\Schild\Views\register',
-        'layout'                      => '\BlitzPHP\Schild\Views\layout',
+		'login'                       => '\App\Views\auth\login',
+        'register'                    => '\App\Views\auth\register',
+        'layout'                      => '\App\Views\auth\layout',
         'action_email_2fa'            => '\BlitzPHP\Schild\Views\email_2fa_show',
         'action_email_2fa_verify'     => '\BlitzPHP\Schild\Views\email_2fa_verify',
         'action_email_2fa_email'      => '\BlitzPHP\Schild\Views\Email\email_2fa_email',
-        'action_email_activate_show'  => '\BlitzPHP\Schild\Views\email_activate_show',
-        'action_email_activate_email' => '\BlitzPHP\Schild\Views\Email\email_activate_email',
-        'magic-link-login'            => '\BlitzPHP\Schild\Views\magic_link_form',
-        'magic-link-message'          => '\BlitzPHP\Schild\Views\magic_link_message',
-        'magic-link-email'            => '\BlitzPHP\Schild\Views\Email\magic_link_email',
+        'action_email_activate_show'  => '\App\Views\auth\email-activate-show',
+        'action_email_activate_email' => '\App\Views\auth\email\email-activate-email',
+        'magic-link-login'            => '\App\Views\auth\magic-link-form',
+        'magic-link-message'          => '\App\Views\auth\magic-link-message',
+        'magic-link-email'            => '\App\Views\auth\email\magic-link-email',
     ],
 
     /**
@@ -111,7 +108,7 @@ return [
         'register'          => '/',
         'login'             => '/',
         'logout'            => 'login',
-        'force_reset'       => '/',
+        'force_reset'       => '/reset-password',
         'permission_denied' => '/',
         'group_denied'      => '/',
     ],
@@ -131,7 +128,7 @@ return [
      * @var array<string, class-string<ActionInterface>|null>
      */
     'actions' => [
-        'register' => null,
+        'register' => \BlitzPHP\Schild\Authentication\Actions\EmailActivator::class,
         'login'    => null,
     ],
 
@@ -157,10 +154,7 @@ return [
      * @var array<string, class-string<AuthenticatorInterface>>
      */
     'authenticators' => [
-        'tokens'  => AccessTokens::class,
         'session' => Session::class,
-        'hmac'    => HmacSha256::class,
-        // 'jwt'     => JWT::class,
     ],
 
     /**
@@ -176,9 +170,6 @@ return [
      */
     'authentication_chain' => [
         'session',
-        'tokens',
-        'hmac',
-        // 'jwt',
     ],
 
     /**
@@ -320,8 +311,7 @@ return [
      * @var array
      */
     'valid_fields' => [
-        'email',
-        // 'username',
+        'login',
     ],
 
     /**
