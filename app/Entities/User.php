@@ -2,17 +2,19 @@
 
 namespace App\Entities;
 
+use App\Enums\Role;
 use BlitzPHP\Facades\Storage;
 use BlitzPHP\Schild\Entities\User as SchildUser;
 use BlitzPHP\Wolke\Casts\Attribute;
 
 class User extends SchildUser
 {
-	/** {@inheritDoc} */
-	protected array $fillable = [
-        'username', 'active',
-        'matricule', 'tel', 'nom', 'prenom', 'sexe', 'avatar', 'adresse'
-	];
+    /** {@inheritDoc} */
+    protected array $fillable = [];
+
+    /** {@inheritDoc} */
+    protected array|bool $guarded = false;
+
 	/** {@inheritDoc} */
     protected array $casts = [
         'id'          => '?integer',
@@ -21,22 +23,27 @@ class User extends SchildUser
         'groups'      => 'array',
         'adresse'     => 'array',
     ];
+
 	/** {@inheritDoc} */
 	protected array $appends = [
-		'role'
+		'role', 'group',
 	];
 
-	public function apprenant()
+	public function getGroupAttribute()
 	{
-		return $this->hasOne(Apprenant::class);
+		return match (true) {
+			$this->inGroup(Role::ADMIN)      => Role::ADMIN,
+			$this->inGroup(Role::ENSEIGNANT) => Role::ENSEIGNANT,
+			default                          => Role::APPRENANT,
+		};
 	}
 
 	public function getRoleAttribute()
 	{
-		return match (true) {
-			$this->inGroup('admin')      => __('Administrateur'),
-			$this->inGroup('enseignant') => __('Enseignant'),
-			default                      => __('Apprenant'),
+		return match ($this->group) {
+			Role::ADMIN      => __('Administrateur'),
+			Role::ENSEIGNANT => __('Enseignant'),
+			default          => __('Apprenant'),
 		};
 	}
 

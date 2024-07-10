@@ -10,6 +10,10 @@
 | Pour des instructions complètes, veuillez consulter la « Validation des données » dans le Guide de l'utilisateur.
 */
 
+use App\Entities\AppEntity;
+use App\Entities\User;
+use App\Enums\Role;
+
 return [
     /**
      * Stocke les classes contenant les règles personnalisées disponibles.
@@ -59,7 +63,7 @@ return [
 		 * Permet a Schild d'automatiquement inserer un matricule a l'utilisateur lors de l'inscription
 		 */
 		'matricule' => [
-			'rules' => ['default:' . \App\Entities\Apprenant::genereteRef(), 'string'], 
+			'rules' => ['default:' . AppEntity::generateRef(User::class, Role::APPRENANT), 'string'], 
 		],
 	],
 	/**

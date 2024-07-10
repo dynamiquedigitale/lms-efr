@@ -7,15 +7,18 @@ use BlitzPHP\Wolke\SoftDeletes;
 
 abstract class AppEntity extends Entity
 {
-	public static function genereteRef(): string
+	public static function generateRef(?string $entity = null, ?string $prefix = null): string
 	{
-		$traits = class_uses(static::class);
+		$entity ??= static::class;
+		$prefix ??= static::class;
+
+		$traits = class_uses($entity);
 		if (is_array($traits) && in_array(SoftDeletes::class, $traits, true)) {
-			$count = static::withTrashed()->count();
+			$count = $entity::withTrashed()->count();
 		} else {
-			$count = static::count();
+			$count = $entity::count();
 		}
 
-        return strtoupper(substr(last(explode('\\', static::class)), 0, 2)) . str_pad(++$count, 4, '0', STR_PAD_LEFT) . date('ym');
+        return strtoupper(substr(last(explode('\\', $prefix)), 0, 2)) . str_pad(++$count, 4, '0', STR_PAD_LEFT) . date('ym');
 	}
 }
