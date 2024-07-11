@@ -34,15 +34,11 @@ function loadLocaleMessages() {
 	Object.entries(files).forEach(([path, definition]) => {
 		const parts = path.split('/')
 		const locale = parts[2]
-		const namespace = parts.at(-1).replace('.json', '')
 		if (!messages[locale]) {
 			messages[locale] = {}
 		}
-		if (!messages[locale][namespace]) {
-			messages[locale][namespace] = {}
-		}
 		const message = definition?.default
-		messages[locale][namespace] = { ...messages[locale][namespace], ...message }
+		messages[locale] = { ...messages[locale], ...message }
 	})
 
 	return messages
