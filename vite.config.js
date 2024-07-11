@@ -3,7 +3,6 @@ import { BootstrapVueNextResolver } from 'bootstrap-vue-next'
 import Components from 'unplugin-vue-components/vite'
 import path from 'path'
 import vue from '@vitejs/plugin-vue'
-import VueDevTools from 'vite-plugin-vue-devtools'
 
 export default defineConfig(() => {
 	const env = loadEnv(null, process.cwd())
@@ -20,7 +19,6 @@ export default defineConfig(() => {
 		},
 		plugins: [
 			vue(),
-			VueDevTools(),
 			Components({
 				resolvers: [BootstrapVueNextResolver()],
 			  }),
