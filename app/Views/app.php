@@ -15,6 +15,7 @@
 	<link rel="stylesheet" href="<?= lib_css_url('bootstrap/bootstrap.min.css') ?>" />
     <link rel="stylesheet" href="<?= lib_css_url('bootstrap/bootstrap-extended.min.css') ?>" />
     <link rel="stylesheet" href="<?= lib_css_url('fontawesome/fontawesome.css') ?>" />
+    <link rel="stylesheet" href="<?= lib_css_url('select2/select2.min.css') ?>" />
 	<link rel="stylesheet" href="<?= css_url('colors.min.css') ?>">
 	<link rel="stylesheet" href="<?= css_url('components.min.css') ?>">
 	<link rel="stylesheet" href="<?= css_url('themes/dark-layout.min.css') ?>">
@@ -29,6 +30,7 @@
 	<?= inertia()->app($page) ?>
 	
 	<script src="<?= lib_js_url('vendors.min.js') ?>"></script>
+	<script src="<?= lib_js_url('select2/select2.full.min.js') ?>"></script>
   	<script src="<?= js_url('app-menu.min.js') ?>"></script>
   	<script src="<?= js_url('app.min.js') ?>"></script>
   	<script src="<?= js_url('customizer.min.js') ?>"></script>

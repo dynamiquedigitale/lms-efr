@@ -27,6 +27,7 @@ class User extends SchildUser
 	/** {@inheritDoc} */
 	protected array $appends = [
 		'role', 'group',
+		'user_email',
 	];
 
 	public function getGroupAttribute()
@@ -45,6 +46,11 @@ class User extends SchildUser
 			Role::ENSEIGNANT => __('Enseignant'),
 			default          => __('Apprenant'),
 		};
+	}
+	
+	public function getUserEmailAttribute()
+	{
+		return $this->getEmail();
 	}
 
 	protected function avatar(): Attribute

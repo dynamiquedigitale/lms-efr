@@ -1,7 +1,7 @@
 export default [
 	{
 		icon: 'home',
-		route: 'home',
+		route: 'admin.home',
 		text: 'Tableau de bord',
 	},
 	{
@@ -34,12 +34,12 @@ export default [
 	},
 	{
 		icon: 'user-check',
-		route: 'enseignants.index',
+		route: 'admin.enseignants.index',
 		text: 'Enseignants',
 	},
 	{
 		icon: 'user',
-		route: 'apprenants.index',
+		route: 'admin.apprenants.index',
 		text: 'Apprenants',
 	},
 	{
