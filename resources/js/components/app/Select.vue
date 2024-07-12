@@ -28,14 +28,7 @@ export default {
 		searchable: { default: false, type: Boolean },
 		selector: { default: 'value', type: String },
 		settings: { default: () => ({ /**/ }), type: Object },
-		transformer: { 
-			default: (obj) => ({
-				...obj,
-				id  : obj.id || obj[this.selector],
-				text: obj.text || obj[this.label],
-			}), 
-			type: Function,
-		},
+		transformer: { default: null, type: Function },
 	},
 	// eslint-disable-next-line sort-keys
 	computed: {
@@ -57,9 +50,9 @@ export default {
 		data() {
 			return this.options.map(option => {
 				if (typeof option === 'object') {
-					option = this.transformer(option)
+					option = this.reducer(option)
 					if (option.children && option.children instanceof Array) {
-						option.children = option.children.map(child => this.transformer(child))
+						option.children = option.children.map(child => this.reducer(child))
 					}
 				}
 
@@ -83,7 +76,19 @@ export default {
 	},
 	// eslint-disable-next-line sort-keys
 	methods: {
-	  	setOption(val = []) {
+		reducer(obj) {
+			if (this.transformer) {
+				return this.transformer(obj)
+			}
+
+			return {
+				...obj,
+				id  : obj.id || obj[this.selector],
+				text: obj.text || obj[this.label],
+			}
+		},
+		
+		setOption(val = []) {
 			this.select2.empty()
 			this.select2.select2({
 				...this.config,
@@ -101,6 +106,7 @@ export default {
 	  	},
 	},
 	mounted() {
+	  	// eslint-disable-next-line no-undef
 	  	this.select2 = $(this.$el)
 			.find('select')
 			.select2({
