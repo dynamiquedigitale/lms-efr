@@ -19,7 +19,7 @@ class UserModel extends SchildUserModel
 		$builder = $this->leftJoin('parcours', ['parcours.apprenant_id' => 'users.id'])
 			->select('COUNT(parcours.id) as parcours_count');
 
-		// $search['role'] = Role::APPRENANT;
+		$search['role'] = Role::APPRENANT;
 
 		return $this->searchUsers($search, $page, $perPage, $sortColumn, $sortDirection, $builder);
 		

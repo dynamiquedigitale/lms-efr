@@ -61,7 +61,7 @@ import menuAdmin from '@/data/menu.admin.js'
 const user = computed(() => usePage().props.value.user)
 
 const sidebarItems = computed(() => {
-	if (user.value.group === 'admin') {
+	if (user.value.type === 'admin') {
 		return menuAdmin
 	}
 	return []

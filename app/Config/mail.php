@@ -36,7 +36,7 @@ return [
      * 
      * @var string
      */
-    'view_dir' => 'emails',
+    'view_dir' => '',
     
     /**
      * Layout dont heritera toutes les vues d'emails

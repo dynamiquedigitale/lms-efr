@@ -26,22 +26,13 @@ class User extends SchildUser
 
 	/** {@inheritDoc} */
 	protected array $appends = [
-		'role', 'group',
+		'role',
 		'user_email',
 	];
 
-	public function getGroupAttribute()
-	{
-		return match (true) {
-			$this->inGroup(Role::ADMIN)      => Role::ADMIN,
-			$this->inGroup(Role::ENSEIGNANT) => Role::ENSEIGNANT,
-			default                          => Role::APPRENANT,
-		};
-	}
-
 	public function getRoleAttribute()
 	{
-		return match ($this->group) {
+		return match ($this->type) {
 			Role::ADMIN      => __('Administrateur'),
 			Role::ENSEIGNANT => __('Enseignant'),
 			default          => __('Apprenant'),

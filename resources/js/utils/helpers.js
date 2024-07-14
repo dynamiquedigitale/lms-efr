@@ -1,3 +1,5 @@
+import { reactive } from 'vue'
+
 import { $storage } from '@/plugins/storage'
 import { AVAILABLE_LOCALES } from './constants'
 
@@ -34,4 +36,35 @@ export function groupBy(array, key) {
         
         return r
     }, Object.create(null))
+}
+
+/**
+ * Genere un objet reactif "form" et l'objet "error" associé pour la gestion des erreurs
+ *
+ * @param { Object<T> } target
+ * @returns { {error: UnwrapNestedRefs<T>, form: UnwrapNestedRefs<TForm>} }
+ */
+export function generateReactiveForm(target) {
+	const error = resetErrorObject(target)
+
+	return {
+		error: reactive(error),
+		form: reactive(target),
+	}
+}
+
+/**
+ * Defini toutes les cles d'un objet a null
+ * Necessaire pour reinitialiser les erreurs de formulaire lorsqu'on re-soumet le formulaire
+ *
+ * @param { Object<T> } target
+ * @returns { Object<T> }
+ */
+
+export function resetErrorObject(target) {
+	for (const key in target) {
+		target[key] = null
+	}
+
+	return { ...target }
 }

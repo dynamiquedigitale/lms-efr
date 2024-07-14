@@ -3,17 +3,17 @@
 		<b-card no-body class="mb-4">
 			<b-card-header class="d-flex flex-wrap justify-content-between">
 				<b-row class="w-auto">
-					<b-col cols="3">
-						<app-select v-model="filter.limit" @update:model-value="(v) => { findItem(v) }" :options="[10, 20, 30, 50]" />
+					<b-col cols="4">
+						<app-select v-model="filter.limit" @update:model-value="(v) => { findItems(v) }" :options="[10, 20, 30, 50]" />
 					</b-col>
 					<b-col cols="8">
 						<b-input-group class="input-group-merge">
 							<b-input-group-text><app-icon name="search" /></b-input-group-text>
-							<b-form-input v-model="filter.search" @keyup="findItem()" :placeholder="$t('Rechercher')" />
+							<b-form-input v-model="filter.search" @keyup="findItems()" :placeholder="$t('Rechercher')" />
 						</b-input-group>
 					</b-col>
 				</b-row>
-				<app-button class="mt-1 mt-md-0" :text="$t('Ajouter un apprenant')" icon="plus" />
+				<app-button class="mt-1 mt-md-0" :text="$t('Ajouter un apprenant')" icon="plus" @click.prevent="addApprenant" />
 			</b-card-header>
 
 			<b-card-body>
@@ -30,7 +30,7 @@
 										</div>
 									</div>
 								</div>
-								<h3>{{ `${apprenant.prenom} ${apprenant.nom}` }}</h3>
+								<h3 class="truncate text-truncate" v-b-tooltip.bottom="apprenant.username">{{ `${apprenant.username}` }}</h3>
 								<h6 class="text-muted">{{ apprenant.user_email }}</h6>
 								<span class="badge badge-light-primary profile-badge">{{ apprenant.matricule }}</span>
 								<hr class="mb-2">
@@ -46,7 +46,21 @@
 									</div>
 								</div>
 	
-								<app-button text="Profil" variant="outline-primary" class="mt-2" />
+
+								<div class="mt-2 d-flex justify-content-center">
+									<app-button text="Profil" variant="outline-primary" />
+									<div class="dropdown ms-1">
+										<app-button variant="light" icon="more-horizontal" class="btn-icon btn-wave" data-bs-toggle="dropdown" text="" />
+										<ul class="dropdown-menu dropdown-menu-end">
+											<li>
+												<a class="dropdown-item" href="#">Modifier</a>
+											</li>
+											<li>
+												<a class="dropdown-item" href="#">Suprimer</a>
+											</li>
+										</ul>
+									</div>
+								</div>
 							</b-card>
 						</b-col>
 					</b-row>
@@ -64,11 +78,16 @@
 			</b-card-body>
 		</b-card>
 	</page-wrapper>
+	
+	<app-modal id="user-dialog" v-model="openDialog" :title="modalTitle" :size="modalSize" no-footer @close="onCloseDialog">
+		<form-apprenant v-if="openDialog && action != 'details'" :action="action" :item="item" @reset="closeDialog" @completed="refresh" />
+	</app-modal>
 </template>
 
 <script setup>
-import { computed, reactive } from 'vue'
+import { computed, reactive, ref } from 'vue'
 
+import FormApprenant from './Form.vue'
 import { handleSearch } from '@/utils/inertia'
 
 defineOptions({ name: 'AdminListApprenants' })
@@ -77,14 +96,68 @@ const props = defineProps({
   	apprenants: { required: true, type: Object },
 })
 
+const openDialog = ref(false)
+// const loading = ref(true)
+const action = ref(null)
+const item = ref(null) // Element en cours de manipulation (notament pour l'edition)
+// const itemId = ref(null) // Id de l'element en cours de manipulation (notament pour l'edition)
+
 const filter = reactive({
 	limit: 20,
 	search: '',
 })
 
-const items = computed(() => props.apprenants.data)
+const items = computed(() => props.apprenants.data) // Liste de tous les elements (apprenants)
 
-function findItem(limit){
+const modalTitle = computed(() => {
+    switch (action.value) {
+        case 'create':
+            return 'Ajouter un bénéficiaire mobile'
+        case 'edit':
+            return 'Edition du bénéficiaire mobile'
+        default:
+            return (item.value || {}).nom_complet || ''
+    }
+})
+// eslint-disable-next-line @stylistic/js/no-extra-parens
+const modalSize = computed(() => (action.value === 'details' ? 'xl' : 'lg'))
+
+/**
+ * Ouvre le formulaire d'ajout d'un apprenant
+ */
+function addApprenant() {
+    action.value = 'create'
+    openDialog.value = true
+}
+
+/**
+ * Provoque la fermeture de la modale
+ */
+ function closeDialog() {
+    openDialog.value = false
+    item.value = null
+    action.value = null
+}
+/**
+ * Lorsque la modale est effectivement fermee
+ */
+function onCloseDialog() {
+    if (action.value === 'details') {
+        refresh()
+    }
+}
+
+/**
+ * Refraichir la liste des beneficiaires apres une creation, suppression ou edition
+ */
+function refresh() {
+    closeDialog()
+    filter.search = ''
+	findItems()
+}
+
+
+function findItems(limit){
 	handleSearch('admin.apprenants.index', {
 		limit: limit || filter.limit,
 		search: filter.search,
