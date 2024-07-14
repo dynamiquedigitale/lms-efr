@@ -1,3 +1,16 @@
 {
-	"Affichage de XY sur Z elements": "Affichage de {x} à {y} sur {z} éléments"
+	"Affichage de XY sur Z elements": "Affichage de {x} à {y} sur {z} éléments",
+	"sexe": {
+		"title": "Sexe",
+		"m": "Masculin",
+		"f": "Feminin",
+		"autre": "Autre"
+	},
+	"statut": {
+		"title": "Statut",
+		"active": "Actif",
+		"inactive": "Inactif",
+		"incomplete": "Incomplet",
+		"pending": "En attente"
+	}
 }

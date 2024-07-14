@@ -16,9 +16,9 @@
 						v-model="form.sexe" 
 						class="my-1" type="select"
 						:error="error.sexe" 
-						:label="$t('Sexe')" 
-						:placeholder="$t('Sexe')" 
-						:options="[{text: $t('Feminin'), value: 'f'}, {text: $t('Masculin'), value: 'm'}, {text: $t('Autre'), value: 'autre'}]" 
+						:label="$t('sexe.title')" 
+						:placeholder="$t('sexe.title')" 
+						:options="['f', 'm', 'autre'].map(e => ({ text: $t(`sexe.${e}`), value: e }))" 
 					/>
 					<app-form-group 
 						v-model="form.adresse" 

@@ -66,4 +66,13 @@ class ApprenantsController extends AppController
 
 		return back()->with('success', __('Apprenant ajouté avec succès'));
 	}
+
+	/**
+	 * Liste des formations suivies par un apprenant
+	 */
+	public function formations($id) 
+	{
+		return compact('id');
+		// return Parcour::where('user_id', $id)->withCount(['cours', 'examens'])->get();
+	}
 }

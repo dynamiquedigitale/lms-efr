@@ -27,7 +27,7 @@ class User extends SchildUser
 	/** {@inheritDoc} */
 	protected array $appends = [
 		'role',
-		'user_email',
+		'user_email', 'lieu_residence',
 	];
 
 	public function getRoleAttribute()
@@ -42,6 +42,14 @@ class User extends SchildUser
 	public function getUserEmailAttribute()
 	{
 		return $this->getEmail();
+	}
+	
+	public function getLieuResidenceAttribute()
+	{
+		if (empty($this->adresse)) {
+			return null;
+		}
+		return $this->adresse['adresse'];
 	}
 
 	protected function avatar(): Attribute

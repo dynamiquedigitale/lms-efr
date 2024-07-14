@@ -6,9 +6,9 @@
 			<span class="spinner-border spinner-border-sm align-middle ms-25" role="status" v-if="props.iconEnd"></span>
 		</template>
 		<template v-else>
-			<app-icon v-if="props.icon !== '' && !props.iconEnd" :name="props.icon" :class="`${props.text != '' ? 'me-1' : ''} ${props.iconClass}`" />
-            <template v-if="!props.tooltip">{{ props.text }}</template>
-            <app-icon v-if="props.icon !== '' && props.iconEnd" :name="props.icon" :class="`${props.text != '' ? 'ms-1' : ''} ${props.iconClass}`" />
+			<app-icon v-if="props.icon !== '' && !props.iconEnd" :name="props.icon" :class="props.iconClass" />
+            <span v-if="!props.tooltip && props.text !== ''" :class="{ 'me-1': props.icon !== '' && !props.iconEnd, 'ms-1': props.icon !== '' && props.iconEnd }">{{ props.text }}</span>
+            <app-icon v-if="props.icon !== '' && props.iconEnd" :name="props.icon" :class="props.iconClass" />
 		</template>
     </b-button>
 </template>

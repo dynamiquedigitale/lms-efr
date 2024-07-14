@@ -21,47 +21,7 @@
 				<template v-else>
 					<b-row class="gy-4 mb-4">
 						<b-col cols="12" lg="4" md="6" v-for="apprenant in items" :key="apprenant.id">
-							<b-card body-class="px-1 pb-0" class="card-profile p-1 pb-0 h-100 shadow-none border" :img-src="$public('img/picsum/25-600x300.jpg')" img-top>
-								<div class="profile-image-wrapper">
-									<div class="profile-image">
-										<div class="avatar">
-											<img :src="apprenant.avatar" :alt="apprenant.nom" />
-											<span class="avatar-status-online" style="right: 5px; bottom: 5px"></span>
-										</div>
-									</div>
-								</div>
-								<h3 class="truncate text-truncate" v-b-tooltip.bottom="apprenant.username">{{ `${apprenant.username}` }}</h3>
-								<h6 class="text-muted">{{ apprenant.user_email }}</h6>
-								<span class="badge badge-light-primary profile-badge">{{ apprenant.matricule }}</span>
-								<hr class="mb-2">
-								
-								<div class="d-flex justify-content-between align-items-center">
-									<div>
-										<h6 class="text-muted fw-bolder">{{ $t('Formations') }}</h6>
-										<h3 class="mb-0">{{ apprenant.parcours_count }}</h3>
-									</div>
-									<div>
-										<h6 class="text-muted fw-bolder">{{ $t('Evaluations') }}</h6>
-										<h3 class="mb-0">--</h3>
-									</div>
-								</div>
-	
-
-								<div class="mt-2 d-flex justify-content-center">
-									<app-button text="Profil" variant="outline-primary" />
-									<div class="dropdown ms-1">
-										<app-button variant="light" icon="more-horizontal" class="btn-icon btn-wave" data-bs-toggle="dropdown" text="" />
-										<ul class="dropdown-menu dropdown-menu-end">
-											<li>
-												<a class="dropdown-item" href="#">Modifier</a>
-											</li>
-											<li>
-												<a class="dropdown-item" href="#">Suprimer</a>
-											</li>
-										</ul>
-									</div>
-								</div>
-							</b-card>
+							<user-card :user="apprenant" @show="showProfile(apprenant)" />
 						</b-col>
 					</b-row>
 					  
@@ -81,14 +41,17 @@
 	
 	<app-modal id="user-dialog" v-model="openDialog" :title="modalTitle" :size="modalSize" no-footer @close="onCloseDialog">
 		<form-apprenant v-if="openDialog && action != 'details'" :action="action" :item="item" @reset="closeDialog" @completed="refresh" />
+		<details-apprenant v-else-if="openDialog && action == 'details'" :apprenant="item" />
 	</app-modal>
 </template>
 
 <script setup>
 import { computed, reactive, ref } from 'vue'
 
+import DetailsApprenant from './Details.vue'
 import FormApprenant from './Form.vue'
 import { handleSearch } from '@/utils/inertia'
+import UserCard from '@/components/UserCard.vue'
 
 defineOptions({ name: 'AdminListApprenants' })
 
@@ -112,11 +75,11 @@ const items = computed(() => props.apprenants.data) // Liste de tous les element
 const modalTitle = computed(() => {
     switch (action.value) {
         case 'create':
-            return 'Ajouter un bénéficiaire mobile'
+            return 'Ajouter un apprenant'
         case 'edit':
-            return 'Edition du bénéficiaire mobile'
+            return 'Edition du apprenant'
         default:
-            return (item.value || {}).nom_complet || ''
+            return (item.value || {}).username || ''
     }
 })
 // eslint-disable-next-line @stylistic/js/no-extra-parens
@@ -127,6 +90,14 @@ const modalSize = computed(() => (action.value === 'details' ? 'xl' : 'lg'))
  */
 function addApprenant() {
     action.value = 'create'
+    openDialog.value = true
+}
+/**
+ * Ouvre la modale de details de l'apprenant
+ */
+function showProfile(apprenant) {
+	item.value = apprenant
+	action.value = 'details'
     openDialog.value = true
 }
 
