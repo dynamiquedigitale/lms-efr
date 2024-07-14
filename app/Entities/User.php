@@ -66,4 +66,13 @@ class User extends SchildUser
 			},
         );
     }
+
+	protected function username(): Attribute
+	{
+		return Attribute::make(
+			get: function(?string $value) {
+				return $value ?: $this->prenom . ' ' . $this->nom;
+			},
+		);
+	}
 }

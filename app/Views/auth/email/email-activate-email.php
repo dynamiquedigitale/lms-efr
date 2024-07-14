@@ -3,6 +3,9 @@
 
 <?= $this->section('content') ?>
 
+<h3 style="margin: 17px 0px 0px; font-size: 16px; font-weight: 500;">
+	Salut, <b><?= $user->username; ?></b>
+</h3>
 <p style="margin: 0; margin-top: 17px; font-weight: 500; letter-spacing: 0.56px;">
 	<?= __('Merci de choisir English For Real pour vous accompagner dans votre apprentissage de la langue anglaise') ?>.
 </p>

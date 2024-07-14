@@ -3,6 +3,9 @@
 
 <?= $this->section('content') ?>
 
+<h3 style="margin: 17px 0px 0px; font-size: 16px; font-weight: 500;">
+	Salut, <b><?= $user->username; ?></b>
+</h3>
 <p style="margin: 17px 0px 0px; letter-spacing: 0.56px; font-weight: 500;">
 	Vous recevez cet e-mail car nous avons reçu une demande de réinitialisation de mot de passe pour votre compte.
 </p>
