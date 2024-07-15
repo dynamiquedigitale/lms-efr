@@ -14,6 +14,19 @@ class UserModel extends SchildUserModel
 	/**
 	 * @return array{total: int, items: array<User>}
 	 */
+	public function searchEnseignants(array $search, int $page = 1, int $perPage = 15, string $sortColumn = 'created_at', string $sortDirection = 'desc'): array
+	{
+		$builder = $this->leftJoin('parcours', ['parcours.enseignant_id' => 'users.id'])
+			->select('COUNT(parcours.id) as parcours_count');
+
+		$search['role'] = Role::ENSEIGNANT;
+
+		return $this->searchUsers($search, $page, $perPage, $sortColumn, $sortDirection, $builder);
+	}
+	
+	/**
+	 * @return array{total: int, items: array<User>}
+	 */
 	public function searchApprenants(array $search, int $page = 1, int $perPage = 15, string $sortColumn = 'created_at', string $sortDirection = 'desc'): array
 	{
 		$builder = $this->leftJoin('parcours', ['parcours.apprenant_id' => 'users.id'])

@@ -19,8 +19,14 @@
 				<h3 class="mb-0">{{ user.parcours_count }}</h3>
 			</div>
 			<div>
-				<h6 class="text-muted fw-bolder">{{ $t('Evaluations') }}</h6>
-				<h3 class="mb-0">--</h3>
+				<template v-if="user.type === 'apprenant'">
+					<h6 class="text-muted fw-bolder">{{ $t('Evaluations') }}</h6>
+					<h3 class="mb-0">--</h3>
+				</template>
+				<template v-else-if="user.type === 'enseignant'">
+					<h6 class="text-muted fw-bolder">{{ $t('taux_horaire.title') }}</h6>
+					<h3 class="mb-0">{{ user.taux_horaire }}</h3>
+				</template>
 			</div>
 		</div>
 
@@ -31,10 +37,10 @@
 				<app-button variant="light" icon="more-horizontal" class="btn-icon btn-wave" data-bs-toggle="dropdown" text="" />
 				<ul class="dropdown-menu dropdown-menu-end">
 					<li>
-						<a class="dropdown-item" href="#">Modifier</a>
+						<a class="dropdown-item" href="#">{{ $t('action.modifier') }}</a>
 					</li>
 					<li>
-						<a class="dropdown-item" href="#">Suprimer</a>
+						<a class="dropdown-item" href="#">{{ $t('action.supprimer') }}</a>
 					</li>
 				</ul>
 			</div>

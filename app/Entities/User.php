@@ -22,6 +22,7 @@ class User extends SchildUser
         'permissions' => 'array',
         'groups'      => 'array',
         'adresse'     => 'array',
+        'documents'   => 'array',
     ];
 
 	/** {@inheritDoc} */
@@ -49,7 +50,10 @@ class User extends SchildUser
 		if (empty($this->adresse)) {
 			return null;
 		}
-		return $this->adresse['adresse'];
+
+		$adresse = is_string($this->adresse) ? json_decode($this->adresse, true) : $this->adresse;
+
+		return $adresse['adresse'];
 	}
 
 	protected function avatar(): Attribute
