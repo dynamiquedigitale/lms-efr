@@ -2,16 +2,16 @@
     <b-form class="mt-1" @submit.prevent="submitForm" autocomplete="false" :disabled="submitted">
 		<b-row class="mb-1">
 			<b-col lg="6">
-				<app-fieldset :title="$t('Informations de base')" class="my-1">
-					<app-form-group class="my-1" v-model="form.nom" :error="error.nom" :label="$t('Nom')" :placeholder="$t('Nom de famille')" required />
-					<app-form-group class="my-1" v-model="form.prenom" :error="error.prenom" :label="$t('Prenom')" :placeholder="$t('Prenom de l\'apprenant')" />
-					<app-form-group class="my-1" v-model="form.email" :error="error.email" :label="$t('Email')" :placeholder="$t('Adresse email de l\'apprenant')" required type="email" />
-					<app-form-group class="my-1" v-model="form.tel" :error="error.tel" :label="$t('Téléphone')" :placeholder="$t('Numéro de téléphone de l\'apprenant')" required type="tel" />
+				<app-fieldset :title="$t('infos_de_base')" class="my-1">
+					<app-form-group class="my-1" v-model="form.nom" :error="error.nom" :label="$t('nom.title')" :placeholder="$t('nom.famille')" required />
+					<app-form-group class="my-1" v-model="form.prenom" :error="error.prenom" :label="$t('prenom.title')" :placeholder="$t('prenom.apprenant')" />
+					<app-form-group class="my-1" v-model="form.email" :error="error.email" :label="$t('email.title')" :placeholder="$t('email.apprenant')" required type="email" />
+					<app-form-group class="my-1" v-model="form.tel" :error="error.tel" :label="$t('tel.title')" :placeholder="$t('tel.apprenant')" required type="tel" />
 				</app-fieldset>
 			</b-col>
 			<b-col lg="6">
-				<app-fieldset :title="$t('Supplement')" class="my-1">
-					<app-form-group class="my-1" v-model="form.date_naiss" :error="error.date_naiss" :label="$t('Date de naissance')" :placeholder="$t('Date de naissance')" type="date" />
+				<app-fieldset :title="$t('supplements')" class="my-1">
+					<app-form-group class="my-1" v-model="form.date_naiss" :error="error.date_naiss" :label="$t('date_naissance')" :placeholder="$t('date_naissance')" type="date" />
 					<app-form-group 
 						v-model="form.sexe" 
 						class="my-1" type="select"
@@ -24,8 +24,8 @@
 						v-model="form.adresse" 
 						class="my-1" type="address" 
 						:error="error.adresse" 
-						:label="$t('Lieu de résidence')" 
-						:placeholder="$t('Veuillez renseigner l\'adresse de residence de l\'apprenant')"
+						:label="$t('lieu_residence.title')" 
+						:placeholder="$t('lieu_residence.placeholder_enseignant')"
 						@address:selected="onAddressSelected"
 					/>
 				</app-fieldset>
@@ -33,8 +33,8 @@
 		</b-row>
 		
         <div class="w-100 d-flex justify-content-center flex-end mt-10">
-            <app-button :text="$t('Annuler')" variant="danger" class="me-2" @click.prevent="emit('reset')" />
-            <app-button type="submit" :text="$t(action === 'create' ? 'Ajouter' : 'Modifier')" :loading="submitted" />
+            <app-button :text="$t('action.annuler')" variant="danger" class="me-2" @click.prevent="emit('reset')" />
+            <app-button type="submit" :text="$t(`action.${action === 'create' ? 'ajouter' : 'modifier'}`)" :loading="submitted" />
         </div>
     </b-form>
 </template>
@@ -91,15 +91,15 @@ function onAddressSelected({ city, country, country_code, postcode, state }) {
 function submitForm() {
 	form.transform(data => {
 		if (null !== data.adresse) {
-			data.adresse = {
-				adresse: data.adresse,
+			data.adresse = JSON.stringify({
+				adresse    : data.adresse,
 				// eslint-disable-next-line camelcase
 				code_postal: data.code_postal || '',
-				country: data.country || '',
-				etat: data.etat || '',
-				pays: data.pays || '',
-				ville: data.ville || '',
-			}
+				country    : data.country || '',
+				etat       : data.etat || '',
+				pays       : data.pays || '',
+				ville      : data.ville || '',
+			})
 		}
 
 		return data
@@ -123,7 +123,7 @@ function submitForm() {
 			} else if (!message !== '') {
 				$alert.error(message)
 			} else {
-				$alert.error($t('Une erreur s\'est produite'))
+				$alert.error($t('une_erreur_s_est_produite'))
 			}
 		},
 		onFinish() {

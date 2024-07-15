@@ -3,6 +3,7 @@
 	"ajouter_un_apprenant": "Ajouter un apprenant",
 	"ajouter_un_enseignant": "Ajouter un enseignant",
 	"apprenants": "Apprenants",
+	"assigner_une_formation": "Assigner une formation",
 	"aucun_apprenant_enregistre": "Aucun apprenant enregistré",
 	"aucun_enseignant_enregistre": "Aucun enseignant enregistré",
 	"action": {
@@ -14,6 +15,8 @@
 		"valider": "Valider"
 	},
 	"autres_infos": "Autres informations",
+	"date_naissance": "Date de naissance",
+	"details": "Details",
 	"diplome": {
 		"title": "Diplôme",
 		"bac": "Bac",
@@ -39,7 +42,18 @@
 		"apprenant": "Adresse email de l'apprenant",
 		"enseignant": "Adresse email de l'enseignant"
 	},
+	"encardrants": {
+		"title": "Encardrants"
+	},
 	"enseignants": "Enseignants",
+	"evaluations": {
+		"title": "Evaluations",
+		"effectuees": "Evaluations effectuées"
+	},
+	"formations": {
+		"title": "Formations",
+		"suivies": "Formations suivies"
+	},
 	"infos_de_base": "Informations de base",
 	"lieu_residence": {
 		"title": "Lieu de résidence",
@@ -57,6 +71,9 @@
 		"cni": "Numéro de CNI",
 		"passport": "Numéro de passport",
 		"placeholder": "Entrez le numéro de la pièce d'identité"
+	},
+	"paiements": {
+		"effectues": "Paiements effectués"
 	},
 	"piece_identite": {
 		"title": "Type d'identité",
@@ -92,5 +109,6 @@
 		"title": "Téléphone",
 		"apprenant": "Numéro de téléphone de l'apprenant",
 		"enseignant": "Numéro de téléphone de l'enseignant"
-	}
+	},
+	"une_erreur_s_est_produite": "Une erreur s'est produite"
 }

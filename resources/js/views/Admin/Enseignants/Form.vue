@@ -168,7 +168,7 @@ function submitForm() {
 			} else if (!message !== '') {
 				$alert.error(message)
 			} else {
-				$alert.error($t('Une erreur s\'est produite'))
+				$alert.error($t('une_erreur_s_est_produite'))
 			}
 		},
 		onFinish() {

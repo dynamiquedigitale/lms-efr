@@ -18,7 +18,7 @@
 					  	</span>
 					  	<div class="ms-75">
 							<h4 class="mb-0">{{ apprenant.parcours_count }}</h4>
-							<small>{{ $t('Formations') }}</small>
+							<small>{{ $t('formations.title') }}</small>
 					  	</div>
 					</div>
 					<div class="d-flex align-items-start me-2">
@@ -27,19 +27,19 @@
 						</span>
 						<div class="ms-75">
 						  <h4 class="mb-0">--</h4>
-						  <small>{{ $t('Evaluations') }}</small>
+						  <small>{{ $t('evaluations.title') }}</small>
 						</div>
 				  	</div>
 				</div>
-				<h4 class="fw-bolder border-bottom pb-50 mb-1">Details</h4>
+				<h4 class="fw-bolder border-bottom pb-50 mb-1">{{ $t('details') }}</h4>
 				<div class="info-container">
 					<ul class="list-unstyled">
 					  	<li class="mb-75">
-							<span class="fw-bolder me-25">{{ $t('Email') }}:</span>
+							<span class="fw-bolder me-25">{{ $t('email.title') }}:</span>
 							<span>{{ apprenant.user_email }}</span>
 					  	</li>
 					  	<li class="mb-75">
-							<span class="fw-bolder me-25">{{ $t('Téléphone') }}:</span>
+							<span class="fw-bolder me-25">{{ $t('tel.title') }}:</span>
 							<span>{{ apprenant.tel }}</span>
 					  	</li>
 					  	<li class="mb-75">
@@ -47,7 +47,7 @@
 							<span class="badge bg-light-success">{{ $t(`statut.${apprenant.statut_compte}`) }}</span>
 						</li>
 					  	<li class="mb-75">
-							<span class="fw-bolder me-25">{{ $t('Date de naissance') }}:</span>
+							<span class="fw-bolder me-25">{{ $t('date_naissance') }}:</span>
 							<span>{{ $dayjs(apprenant.date_naiss).format('DD MMMM YYYY')}}</span>
 					  	</li>
 					  	<li class="mb-75">
@@ -55,7 +55,7 @@
 							<span>{{ $t(`sexe.${apprenant.sexe}`)}}</span>
 					  	</li>
 					  	<li class="mb-75">
-							<span class="fw-bolder me-25">{{ $t('Lieu de résidence') }}:</span>
+							<span class="fw-bolder me-25">{{ $t('lieu_residence.title') }}:</span>
 							<span>{{ apprenant.lieu_residence }}</span>
 					  	</li>
 					</ul>
@@ -108,11 +108,8 @@
 						<b-col md="2"></b-col>
 						<b-col md="8">
 							<div class="d-flex align-items-center justify-content-end flex-md-row flex-column mb-3 mb-md-0">
-								<b-input-group class="input-group-merge w-50 me-1">
-									<b-input-group-text><app-icon name="search" /></b-input-group-text>
-									<b-form-input :placeholder="$t('Rechercher')" />
-								</b-input-group>
-								<app-button text="Assigner une formation" icon="plus" :tooltip="{placement: 'bottom'}" />
+								<app-input-search />
+								<app-button :text="$t('assigner_une_formation')" icon="plus" :tooltip="{placement: 'bottom'}" />
 							</div>
 						</b-col>
 					</b-card-header>
@@ -127,6 +124,8 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 
+import { $t } from '@/plugins/i18n'
+
 defineOptions({ name: 'DetailsApprenant' })
 
 const props = defineProps({
@@ -134,10 +133,10 @@ const props = defineProps({
 })
 
 const tabs = [
-	{ icon: 'briefcase', key: 'formations', title: 'Formations suivies' },
-	{ icon: 'check', key: 'evaluations', title: 'Evaluations effectuées' },
-	{ icon: 'users', key: 'encardrants', title: 'Encardrants' },
-	{ icon: 'dollar-sign', key: 'paiements', title: 'Paiements effectués' },
+	{ icon: 'briefcase', key: 'formations', title: $t('formations.suivies') },
+	{ icon: 'check', key: 'evaluations', title: $t('evaluations.effectuees') },
+	{ icon: 'users', key: 'encardrants', title: $t('encardrants.title') },
+	{ icon: 'dollar-sign', key: 'paiements', title: $t('paiements.effectues') },
 ]
 const activeTab = ref('')
 const proceeding = ref(false)

@@ -15,12 +15,12 @@
 		
 		<div class="d-flex justify-content-between align-items-center">
 			<div>
-				<h6 class="text-muted fw-bolder">{{ $t('Formations') }}</h6>
+				<h6 class="text-muted fw-bolder">{{ $t('formations.title') }}</h6>
 				<h3 class="mb-0">{{ user.parcours_count }}</h3>
 			</div>
 			<div>
 				<template v-if="user.type === 'apprenant'">
-					<h6 class="text-muted fw-bolder">{{ $t('Evaluations') }}</h6>
+					<h6 class="text-muted fw-bolder">{{ $t('evaluations.title') }}</h6>
 					<h3 class="mb-0">--</h3>
 				</template>
 				<template v-else-if="user.type === 'enseignant'">
