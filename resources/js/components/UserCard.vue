@@ -24,8 +24,8 @@
 					<h3 class="mb-0">--</h3>
 				</template>
 				<template v-else-if="user.type === 'enseignant'">
-					<h6 class="text-muted fw-bolder">{{ $t('taux_horaire.title') }}</h6>
-					<h3 class="mb-0">{{ user.taux_horaire }}</h3>
+					<h6 class="text-muted fw-bolder">{{ $t('ressources.title') }}</h6>
+					<h3 class="mb-0">{{ user.ressources_count }}</h3>
 				</template>
 			</div>
 		</div>

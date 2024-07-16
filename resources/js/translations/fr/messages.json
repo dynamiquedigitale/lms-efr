@@ -52,6 +52,7 @@
 	},
 	"formations": {
 		"title": "Formations",
+		"dispensees": "Formations dispensées",
 		"suivies": "Formations suivies"
 	},
 	"infos_de_base": "Informations de base",
@@ -86,6 +87,10 @@
 		"enseignant": "Prenom de l'enseignant"
 	},
 	"rechercher": "Rechercher",
+	"ressources": {
+		"title": "Ressources",
+		"affectees": "Ressources affectées"
+	},
 	"sexe": {
 		"title": "Sexe",
 		"m": "Masculin",

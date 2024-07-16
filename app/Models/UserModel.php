@@ -17,7 +17,9 @@ class UserModel extends SchildUserModel
 	public function searchEnseignants(array $search, int $page = 1, int $perPage = 15, string $sortColumn = 'created_at', string $sortDirection = 'desc'): array
 	{
 		$builder = $this->leftJoin('parcours', ['parcours.enseignant_id' => 'users.id'])
-			->select('COUNT(parcours.id) as parcours_count');
+			->leftJoin('ressources_enseignants', ['ressources_enseignants.enseignant_id' => 'users.id'])
+			->select('COUNT(parcours.id) as parcours_count')
+			->select('COUNT(ressources_enseignants.id) as ressources_count');
 
 		$search['role'] = Role::ENSEIGNANT;
 
