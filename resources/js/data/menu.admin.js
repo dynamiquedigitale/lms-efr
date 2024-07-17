@@ -11,7 +11,7 @@ export default [
 	{
 		icon: 'briefcase',
 		route: 'formations.index',
-		text: 'Formations',
+		text: 'formations.title',
 	},
 	{
 		icon: 'book',
@@ -20,8 +20,8 @@ export default [
 	},
 	{
 		icon: 'save',
-		route: 'ressources.index',
-		text: 'Ressources',
+		route: 'admin.ressources.index',
+		text: 'ressources.title',
 	},
 	{
 		icon: 'book-open',
@@ -35,12 +35,12 @@ export default [
 	{
 		icon: 'user-check',
 		route: 'admin.enseignants.index',
-		text: 'Enseignants',
+		text: 'enseignants',
 	},
 	{
 		icon: 'user',
 		route: 'admin.apprenants.index',
-		text: 'Apprenants',
+		text: 'apprenants',
 	},
 	{
 		icon: 'users',
@@ -64,6 +64,6 @@ export default [
 	{
 		icon: 'dollar-sign',
 		route: 'paiements.index',
-		text: 'Paiements',
+		text: 'paiements.title',
 	},
 ]

@@ -12,6 +12,7 @@ Route::middleware(['session', 'force-reset'])->prefix('admin')->namespace('\App\
 	});
 	Route::name('admin.apprenants')->presenter('apprenants');
 	
-	
 	Route::name('admin.enseignants')->presenter('enseignants');
+	
+	Route::name('admin.ressources')->presenter('ressources');
 });

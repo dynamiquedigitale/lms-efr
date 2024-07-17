@@ -7,6 +7,8 @@ use BlitzPHP\Wolke\SoftDeletes;
 
 abstract class AppEntity extends Entity
 {
+	protected array|bool $guarded = false;
+	
 	public static function generateRef(?string $entity = null, ?string $prefix = null): string
 	{
 		$entity ??= static::class;

@@ -119,3 +119,4 @@ nb-configuration.xml
 /yarn.lock
 /public/.vite
 /storage/app/documents
+/storage/app/ressources

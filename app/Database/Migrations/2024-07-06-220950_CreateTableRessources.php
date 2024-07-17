@@ -13,10 +13,13 @@ class CreateTableRessources extends Migration
     {
         $this->create('ressources', function(Structure $table) {
             $table->id();
-			$table->string('libelle', 128);
-			$table->enum('type', ['pdf', 'image', 'video', 'audio', 'ppt', 'text', 'doc']);
+			$table->string('nom');
+			$table->enum('type', ['image', 'video', 'audio', 'doc', 'other']);
 			$table->string('url');
 			$table->string('description');
+			$table->string('ext', 8);
+			$table->string('mime', 128);
+			$table->string('size', 15);
             $table->timestamps();
 			$table->softDeletes();
     

@@ -1,25 +1,31 @@
 <template>
 	<vue-file-agent 
-		v-model="modelValue" 
+		v-model="modelValue"
+		ref="fileAgent"
 		:auto="false"
 		v-bind="attrs"
 		@select="onFileSelect"
-		@delete="emit('delete', $event)"
-		@beforedelete="emit('beforedelete', $event)"
+		@delete="onDelete($event)"
+		@beforedelete="onBeforeDelete($event)"
 	/>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, reactive } from 'vue'
 
 import '@/assets/lib/vue-file-agent-next/vue-file-agent-next.css'
 import { VueFileAgent } from '@/assets/lib/vue-file-agent-next/vue-file-agent-next.es'
 
 defineOptions({ name: 'AppFileUploader' })
 
-const modelValue = ref([])
+const modelValue = reactive({ files: [] })
 
-const emit = defineEmits(['update:modelValue', 'select', 'delete', 'beforedelete'])
+const emit = defineEmits([
+	'update:modelValue', 
+	'select', 'select:native', 
+	'input', 'input:native', 
+	'delete', 
+])
 
 const props = defineProps({
 	accept     : { default: '', type: String },
@@ -60,14 +66,39 @@ const attrs = computed(() => {
 	return _props
 })
 
-function onFileSelect($event) {
-	let files = $event.map(({ file }) => file)
+function onFileSelect(record) {
+	record           = [...record].map(({ raw }) => raw)
+	modelValue.files = [...modelValue.files, ...record]
 	
 	if (!props.multiple) {
-		files = files.shift()
+		modelValue.files = modelValue.files.pop()
+		record = [...record].pop()
 	}
 
-	emit('update:modelValue', files)
-	emit('select', files)
+	if (!props.multiple) {
+		emit('update:modelValue', modelValue.files.file)
+		emit('select', record.file)
+		emit('input', modelValue.files.file)
+		emit('select:native', record)
+		emit('input:native', modelValue.files)
+	} else {
+		emit('update:modelValue', modelValue.files.map(({ file }) => file))
+		emit('select', record.map(({ file }) => file))
+		emit('input', modelValue.files.map(({ file }) => file))
+		emit('select:native', record)
+		emit('input:native', modelValue.files)
+	}
+}
+
+function onDelete(record) {
+	console.log({ record })
+	// this.$refs.fileAgent.deleteUpload(/* ... */);
+	
+}
+
+function onBeforeDelete(fileRecord){
+	if (confirm('Are you sure?')){
+		this.$refs.fileAgent.deleteFileRecord(fileRecord)
+	}
 }
 </script>

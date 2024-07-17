@@ -7,7 +7,7 @@
 		</template>
 		<template v-else>
 			<app-icon v-if="props.icon !== '' && !props.iconEnd" :name="props.icon" :class="props.iconClass" />
-            <span v-if="!props.tooltip && props.text !== ''" :class="{ 'me-1': props.icon !== '' && !props.iconEnd, 'ms-1': props.icon !== '' && props.iconEnd }">{{ props.text }}</span>
+            <span v-if="!props.tooltip && props.text !== ''" :class="{ 'ms-1': props.icon !== '' && !props.iconEnd, 'me-1': props.icon !== '' && props.iconEnd }">{{ props.text }}</span>
             <app-icon v-if="props.icon !== '' && props.iconEnd" :name="props.icon" :class="props.iconClass" />
 		</template>
     </b-button>
