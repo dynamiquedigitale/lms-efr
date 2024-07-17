@@ -19,12 +19,13 @@ class RessourcesController extends AppController
 	{
 		try {
             $post = $this->validate([
-				'files'          => ['required', 'array'],
-				'files.*.nom'    => ['required', 'string', 'max:255'],
-				'files.*.ext'    => ['nullable', 'string'],
-				'files.*.mime'   => ['nullable', 'string'],
-				'files.*.size'   => ['nullable', 'string'],
-				'files.*.upload' => ['required', Rule::file()->types(['jpg', 'jpeg', 'png', 'mp4', 'avi', 'mp3', 'pdf',  'txt', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'])]
+				'files'            => ['required', 'array'],
+				'files.*.nom'      => ['required', 'string', 'max:255'],
+				'files.*.ext'      => ['nullable', 'string'],
+				'files.*.mime'     => ['nullable', 'string'],
+				'files.*.size'     => ['nullable', 'integer'],
+				'files.*.sizeText' => ['nullable', 'string'],
+				'files.*.upload'   => ['required', Rule::file()->types(['jpg', 'jpeg', 'png', 'mp4', 'avi', 'mp3', 'pdf',  'txt', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'])]
             ]);
         }
         catch (ValidationException $e) {
@@ -36,12 +37,13 @@ class RessourcesController extends AppController
 			$file = $file['upload'];
 			
 			Ressource::create([
-				'nom'  => pathinfo($post['files'][$i]['nom'], PATHINFO_FILENAME),
-				'type' => $this->retrieveTypeFromMime($file, $post['files'][$i]['ext'] ?? null),
-				'url'  => $file->store('ressources'),
-				'ext'  => $post['files'][$i]['ext'] ?? $file->clientExtension(),
-				'mime' => $post['files'][$i]['mime'] ?? $file->getMimeType(),
-				'size' => $post['files'][$i]['size'] ?? (($file->getSize() ?? 0) . ' KB'),
+				'nom'      => pathinfo($post['files'][$i]['nom'], PATHINFO_FILENAME),
+				'type'     => $this->retrieveTypeFromMime($file, $post['files'][$i]['ext'] ?? null),
+				'url'      => $file->store('ressources'),
+				'ext'      => $post['files'][$i]['ext'] ?? $file->clientExtension(),
+				'mime'     => $post['files'][$i]['mime'] ?? $file->getMimeType(),
+				'size'     => $post['files'][$i]['size'] ?? ($file->getSize() ?? 0),
+				'sizeText' => $post['files'][$i]['sizeText'] ?? (($file->getSize() ?? 0) . ' KB'),
 			]);
 		}
 

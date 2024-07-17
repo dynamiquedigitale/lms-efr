@@ -47,11 +47,12 @@ function onFileSelect($event) {
 
 function submitForm() {
 	const data = [...files.value].map(f => ({
-		ext   : f.ext,
-		mime  : f.type,
-		nom   : f.name,
-		size  : f.sizeText,
-		upload: f.file,
+		ext     : f.ext,
+		mime    : f.type,
+		nom     : f.name,
+		size    : f.size,
+		sizeText: f.sizeText,
+		upload  : f.file,
 	}))
 
 	// eslint-disable-next-line no-undef

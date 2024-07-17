@@ -19,7 +19,8 @@ class CreateTableRessources extends Migration
 			$table->string('description');
 			$table->string('ext', 8);
 			$table->string('mime', 128);
-			$table->string('size', 15);
+			$table->unsignedInteger('size');
+			$table->string('sizeText', 15);
             $table->timestamps();
 			$table->softDeletes();
     
