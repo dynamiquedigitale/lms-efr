@@ -11,18 +11,24 @@
 							<div class="sidebar-list">
 					  			<div class="list-group list-group-labels">
 									<h6 class="section-label px-2 mb-1">Labels</h6>
-									<a v-for="({ icon, type }) in mediaTypes" :key="type" :href="`#${type}`" class="list-group-item list-group-item-action">
+									<a href="#all" @click.prevent="filter.type = 'all'" class="list-group-item list-group-item-action d-flex align-items-center" :class="{active: filter.type === 'all'}">
+										<app-icon name="layers" class="me-50 font-medium-3" />
+										<span class="align-middle">{{ $t('type_media.all') }}</span>
+										<span class="badge badge-sm bg-primary rounded-pill ms-auto">{{ ressources.length }}</span>
+									</a>
+									<a v-for="({ icon, total, type }) in mediaTypes" :key="type" :href="`#${type}`" @click.prevent="filter.type = type" class="list-group-item list-group-item-action d-flex align-items-center" :class="{active: filter.type === type}">
 										<app-icon :name="icon" class="me-50 font-medium-3" />
 										<span class="align-middle">{{ $t(`type_media.${type}`) }}</span>
+										<span class="badge badge-sm bg-secondary rounded-pill ms-auto">{{ total }}</span>
 									</a>
 					  			</div>
 								<div class="storage-status mb-1 px-2">
-									<h6 class="section-label mb-1">Storage Status</h6>
+									<h6 class="section-label mb-1">Espace utilisé</h6>
 									<div class="d-flex align-items-center cursor-pointer">
 										<app-icon name="server" class="font-large-1" />
 										<div class="file-manager-progress ms-1">
-											<span>68GB used of 100GB</span>
-											<b-progress class="my-50" value="80" style="height: 6px" />
+											<span>{{ humanFileSize(mediaTypes.reduce((acc, { size }) => acc + size, 0)) }}</span>
+											<b-progress class="my-50" value="100" style="height: 6px" />
 										</div>
 									</div>
 								</div>
@@ -116,7 +122,7 @@ class="dropdown-item d-sm-none d-block" href="#" data-bs-toggle="modal"
 							<div class="file-manager-content-body">
 								<div class="drives">
 									<b-row>
-										<b-col v-for="({ type }) in mediaTypes" :key="type" cols="12" lg="3" md="6">
+										<b-col v-for="({ type, size }) in mediaTypes" :key="type" cols="12" lg="3" md="6">
 											<b-card class="shadow-none border cursor-pointer">
 												<svg xmlns="http://www.w3.org/2000/svg" style="height: 38px; fill: rgb(142, 84, 233)" v-if="type === 'images'" enable-background="new 0 0 24 24" viewBox="0 0 24 24"><path opacity="0.3" d="M19 2H5a3.009 3.009 0 0 0-3 3v8.86l3.88-3.88a3.075 3.075 0 0 1 4.24 0l2.871 2.887.888-.888a3.008 3.008 0 0 1 4.242 0L22 15.86V5a3.009 3.009 0 0 0-3-3z"></path><path opacity="1" d="M10.12 9.98a3.075 3.075 0 0 0-4.24 0L2 13.86V19a3.009 3.009 0 0 0 3 3h14c.815 0 1.595-.333 2.16-.92L10.12 9.98z"></path><path opacity="0.1" d="m22 15.858-3.879-3.879a3.008 3.008 0 0 0-4.242 0l-.888.888 8.165 8.209c.542-.555.845-1.3.844-2.076v-3.142z"></path></svg>
 												<svg xmlns="http://www.w3.org/2000/svg" style="height: 38px; fill: rgb(245, 184, 73)" v-else-if="type === 'docs'" class="svg-warning" viewBox="0 0 24 24"><path opacity="0.3" d="m20 9-7-7H7a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3Z"></path><path opacity="1" d="M20 9h-5a2 2 0 0 1-2-2V2zm-5 9H9a1 1 0 0 1 0-2h6a1 1 0 0 1 0 2zm0-4H9a1 1 0 0 1 0-2h6a1 1 0 0 1 0 2zm-5-4H9a1 1 0 0 1 0-2h1a1 1 0 0 1 0 2z"></path></svg>
@@ -124,312 +130,56 @@ class="dropdown-item d-sm-none d-block" href="#" data-bs-toggle="modal"
 												<svg xmlns="http://www.w3.org/2000/svg" style="height: 38px; fill: rgb(73, 182, 245)" v-else-if="type === 'audios'" enable-background="new 0 0 24 24" viewBox="0 0 24 24"><path opacity="0.3" d="M6 21H3a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h3a3.003 3.003 0 0 1 3 3v2a3.003 3.003 0 0 1-3 3zm15 0h-3a3.003 3.003 0 0 1-3-3v-2a3.003 3.003 0 0 1 3-3h3a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1z"></path><path opacity="1" d="M12 3C6.477 3 2 7.477 2 13v1a1 1 0 0 1 1-1h1a8 8 0 0 1 16 0h1a1 1 0 0 1 1 1v-1c0-5.523-4.477-10-10-10z"></path></svg>
 												<div class="my-1"><h5>{{ $t(`type_media.${type}`) }}</h5></div>
 												<div class="d-flex justify-content-between mb-50">
-													<span class="text-truncate">35GB Used</span>
-													<small class="text-muted">50GB</small>
+													<span class="text-truncate">{{ humanFileSize(size) }}</span>
+													<!-- <small class="text-muted">50GB</small> -->
 												</div>
 												<b-progress class="mb-0" value="70" style="height: 10px" />
 											</b-card>
 										</b-col>
 									</b-row>
 								</div>
-							
-							<!-- Folders Container Starts -->
-							<div class="view-container">
-								<h6 class="files-section-title mt-25 mb-75">Folders</h6>
-								<div class="files-header">
-								<h6 class="fw-bold mb-0">Filename</h6>
-								<div>
-									<h6 class="fw-bold file-item-size d-inline-block mb-0">Size</h6>
-									<h6 class="fw-bold file-last-modified d-inline-block mb-0">Last modified</h6>
-									<h6 class="fw-bold d-inline-block me-1 mb-0">Actions</h6>
-								</div>
-								</div>
-								<div class="card file-manager-item folder level-up">
-								<div class="card-img-top file-logo-wrapper">
-									<div class="d-flex align-items-center justify-content-center w-100">
-									<i data-feather="arrow-up"></i>
+								
+								<div class="view-container">
+									<div v-for="ressource in items" :key="ressource.id" class="card file-manager-item file">
+										<div class="form-check">
+											<input type="checkbox" class="form-check-input" :id="`customCheck${ressource.id}`" />
+											<label class="form-check-label" :for="`customCheck${ressource.id}`"></label>
+										</div>
+										<div class="card-img-top file-logo-wrapper">
+											<div class="dropdown float-end">
+												<app-icon name="more-vertical" class="toggle-dropdown mt-n25" data-bs-toggle="dropdown" />
+												<div class="dropdown-menu dropdown-menu-end file-dropdown">
+													<a class="dropdown-item" href="#" @click.prevent="showDetails(ressource)">
+													  	<app-icon name="info" class="align-middle me-50" />
+													  	<span class="align-middle">Info</span>
+													</a>
+													<a class="dropdown-item text-danger" href="#" @click.prevent="deleteRessource(ressource)">
+													  	<app-icon name="trash" class="align-middle me-50" />
+													  	<span class="align-middle">{{ $t('action.supprimer') }}</span>
+													</a>
+												</div>
+											</div>
+											<div class="d-flex align-items-center justify-content-center w-100">
+												<a :href="`#${ressource.nom}`" @click.prevent="showDetails(ressource)"><img :src="$asset(`img/icons/${ressource.ext}.png`)" :alt="ressource.ext" height="35" /></a>
+											</div>
+										</div>
+										<div class="card-body">
+											<div class="content-wrapper">
+												<p class="card-text file-name mb-0"><a :href="`#${ressource.nom}`" @click.prevent="showDetails(ressource)">{{ ressource.nom }}</a></p>
+												<p class="card-text file-size mb-0">{{ ressource.sizeText }}</p>
+												<p class="card-text file-date">utilisé dans <b>3</b> parcours</p>
+											</div>
+											<small class="file-accessed text-muted"><b>3</b> parcours</small>
+										</div>
+									</div>
+									
+									<div class="d-none flex-grow-1 align-items-center no-result mb-3">
+										<i data-feather="alert-circle" class="me-50"></i>
+										No Results
 									</div>
 								</div>
-								<div class="card-body ps-2 pt-0 pb-1">
-									<div class="content-wrapper">
-									<p class="card-text file-name mb-0">...</p>
-									</div>
-								</div>
-								</div>
-								<div class="card file-manager-item folder">
-								<div class="form-check">
-									<input type="checkbox" class="form-check-input" id="customCheck1" />
-									<label class="form-check-label" for="customCheck1"></label>
-								</div>
-								<div class="card-img-top file-logo-wrapper">
-									<div class="dropdown float-end">
-									<i data-feather="more-vertical" class="toggle-dropdown mt-n25"></i>
-									</div>
-									<div class="d-flex align-items-center justify-content-center w-100">
-									<i data-feather="folder"></i>
-									</div>
-								</div>
-								<div class="card-body">
-									<div class="content-wrapper">
-									<p class="card-text file-name mb-0">Projects</p>
-									<p class="card-text file-size mb-0">2gb</p>
-									<p class="card-text file-date">01 may 2019</p>
-									</div>
-									<small class="file-accessed text-muted">Last accessed: 21 hours ago</small>
-								</div>
-								</div>
-								<div class="card file-manager-item folder">
-								<div class="form-check">
-									<input type="checkbox" class="form-check-input" id="customCheck2" />
-									<label class="form-check-label" for="customCheck2"></label>
-								</div>
-								<div class="card-img-top file-logo-wrapper">
-									<div class="dropdown float-end">
-									<i data-feather="more-vertical" class="toggle-dropdown mt-n25"></i>
-									</div>
-									<div class="d-flex align-items-center justify-content-center w-100">
-									<i data-feather="folder"></i>
-									</div>
-								</div>
-								<div class="card-body">
-									<div class="content-wrapper">
-									<p class="card-text file-name mb-0">Design</p>
-									<p class="card-text file-size mb-0">500mb</p>
-									<p class="card-text file-date">05 may 2019</p>
-									</div>
-									<small class="file-accessed text-muted">Last accessed: 18 hours ago</small>
-								</div>
-								</div>
-								<div class="card file-manager-item folder">
-								<div class="form-check">
-									<input type="checkbox" class="form-check-input" id="customCheck3" />
-									<label class="form-check-label" for="customCheck3"></label>
-								</div>
-								<div class="card-img-top file-logo-wrapper">
-									<div class="dropdown float-end">
-									<i data-feather="more-vertical" class="toggle-dropdown mt-n25"></i>
-									</div>
-									<div class="d-flex align-items-center justify-content-center w-100">
-									<i data-feather="folder"></i>
-									</div>
-								</div>
-								<div class="card-body">
-									<div class="content-wrapper">
-									<p class="card-text file-name mb-0">UI Kit</p>
-									<p class="card-text file-size mb-0">200mb</p>
-									<p class="card-text file-date">01 may 2019</p>
-									</div>
-									<small class="file-accessed text-muted">Last accessed: 2 days ago</small>
-								</div>
-								</div>
-								<div class="card file-manager-item folder">
-								<div class="form-check">
-									<input type="checkbox" class="form-check-input" id="customCheck4" />
-									<label class="form-check-label" for="customCheck4"></label>
-								</div>
-								<div class="card-img-top file-logo-wrapper">
-									<div class="dropdown float-end">
-									<i data-feather="more-vertical" class="toggle-dropdown mt-n25"></i>
-									</div>
-									<div class="d-flex align-items-center justify-content-center w-100">
-									<i data-feather="folder"></i>
-									</div>
-								</div>
-								<div class="card-body">
-									<div class="content-wrapper">
-									<p class="card-text file-name mb-0">Documents</p>
-									<p class="card-text file-size mb-0">50.3mb</p>
-									<p class="card-text file-date">10 may 2019</p>
-									</div>
-									<small class="file-accessed text-muted">Last accessed: 6 days ago</small>
-								</div>
-								</div>
-								<div class="card file-manager-item folder">
-								<div class="form-check">
-									<input type="checkbox" class="form-check-input" id="customCheck5" />
-									<label class="form-check-label" for="customCheck5"></label>
-								</div>
-								<div class="card-img-top file-logo-wrapper">
-									<div class="dropdown float-end">
-									<i data-feather="more-vertical" class="toggle-dropdown mt-n25"></i>
-									</div>
-									<div class="d-flex align-items-center justify-content-center w-100">
-									<i data-feather="folder"></i>
-									</div>
-								</div>
-								<div class="card-body">
-									<div class="content-wrapper">
-									<p class="card-text file-name mb-0">Videos</p>
-									<p class="card-text file-size mb-0">354mb</p>
-									<p class="card-text file-date">08 may 2019</p>
-									</div>
-									<small class="file-accessed text-muted">Last accessed: 8 days ago</small>
-								</div>
-								</div>
-								<div class="card file-manager-item folder">
-								<div class="form-check">
-									<input type="checkbox" class="form-check-input" id="customCheck6" />
-									<label class="form-check-label" for="customCheck6"></label>
-								</div>
-								<div class="card-img-top file-logo-wrapper">
-									<div class="dropdown float-end">
-									<i data-feather="more-vertical" class="toggle-dropdown mt-n25"></i>
-									</div>
-									<div class="d-flex align-items-center justify-content-center w-100">
-									<i data-feather="folder"></i>
-									</div>
-								</div>
-								<div class="card-body">
-									<div class="content-wrapper">
-									<p class="card-text file-name mb-0">Styles</p>
-									<p class="card-text file-size mb-0">32.2mb</p>
-									<p class="card-text file-date">05 may 2019</p>
-									</div>
-									<small class="file-accessed text-muted">Last accessed: 2 months ago</small>
-								</div>
-								</div>
-								<div class="d-none flex-grow-1 align-items-center no-result mb-3">
-								<i data-feather="alert-circle" class="me-50"></i>
-								No Results
-								</div>
-							</div>
-							<!-- /Folders Container Ends -->
-			
-							<!-- Files Container Starts -->
-							<div class="view-container">
-								<h6 class="files-section-title mt-2 mb-75">Files</h6>
-								<div class="card file-manager-item file">
-								<div class="form-check">
-									<input type="checkbox" class="form-check-input" id="customCheck7" />
-									<label class="form-check-label" for="customCheck7"></label>
-								</div>
-								<div class="card-img-top file-logo-wrapper">
-									<div class="dropdown float-end">
-									<i data-feather="more-vertical" class="toggle-dropdown mt-n25"></i>
-									</div>
-									<div class="d-flex align-items-center justify-content-center w-100">
-									<img src="../../../app-assets/images/icons/jpg.png" alt="file-icon" height="35" />
-									</div>
-								</div>
-								<div class="card-body">
-									<div class="content-wrapper">
-									<p class="card-text file-name mb-0">Profile.jpg</p>
-									<p class="card-text file-size mb-0">12.6mb</p>
-									<p class="card-text file-date">23 may 2019</p>
-									</div>
-									<small class="file-accessed text-muted">Last accessed: 3 hours ago</small>
-								</div>
-								</div>
-								<div class="card file-manager-item file">
-								<div class="form-check">
-									<input type="checkbox" class="form-check-input" id="customCheck8" />
-									<label class="form-check-label" for="customCheck8"></label>
-								</div>
-								<div class="card-img-top file-logo-wrapper">
-									<div class="dropdown float-end">
-									<i data-feather="more-vertical" class="toggle-dropdown mt-n25"></i>
-									</div>
-									<div class="d-flex align-items-center justify-content-center w-100">
-									<img src="../../../app-assets/images/icons/doc.png" alt="file-icon" height="35" />
-									</div>
-								</div>
-								<div class="card-body">
-									<div class="content-wrapper">
-									<p class="card-text file-name mb-0">account.doc</p>
-									<p class="card-text file-size mb-0">82kb</p>
-									<p class="card-text file-date">25 may 2019</p>
-									</div>
-									<small class="file-accessed text-muted">Last accessed: 23 minutes ago</small>
-								</div>
-								</div>
-								<div class="card file-manager-item file">
-								<div class="form-check">
-									<input type="checkbox" class="form-check-input" id="customCheck9" />
-									<label class="form-check-label" for="customCheck9"></label>
-								</div>
-								<div class="card-img-top file-logo-wrapper">
-									<div class="dropdown float-end">
-									<i data-feather="more-vertical" class="toggle-dropdown mt-n25"></i>
-									</div>
-									<div class="d-flex align-items-center justify-content-center w-100">
-									<img src="../../../app-assets/images/icons/txt.png" alt="file-icon" height="35" />
-									</div>
-								</div>
-								<div class="card-body">
-									<div class="content-wrapper">
-									<p class="card-text file-name mb-0">notes.txt</p>
-									<p class="card-text file-size mb-0">54kb</p>
-									<p class="card-text file-date">01 may 2019</p>
-									</div>
-									<small class="file-accessed text-muted">Last accessed: 43 minutes ago</small>
-								</div>
-								</div>
-								<div class="card file-manager-item file">
-								<div class="form-check">
-									<input type="checkbox" class="form-check-input" id="customCheck10" />
-									<label class="form-check-label" for="customCheck10"></label>
-								</div>
-								<div class="card-img-top file-logo-wrapper">
-									<div class="dropdown float-end">
-									<i data-feather="more-vertical" class="toggle-dropdown mt-n25"></i>
-									</div>
-									<div class="d-flex align-items-center justify-content-center w-100">
-									<img src="../../../app-assets/images/icons/json.png" alt="file-icon" height="35" />
-									</div>
-								</div>
-								<div class="card-body">
-									<div class="content-wrapper">
-									<p class="card-text file-name mb-0">users.json</p>
-									<p class="card-text file-size mb-0">200kb</p>
-									<p class="card-text file-date">12 may 2019</p>
-									</div>
-									<small class="file-accessed text-muted">Last accessed: 1 hour ago</small>
-								</div>
-								</div>
-								<div class="d-none flex-grow-1 align-items-center no-result mb-3">
-								<i data-feather="alert-circle" class="me-50"></i>
-								No Results
-								</div>
-							</div>
-							<!-- /Files Container Ends -->
 							</div>
 						</div>
-	  
-	  
-				  <!-- File Dropdown Starts-->
-				  <div class="dropdown-menu dropdown-menu-end file-dropdown">
-					<a class="dropdown-item" href="#">
-					  <i data-feather="eye" class="align-middle me-50"></i>
-					  <span class="align-middle">Preview</span>
-					</a>
-					<a class="dropdown-item" href="#">
-					  <i data-feather="user-plus" class="align-middle me-50"></i>
-					  <span class="align-middle">Share</span>
-					</a>
-					<a class="dropdown-item" href="#">
-					  <i data-feather="copy" class="align-middle me-50"></i>
-					  <span class="align-middle">Make a copy</span>
-					</a>
-					<div class="dropdown-divider"></div>
-					<a class="dropdown-item" href="#">
-					  <i data-feather="edit" class="align-middle me-50"></i>
-					  <span class="align-middle">Rename</span>
-					</a>
-					<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#app-file-manager-info-sidebar">
-					  <i data-feather="info" class="align-middle me-50"></i>
-					  <span class="align-middle">Info</span>
-					</a>
-					<div class="dropdown-divider"></div>
-					<a class="dropdown-item" href="#">
-					  <i data-feather="trash" class="align-middle me-50"></i>
-					  <span class="align-middle">Delete</span>
-					</a>
-					<a class="dropdown-item" href="#">
-					  <i data-feather="alert-circle" class="align-middle me-50"></i>
-					  <span class="align-middle">Report</span>
-					</a>
-				  </div>
-				  <!-- /File Dropdown Ends -->
 	  
 				</div>
 			  </div>
@@ -437,45 +187,110 @@ class="dropdown-item d-sm-none d-block" href="#" data-bs-toggle="modal"
 		  </div>
 	</page-wrapper>
 	
+	
+	<b-modal v-model="openDetails" id="app-file-manager-info-sidebar" class="modal-slide-in" hide-footer no-close-on-esc dialog-class="sidebar-lg" content-class="p-0" header-class="d-flex align-items-center justify-content-between mb-1 p-1" body-class="flex-grow-1 pb-sm-0 pb-1" @close="item = null">
+		<template #header="{ close }">
+			<h5 class="modal-title text-truncate">{{ (item || {}).nom }}</h5>
+			<div class="d-flex ms-1">
+				<app-button size="sm" variant="flat-secondary" icon="more-horizontal" text="" class="waves-effect waves-float waves-light" data-bs-toggle="dropdown" />
+				<div class="dropdown-menu dropdown-menu-end file-dropdown">
+					<a class="dropdown-item" href="#">
+						<app-icon name="plus" class="align-middle me-50" />
+						<span class="align-middle">{{ $t('attribuer_a_un_enseignant') }}</span>
+					</a>
+					<div class="dropdown-divider"></div>
+					<a class="dropdown-item" href="#">
+						<app-icon name="edit" class="align-middle me-50" />
+						<span class="align-middle">{{ $t('action.renommer') }}</span>
+					</a>
+					<a class="dropdown-item text-danger" href="#" @click.prevent="deleteRessource(item)">
+						<app-icon name="trash" class="align-middle me-50" />
+						<span class="align-middle">{{ $t('action.supprimer') }}</span>
+					</a>
+				</div>
+				<app-button size="sm" variant="flat-secondary" icon="x" text="" @click.prevent="close" />
+			</div>
+		</template>
+		<details-ressource v-if="openDetails" :ressource="item" />
+	</b-modal>
+
 	<app-modal id="add-ressources-modal" v-model="openDialog" title="Nouvelles ressources" size="lg" no-footer>
-		<form-ressource v-if="openDialog" @reset="openDialog = false" @completed="refresh" />
+		<form-ressource v-if="openDialog" @reset="openDialog = false" @completed="closeDialog" />
 	</app-modal>
 </template>
 
 <script setup>
 import '@/assets/css/file-manager.min.css'
 
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 
+import DetailsRessource from './Details.vue'
 import FormRessource from './Form.vue'
 
+import { $alert, $confirm, $toast } from '@/utils/alert'
 import { $t } from '@/plugins/i18n'
 import { handleSearch } from '@/utils/inertia'
+import { humanFileSize } from '@/utils/helpers'
+import { Inertia } from '@inertiajs/inertia'
 
 defineOptions({ name: 'AdminListRessources' })
 
-defineProps({
-  	ressources: { required: true, type: Object },
+const props = defineProps({
+  	ressources: { required: true, type: Array },
 })
 
 const openDialog = ref(false)
+const openDetails = ref(false)
+const item = ref(null) // Element en cours de manipulation (notament pour l'edition)
 
 const filter = reactive({
 	limit: 20,
 	search: '',
+	type: 'all',
 })
 
-const mediaTypes = [
+const items = computed(() => props.ressources.filter(({ type }) => {
+	return filter.type === 'all' ? true : filter.type === `${type}s`
+}))
+
+const mediaTypes = computed(() => [ 
 	{ icon: 'file-text', type: 'docs' }, 
 	{ icon: 'image', type: 'images' }, 
 	{ icon: 'video', type: 'videos' }, 
 	{ icon: 'music', type: 'audios' },
-]
+].map(elt => ({ 
+	...elt, 
+	size: props.ressources.filter(({ type }) => elt.type === `${type}s`).reduce((acc, { size }) => acc + size, 0),
+	total: props.ressources.filter(({ type }) => elt.type === `${type}s`).length,
+})))
 
 
 onMounted(() => {
 	initJqueryPlugins()
 })
+
+function showDetails(ressource) {
+	openDetails.value = true
+	item.value = ressource
+}
+
+function deleteRessource(ressource) {
+	$confirm($t('voulez_vous_vraiment_supprimer_la_ressource_x', [ressource.nom]), () => {
+		// eslint-disable-next-line no-undef
+		Inertia.post(route('admin.ressources.delete', ressource.id), {}, {
+			onError(errors) {
+				if (errors.default) {
+					$alert.error(errors.default)
+				} else {
+					$alert.error($t('une_erreur_s_est_produite'))
+				}
+			},
+			onSuccess({ props }) {
+				$toast.success(props.flash.success)
+			},
+		})
+	}, { showLoaderOnConfirm: true })
+}
 
 function findItems(limit){
 	handleSearch('admin.ressources.index', {

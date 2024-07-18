@@ -2,6 +2,7 @@
 	"Affichage de XY sur Z elements": "Affichage de {x} à {y} sur {z} éléments",
 	"ajouter_un_apprenant": "Ajouter un apprenant",
 	"ajouter_un_enseignant": "Ajouter un enseignant",
+	"attribuer_a_un_enseignant": "Attribuer à un enseignant",
 	"apprenants": "Apprenants",
 	"assigner_une_formation": "Assigner une formation",
 	"aucun_apprenant_enregistre": "Aucun apprenant enregistré",
@@ -11,6 +12,7 @@
 		"ajouter": "Ajouter",
 		"editer": "Editer",
 		"modifier": "Modifier",
+		"renommer": "Renommer",
 		"supprimer": "Supprimer",
 		"valider": "Valider"
 	},
@@ -55,6 +57,11 @@
 		"dispensees": "Formations dispensées",
 		"suivies": "Formations suivies"
 	},
+	"fichier": {
+		"taille": "Taille",
+		"type": "Type"
+	},
+	"informations": "Informations",
 	"infos_de_base": "Informations de base",
 	"lieu_residence": {
 		"title": "Lieu de résidence",
@@ -72,6 +79,9 @@
 		"cni": "Numéro de CNI",
 		"passport": "Numéro de passport",
 		"placeholder": "Entrez le numéro de la pièce d'identité"
+	},
+	"parcours": {
+		"title": "Parcours"
 	},
 	"paiements": {
 		"title": "Paiements",
@@ -118,11 +128,18 @@
 		"apprenant": "Numéro de téléphone de l'apprenant",
 		"enseignant": "Numéro de téléphone de l'enseignant"
 	},
+	"timestamps": {
+		"added_at": "Ajouté le",
+		"created_at": "Créée le",
+		"updated_at": "Modifié le"
+	},
 	"type_media": {
+		"all": "Tous",
 		"audios": "Audios",
 		"docs": "Documents",
 		"images": "Images",
 		"videos": "Vidéos"
 	},
-	"une_erreur_s_est_produite": "Une erreur s'est produite"
+	"une_erreur_s_est_produite": "Une erreur s'est produite",
+	"voulez_vous_vraiment_supprimer_la_ressource_x": "Voulez-vous vraiment supprimer la ressource `{0}` ?"
 }

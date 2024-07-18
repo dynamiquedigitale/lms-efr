@@ -50,8 +50,11 @@ const alertInfo = (message, options = {}) => {
 	)
 }
 
-export const confirm = (message, callback) => {
+export const confirm = (message, callback, options = {}) => {
 	return Swal.fire({
+		...options,
+		allowEscapeKey: false,
+		allowOutsideClick: false,
 		buttonsStyling: true,
 		cancelButtonText: $i18n.t('Non'),
 		confirmButtonText: $i18n.t('Oui'),
@@ -64,7 +67,7 @@ export const confirm = (message, callback) => {
 		showCancelButton: true,
 	}).then((result) => {
 		if (result.isConfirmed) {
-			callback()
+			callback(result)
 		} else if (result.isDenied) {
 			Swal.close()
 		}

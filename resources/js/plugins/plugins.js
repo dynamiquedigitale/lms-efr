@@ -10,7 +10,7 @@ import { createBootstrap } from 'bootstrap-vue-next'
 import 'vue-select/dist/vue-select.css'
 import vSelect from 'vue-select'
 
-InertiaProgress.init({ color: '#4B5563' })
+InertiaProgress.init({ color: '#4B5563', showSpinner: true })
 
 export default function(app) {
 	app.component('Head', Head)

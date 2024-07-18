@@ -15,7 +15,7 @@ class CreateTableRessources extends Migration
             $table->id();
 			$table->string('nom');
 			$table->enum('type', ['image', 'video', 'audio', 'doc', 'other']);
-			$table->string('url');
+			$table->string('path');
 			$table->string('description');
 			$table->string('ext', 8);
 			$table->string('mime', 128);

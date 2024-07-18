@@ -5,6 +5,7 @@ namespace App\Admin\Controllers;
 use App\Controllers\AppController;
 use App\Entities\Ressource;
 use BlitzPHP\Exceptions\ValidationException;
+use BlitzPHP\Facades\Storage;
 use BlitzPHP\Filesystem\Files\UploadedFile;
 use BlitzPHP\Validation\Rule;
 
@@ -12,7 +13,15 @@ class RessourcesController extends AppController
 {
 	public function index()
 	{
-		return inertia('Admin/Ressources/Index');
+		$search   = $this->request->search;
+
+		$data['ressources'] = Ressource::when($search, function ($query) use ($search) {
+				$query->whereLike("nom", $search);
+			})
+            ->latest()
+			->all();
+
+		return inertia('Admin/Ressources/Index', $data);
 	}
 
 	public function create()
@@ -25,7 +34,7 @@ class RessourcesController extends AppController
 				'files.*.mime'     => ['nullable', 'string'],
 				'files.*.size'     => ['nullable', 'integer'],
 				'files.*.sizeText' => ['nullable', 'string'],
-				'files.*.upload'   => ['required', Rule::file()->types(['jpg', 'jpeg', 'png', 'mp4', 'avi', 'mp3', 'pdf',  'txt', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'])]
+				'files.*.upload'   => ['required', Rule::file()->extensions(['jpg', 'jpeg', 'png', 'mp4', 'avi', 'mp3', 'pdf',  'txt', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'])]
             ]);
         }
         catch (ValidationException $e) {
@@ -39,7 +48,7 @@ class RessourcesController extends AppController
 			Ressource::create([
 				'nom'      => pathinfo($post['files'][$i]['nom'], PATHINFO_FILENAME),
 				'type'     => $this->retrieveTypeFromMime($file, $post['files'][$i]['ext'] ?? null),
-				'url'      => $file->store('ressources'),
+				'path'     => $file->store('ressources'),
 				'ext'      => $post['files'][$i]['ext'] ?? $file->clientExtension(),
 				'mime'     => $post['files'][$i]['mime'] ?? $file->getMimeType(),
 				'size'     => $post['files'][$i]['size'] ?? ($file->getSize() ?? 0),
@@ -48,6 +57,20 @@ class RessourcesController extends AppController
 		}
 
 		return back()->with('success', __('Ressource ajoutée avec succès'));
+	}
+
+	public function delete($id = null)
+	{
+		if (empty($ressource = Ressource::find($id))) {
+			return back()->withErrors(__('Ressource non reconnue'));
+		}
+
+		// on supprime la ressource au prof et au cours
+
+		Storage::delete($ressource->path);
+		$ressource->delete();
+
+		return back()->with('success', __('Ressource supprimée avec succès'));
 	}
 
 

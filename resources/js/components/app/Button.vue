@@ -47,10 +47,11 @@ const allprops = computed(() => {
     delete _props.text
     delete _props.indicator
     delete _props.loading
-    delete _props.icon
     delete _props.iconClass
     delete _props.iconEnd
     delete _props.tooltip
+
+	_props.icon = props.icon !== '' && props.text === ''
 
     return _props
 })

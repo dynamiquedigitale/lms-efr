@@ -21,6 +21,7 @@ if (!AVAILABLE_LOCALES.includes(locale)) {
 dayjs.locale(locale)
 
 export const $days = dayjs
+export const $dayjs = dayjs
 
 export default function(app) {
 	app.use({
