@@ -33,10 +33,10 @@ const modelValue = defineModel({ type: Boolean })
 const emit = defineEmits(['close', 'ok', 'update:modelValue'])
 
 const props = defineProps({
-	buttonSize: { default: 'sm', type: String },
+	buttonSize: { default: 'md', type: String },
 	cancelOnly: { default: false, type: Boolean },
 	cancelTitle: { default: null, type: String },
-	cancelVariant: { default: 'secondary', type: String },
+	cancelVariant: { default: 'danger', type: String },
 	disabled: { default: false, type: Boolean },
 	fullscreen: { default: false, type: Boolean },
 	id: { required: true, type: String },

@@ -153,6 +153,10 @@ class="dropdown-item d-sm-none d-block" href="#" data-bs-toggle="modal"
 													  	<app-icon name="info" class="align-middle me-50" />
 													  	<span class="align-middle">Info</span>
 													</a>
+													<a class="dropdown-item" href="#" @click.prevent="renameRessource(ressource)">
+														<app-icon name="edit" class="align-middle me-50" />
+														<span class="align-middle">{{ $t('action.renommer') }}</span>
+													</a>
 													<a class="dropdown-item text-danger" href="#" @click.prevent="deleteRessource(ressource)">
 													  	<app-icon name="trash" class="align-middle me-50" />
 													  	<span class="align-middle">{{ $t('action.supprimer') }}</span>
@@ -199,7 +203,7 @@ class="dropdown-item d-sm-none d-block" href="#" data-bs-toggle="modal"
 						<span class="align-middle">{{ $t('attribuer_a_un_enseignant') }}</span>
 					</a>
 					<div class="dropdown-divider"></div>
-					<a class="dropdown-item" href="#">
+					<a class="dropdown-item" href="#" @click.prevent="renameRessource(item)">
 						<app-icon name="edit" class="align-middle me-50" />
 						<span class="align-middle">{{ $t('action.renommer') }}</span>
 					</a>
@@ -214,8 +218,13 @@ class="dropdown-item d-sm-none d-block" href="#" data-bs-toggle="modal"
 		<details-ressource v-if="openDetails" :ressource="item" />
 	</b-modal>
 
-	<app-modal id="add-ressources-modal" v-model="openDialog" title="Nouvelles ressources" size="lg" no-footer>
+	<app-modal id="add-ressources-modal" v-model="openDialog" :title="$t('ressources.nouvelles')" size="lg" no-footer>
 		<form-ressource v-if="openDialog" @reset="openDialog = false" @completed="closeDialog" />
+	</app-modal>
+
+	<app-modal id="edit-ressources-modal" v-model="openEdit" :title="$t('edition_de_la_ressource')" size="sm" @ok.prevent="processRename" :submitted="submitted && openEdit" @close="submitted = false">
+		<app-form-group :label="$t('ressources.libelle')" v-model="form.nom" required class="mb-1" />
+		<app-form-group :label="$t('description')" v-model="form.description" type="textarea" rows="8" no-resize />
 	</app-modal>
 </template>
 
@@ -241,7 +250,10 @@ const props = defineProps({
 
 const openDialog = ref(false)
 const openDetails = ref(false)
-const item = ref(null) // Element en cours de manipulation (notament pour l'edition)
+const openEdit = ref(false)
+const submitted = ref(false)
+const item = ref(null) // Element en cours de manipulation (notament pour les details)
+const form = ref({}) // Element en cours d'edition
 
 const filter = reactive({
 	limit: 20,
@@ -272,6 +284,35 @@ onMounted(() => {
 function showDetails(ressource) {
 	openDetails.value = true
 	item.value = ressource
+}
+
+function renameRessource(ressource) {
+	form.value = { ...ressource }
+	openEdit.value = true
+}
+function processRename() {
+	// eslint-disable-next-line no-undef
+	Inertia.post(route('admin.ressources.update', form.value.id), { ...form.value }, {
+		onError(errors) {
+			if (errors.default) {
+				$alert.error(errors.default)
+			} else {
+				$alert.error($t('une_erreur_s_est_produite'))
+			}
+		},
+		onFinish() {
+			submitted.value = false
+		},
+		onStart() {
+			submitted.value = true		
+		},
+		onSuccess({ props }) {
+			$toast.success(props.flash.success)
+			openEdit.value = false
+			item.value = { ...form.value }
+			form.value = {}
+		},
+	})
 }
 
 function deleteRessource(ressource) {

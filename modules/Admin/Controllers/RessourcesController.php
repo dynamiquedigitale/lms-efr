@@ -73,6 +73,27 @@ class RessourcesController extends AppController
 		return back()->with('success', __('Ressource supprimée avec succès'));
 	}
 
+	public function update($id = null)
+	{
+		try {
+            $post = $this->validate([
+				'nom'         => ['required', 'string', 'max:255'],
+				'description' => ['nullable', 'string', 'max:255'],
+			]);
+        }
+        catch (ValidationException $e) {
+            return back()->withErrors($e->getErrors()?->firstOfAll() ?: $e->getMessage());
+		}
+
+		if (empty($ressource = Ressource::find($id))) {
+			return back()->withErrors(__('Ressource non reconnue'));
+		}
+
+		$ressource->update($post->all());
+
+		return back()->with('success', __('Ressource éditée avec succès'));
+	}
+
 
 	private function retrieveTypeFromMime(?UploadedFile $file, ?string $ext = null): string
     {

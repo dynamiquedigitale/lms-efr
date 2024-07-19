@@ -18,6 +18,7 @@
 	},
 	"autres_infos": "Autres informations",
 	"date_naissance": "Date de naissance",
+	"description": "Description",
 	"details": "Details",
 	"diplome": {
 		"title": "Diplôme",
@@ -39,6 +40,7 @@
 	},
 	"edition_de_l_apprenant": "Edition de l'apprenant",
 	"edition_de_l_enseignant": "Edition de l'enseignant",
+	"edition_de_la_ressource": "Edition de la ressource",
 	"email": {
 		"title": "Email",
 		"apprenant": "Adresse email de l'apprenant",
@@ -100,8 +102,10 @@
 	"rechercher": "Rechercher",
 	"ressources": {
 		"title": "Ressources",
+		"libelle": "Libellé de la ressource",
 		"affectees": "Ressources affectées",
 		"nouvelle": "Nouvelle ressource",
+		"nouvelles": "Nouvelles ressources",
 		"supports": "Supports de formation"
 	},
 	"sexe": {

@@ -20,6 +20,10 @@
 					<p class="fw-bold">{{ $dayjs(ressource.created_at).format('DD MMMM YYYY') }}</p>
 				</li>
 			</ul>
+			<div class="py-1 bg-light rounded-3" v-if="ressource.description !== '' && ressource.description !== null">
+				<div class="container-fluid">{{ ressource.description }}</div>
+			</div>
+			
 		</b-tab>
 		<b-tab>
 			<template #title><app-icon name="briefcase" /><span class="align-middle ms-25">{{ $t('parcours.title') }}</span></template>
