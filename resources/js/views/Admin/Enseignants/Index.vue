@@ -37,7 +37,7 @@
 	</page-wrapper>
 	
 	<app-modal id="user-dialog" v-model="openDialog" :title="modalTitle" :size="modalSize" no-footer @close="onCloseDialog">
-		<form-enseignant v-if="openDialog && action != 'details'" :action="action" :item="item" @reset="closeDialog" @completed="refresh" />
+		<form-enseignant v-if="openDialog && action != 'details'" :action="action" :item="item" @reset="closeDialog" @completed="closeDialog" />
 		<details-enseignant v-else-if="openDialog && action == 'details'" :enseignant="item" />
 	</app-modal>
 </template>

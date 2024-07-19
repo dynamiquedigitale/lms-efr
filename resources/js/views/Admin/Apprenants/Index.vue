@@ -40,7 +40,7 @@
 	</page-wrapper>
 	
 	<app-modal id="user-dialog" v-model="openDialog" :title="modalTitle" :size="modalSize" no-footer @close="onCloseDialog">
-		<form-apprenant v-if="openDialog && action != 'details'" :action="action" :item="item" @reset="closeDialog" @completed="refresh" />
+		<form-apprenant v-if="openDialog && action != 'details'" :action="action" :item="item" @reset="closeDialog" @completed="closeDialog" />
 		<details-apprenant v-else-if="openDialog && action == 'details'" :apprenant="item" />
 	</app-modal>
 </template>
