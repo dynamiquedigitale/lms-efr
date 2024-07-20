@@ -83,10 +83,10 @@ class UserService
 
 		$post =  $request->validate($rules);
 
-		if ($post->has('adresse')) {
+		if (!empty($post['adresse'])) {
 			$post['adresse'] = json_decode($post['adresse'], true);
 		}
-		if ($post->has('document')) {
+		if (!empty($post['document'])) {
 			$post['documents'] = [[
 				'type' => $post['piece_identite'],
 				'path' => $request->file('document')->store('documents')
