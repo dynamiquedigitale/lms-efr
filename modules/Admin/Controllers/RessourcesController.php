@@ -6,6 +6,7 @@ use App\Controllers\AppController;
 use App\Entities\Ressource;
 use App\Entities\User;
 use App\Enums\Role;
+use BlitzPHP\Contracts\Http\StatusCode;
 use BlitzPHP\Exceptions\ValidationException;
 use BlitzPHP\Facades\Storage;
 use BlitzPHP\Filesystem\Files\UploadedFile;
@@ -136,6 +137,30 @@ class RessourcesController extends AppController
 		$ressource->enseignants()->syncWithoutDetaching($post['enseignants']);
 
 		return back()->with('success', __('Enseignants ajoutés avec succès'));
+	}
+
+	/**
+	 * Dissocie un enseignant d'une ressource
+	 */
+	public function removeEnseignants($id)
+	{
+		try {
+            $post = $this->validate([
+				'enseignants'   => ['required', 'array'],
+				'enseignants.*' => ['integer', Rule::exists('users', 'id')->where('type', Role::ENSEIGNANT)],
+			]);
+        }
+        catch (ValidationException $e) {
+			return $this->response->json(['errors' => $e->getErrors()?->firstOfAll() ?: $e->getMessage()], StatusCode::BAD_REQUEST);
+		}
+		/** @var Ressource $ressource */
+		if (empty($ressource = Ressource::find($id))) {
+			return $this->response->json(['errors' => ['default' => __('Ressource non reconnue')]], StatusCode::NOT_FOUND);
+		}
+
+		$ressource->enseignants()->detach($post['enseignants']);
+
+		return $this->response->json(['message' => __('Enseignants ajoutés avec succès')]);
 	}
 
 

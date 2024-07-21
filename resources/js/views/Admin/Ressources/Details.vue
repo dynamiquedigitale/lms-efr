@@ -47,7 +47,7 @@
 								  	</div>
 								</div>
 								<div class="d-flex align-items-center" style="position: relative;">
-									<app-button size="sm" variant="flat-danger" icon="trash" :text="$t('action.retirer')" tooltip />
+									<app-button size="sm" variant="flat-danger" icon="trash" :text="$t('action.retirer')" tooltip @click.prevent="removeEnseignant(enseignant)" />
 								</div>
 							</div>
 						</b-card>
@@ -56,13 +56,13 @@
 			</b-overlay>
 		</b-tab>
 	</b-tabs>
-
-	{{ tab }}
 </template>
 
 <script setup>
 import { ref, watch } from 'vue'
 
+import { $alert, $confirm } from '@/utils/alert'
+import { $t } from '@/plugins/i18n'
 import RessourceViewer from '@/components/RessourceViewer.vue'
 
 defineOptions({ name: 'DetailsRessource' })
@@ -91,6 +91,22 @@ function getEnseignants() {
 		enseignants.value = response
 		loading.value     = false
 	})
+}
+
+function removeEnseignant(enseignant) {
+	$confirm($t('voulez_vous_vraiment_retirer_la_ressource_X_a_Y', [props.ressource.nom, enseignant.username]), () => {
+		// eslint-disable-next-line no-undef
+		$.post(route('admin.ressources.enseignants', props.ressource.id), { _method: 'DELETE', enseignants: [enseignant.id] }).done(response => {
+			getEnseignants()
+		}).fail(({ responseJSON }) => {
+			const { errors } = responseJSON
+			if (errors.default) {
+				$alert.error(errors.default)
+			} else {
+				$alert.error($t('une_erreur_s_est_produite'))
+			}
+		})
+	}, { showLoaderOnConfirm: true })
 }
 </script>
 

@@ -150,5 +150,6 @@
 	},
 	"une_erreur_s_est_produite": "Une erreur s'est produite",
 	"veuillez_selectionner_les_enseignants_a_qui_vous_souhaiter_attribuer_cette_ressource": "Veuillez sélectionner les enseignants à qui vous souhaiter attribuer cette ressource",
+	"voulez_vous_vraiment_retirer_la_ressource_X_a_Y": "Voulez-vous vraiment retirer la ressource `{0}` à `{1}` ?",
 	"voulez_vous_vraiment_supprimer_la_ressource_x": "Voulez-vous vraiment supprimer la ressource `{0}` ?"
 }
