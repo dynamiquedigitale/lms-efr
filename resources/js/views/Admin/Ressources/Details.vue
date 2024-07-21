@@ -1,5 +1,5 @@
 <template>
-	<b-tabs nav-class="tabs-line flex-nowrap">
+	<b-tabs v-model="tab" nav-class="tabs-line flex-nowrap">
 		<b-tab active>
 			<template #title><app-icon name="file" /><span class="align-middle ms-25">Details</span></template>
 			
@@ -31,12 +31,38 @@
 		</b-tab>
 		<b-tab>
 			<template #title><app-icon name="users" /><span class="align-middle ms-25">{{ $t('enseignants') }}</span></template>
-			<p>I'm a disabled tab!</p>
+			<b-overlay :show="loading" rounded="sm" :opacity="0.95">
+				<app-empty-items v-if="!enseignants.length" :message="$t('aucun_enseignant_affecter_a_cette_ressource')" />
+				<b-row class="">
+					<b-col cols="12" v-for="enseignant in enseignants" :key="enseignant.id">
+						<b-card body-class="p-1" class="mb-1">
+							<div class="d-flex justify-content-between align-items-center">
+								<div class="d-flex flex-row">
+								  	<div class="avatar me-75">
+										<b-img class="rounded" :src="enseignant.avatar" :alt="enseignant.username" height="42" width="42" />
+								  	</div>
+								  	<div class="my-auto">
+										<h6 class="mb-0">{{ enseignant.username }}</h6>
+										<small>{{ enseignant.user_email }}</small>
+								  	</div>
+								</div>
+								<div class="d-flex align-items-center" style="position: relative;">
+									<app-button size="sm" variant="flat-danger" icon="trash" :text="$t('action.retirer')" tooltip />
+								</div>
+							</div>
+						</b-card>
+					</b-col>
+				</b-row>
+			</b-overlay>
 		</b-tab>
 	</b-tabs>
+
+	{{ tab }}
 </template>
 
 <script setup>
+import { ref, watch } from 'vue'
+
 import RessourceViewer from '@/components/RessourceViewer.vue'
 
 defineOptions({ name: 'DetailsRessource' })
@@ -44,6 +70,28 @@ defineOptions({ name: 'DetailsRessource' })
 const props = defineProps({
 	ressource: { required: true, type: Object },
 })
+
+const tab = ref('details')
+const enseignants = ref([])
+
+const loading = ref(false)
+
+watch(tab, (value) => {
+	if (value === 2) {
+		getEnseignants()
+	}
+})
+
+function getEnseignants() {
+	enseignants.value = []
+	loading.value     = true
+
+	// eslint-disable-next-line no-undef
+	$.get(route('admin.ressources.enseignants', props.ressource.id)).done(response => {
+		enseignants.value = response
+		loading.value     = false
+	})
+}
 </script>
 
 <style>

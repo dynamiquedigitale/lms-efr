@@ -4,6 +4,8 @@ namespace App\Admin\Controllers;
 
 use App\Controllers\AppController;
 use App\Entities\Ressource;
+use App\Entities\User;
+use App\Enums\Role;
 use BlitzPHP\Exceptions\ValidationException;
 use BlitzPHP\Facades\Storage;
 use BlitzPHP\Filesystem\Files\UploadedFile;
@@ -92,6 +94,48 @@ class RessourcesController extends AppController
 		$ressource->update($post->all());
 
 		return back()->with('success', __('Ressource éditée avec succès'));
+	}
+
+	/**
+	 * Enseignants affectes ou non a une ressource
+	 * 
+	 * Si le query-params "where-not" existe et vaut "true" alors il s'agira des enseignants qui ne sont pas affectes a la ressources
+	 */
+	public function enseignants($id)
+	{
+		$users = User::enseignants()->withCount('ressources');
+
+		if ($this->request->boolean('where-not')) {
+			$users = $users->whereDoesntHave('ressources', fn($q) => $q->where('ressources.id', $id));
+		} else {
+			$users = $users->whereHas('ressources', fn($q) => $q->where('ressources.id', $id));
+		}
+		
+		return $users->get();
+	}
+
+	/**
+	 * Affecte un/plusieurs enseignants a une ressource
+	 */
+	public function addEnseignants($id)
+	{
+		try {
+            $post = $this->validate([
+				'enseignants'   => ['required', 'array'],
+				'enseignants.*' => ['integer', Rule::exists('users', 'id')->where('type', Role::ENSEIGNANT)],
+			]);
+        }
+        catch (ValidationException $e) {
+            return back()->withErrors($e->getErrors()?->firstOfAll() ?: $e->getMessage());
+		}
+		/** @var Ressource $ressource */
+		if (empty($ressource = Ressource::find($id))) {
+			return back()->withErrors(__('Ressource non reconnue'));
+		}
+
+		$ressource->enseignants()->syncWithoutDetaching($post['enseignants']);
+
+		return back()->with('success', __('Enseignants ajoutés avec succès'));
 	}
 
 

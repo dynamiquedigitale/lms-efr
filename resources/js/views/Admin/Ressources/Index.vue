@@ -198,7 +198,7 @@ class="dropdown-item d-sm-none d-block" href="#" data-bs-toggle="modal"
 			<div class="d-flex ms-1">
 				<app-button size="sm" variant="flat-secondary" icon="more-horizontal" text="" class="waves-effect waves-float waves-light" data-bs-toggle="dropdown" />
 				<div class="dropdown-menu dropdown-menu-end file-dropdown">
-					<a class="dropdown-item" href="#">
+					<a class="dropdown-item" href="#" @click.prevent="addEnseignant(item)">
 						<app-icon name="plus" class="align-middle me-50" />
 						<span class="align-middle">{{ $t('attribuer_a_un_enseignant') }}</span>
 					</a>
@@ -226,6 +226,34 @@ class="dropdown-item d-sm-none d-block" href="#" data-bs-toggle="modal"
 		<app-form-group :label="$t('ressources.libelle')" v-model="form.nom" required class="mb-1" />
 		<app-form-group :label="$t('description')" v-model="form.description" type="textarea" rows="8" no-resize />
 	</app-modal>
+
+	<app-modal id="add-enseignant" v-model="openDialogEnseignant" :title="$t('ressources.attribuer_aux_enseignant', [(item || {}).nom])" size="lg" @ok.prevent="processAddEnseignant" :disabled="!enseignants.length" :submitted="submitted">
+		<b-alert :model-value="true" variant="primary">
+			<div class="alert-body text-center">
+				{{ $t('veuillez_selectionner_les_enseignants_a_qui_vous_souhaiter_attribuer_cette_ressource') }}
+			</div>
+		</b-alert>
+		<b-overlay :show="loading" rounded="sm" :opacity="0.95">
+			<app-empty-items v-if="!enseignants.length" :message="$t('aucun_enseignant_disponible_pour_etre_affecter_a_cette_ressource')" />
+			<b-row class="custom-options-checkable g-1 mt-2">
+				<b-col cols="12" md="4" v-for="enseignant in enseignants" :key="enseignant.id">
+					<input v-model="checkedEnseignants" class="custom-option-item-check" type="checkbox" name="enseignants" :value="enseignant.id" :id="`enseignant${enseignant.id}`" />
+					<label class="custom-option-item p-1" :for="`enseignant${enseignant.id}`">
+						<div class="d-flex align-items-start">
+							<span class="avatar">
+								<b-img class="round" :src="enseignant.avatar" :alt="enseignant.username" height="40" width="40" />
+							</span>
+							<div class="ms-1">
+								<h5 class="mb-0 fw-bolder w-100 d-inline-block">{{ enseignant.username }}</h5>
+								<small class="mb-1 d-inline-block text-muted">{{ enseignant.user_email }}</small>
+								<span class="badge bg-primary"><b>{{ enseignant.ressources_count }}</b> {{ $t('ressources.title').toLowerCase() }}</span>
+							</div>
+						</div>
+					</label>
+				</b-col>
+			</b-row>
+		</b-overlay>
+	</app-modal>
 </template>
 
 <script setup>
@@ -244,6 +272,8 @@ import { Inertia } from '@inertiajs/inertia'
 
 defineOptions({ name: 'AdminListRessources' })
 
+const { $ } = window
+
 const props = defineProps({
   	ressources: { required: true, type: Array },
 })
@@ -251,9 +281,15 @@ const props = defineProps({
 const openDialog = ref(false)
 const openDetails = ref(false)
 const openEdit = ref(false)
+const openDialogEnseignant = ref(false)
+
+const loading = ref(false)
 const submitted = ref(false)
-const item = ref(null) // Element en cours de manipulation (notament pour les details)
-const form = ref({}) // Element en cours d'edition
+
+const enseignants        = ref([])    // Liste des enseignants pour l'affectation à la ressource
+const checkedEnseignants = ref([])    // Liste des enseignants selectionnés pour être affecter à la ressource
+const item               = ref(null)  // Element en cours de manipulation (notament pour les details)
+const form               = ref({})    // Element en cours d'edition
 
 const filter = reactive({
 	limit: 20,
@@ -313,6 +349,43 @@ function processRename() {
 			form.value = {}
 		},
 	})
+}
+
+function addEnseignant(ressource) {
+	item.value                 = ressource
+	openDialogEnseignant.value = true
+	enseignants.value          = []
+	checkedEnseignants.value   = []
+	loading.value              = true
+
+	// eslint-disable-next-line no-undef
+	$.get(`${route('admin.ressources.enseignants', ressource.id)}?where-not=1`).done(response => {
+		enseignants.value = response
+		loading.value     = false
+	})
+}
+
+function processAddEnseignant() {
+	// eslint-disable-next-line no-undef
+	Inertia.post(route('admin.ressources.enseignants', item.value.id), { enseignants: checkedEnseignants.value }, {
+			onError(errors) {
+				if (errors.default) {
+					$alert.error(errors.default)
+				} else {
+					$alert.error($t('une_erreur_s_est_produite'))
+				}
+			},
+			onFinish() {
+				submitted.value = false
+			},
+			onStart() {
+				submitted.value = true		
+			},
+			onSuccess({ props }) {
+				$toast.success(props.flash.success)
+				openDialogEnseignant.value = false
+			},
+		})
 }
 
 function deleteRessource(ressource) {

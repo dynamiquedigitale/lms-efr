@@ -11,6 +11,11 @@ class Ressource extends AppEntity
 		'url',
 	];
 
+	public function enseignants()
+	{
+		return $this->belongsToMany(User::class, 'ressources_enseignants', 'ressource_id', 'enseignant_id');
+	}
+
 	public function getUrlAttribute(): string
 	{
 		return Storage::url($this->path);

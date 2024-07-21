@@ -7,12 +7,15 @@
 	"assigner_une_formation": "Assigner une formation",
 	"aucun_apprenant_enregistre": "Aucun apprenant enregistré",
 	"aucun_enseignant_enregistre": "Aucun enseignant enregistré",
+	"aucun_enseignant_affecter_a_cette_ressource": "Aucun enseignant affecté à cette ressource",
+	"aucun_enseignant_disponible_pour_etre_affecter_a_cette_ressource": "Aucun enseignant disponible pour être affecter à cette ressource",
 	"action": {
 		"annuler": "Annuler",
 		"ajouter": "Ajouter",
 		"editer": "Editer",
 		"modifier": "Modifier",
 		"renommer": "Renommer",
+		"retirer": "Retirer",
 		"supprimer": "Supprimer",
 		"valider": "Valider"
 	},
@@ -106,7 +109,8 @@
 		"affectees": "Ressources affectées",
 		"nouvelle": "Nouvelle ressource",
 		"nouvelles": "Nouvelles ressources",
-		"supports": "Supports de formation"
+		"supports": "Supports de formation",
+		"attribuer_aux_enseignant": "Attribuer la ressource `{0}` aux enseignants"
 	},
 	"sexe": {
 		"title": "Sexe",
@@ -145,5 +149,6 @@
 		"videos": "Vidéos"
 	},
 	"une_erreur_s_est_produite": "Une erreur s'est produite",
+	"veuillez_selectionner_les_enseignants_a_qui_vous_souhaiter_attribuer_cette_ressource": "Veuillez sélectionner les enseignants à qui vous souhaiter attribuer cette ressource",
 	"voulez_vous_vraiment_supprimer_la_ressource_x": "Voulez-vous vraiment supprimer la ressource `{0}` ?"
 }
