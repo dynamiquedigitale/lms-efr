@@ -114,33 +114,23 @@
 			</b-nav>
 
 			<b-overlay :show="proceeding" rounded="sm">
-				<b-card v-if="activeTab === 'formations'" no-body>
-					<b-card-header class="row">
-						<b-col md="2"></b-col>
-						<b-col md="8">
-							<div class="d-flex align-items-center justify-content-end flex-md-row flex-column mb-3 mb-md-0">
-								<app-input-search />
-								<app-button :text="$t('assigner_une_formation')" icon="plus" :tooltip="{placement: 'bottom'}" />
-							</div>
-						</b-col>
-					</b-card-header>
-					
-					{{ formations }}
-				</b-card>
-
-				<b-card v-if="activeTab === 'ressources'" no-body>
+				<b-card no-body>
 					<b-card-header class="row">
 						<b-col md="7"></b-col>
 						<b-col md="5">
 							<div class="d-flex align-items-center justify-content-end flex-md-row flex-column mb-3 mb-md-0">
-								<app-input-search class="me-1" />
-								<app-button :text="$t('attribuer_une_ressource')" icon="plus" :tooltip="{placement: 'bottom'}" @click.prevent="addRessource" />
+								<app-input-search v-model="search[activeTab]" class="me-1" />
+								<app-button :text="addBtnTooltip" icon="plus" :tooltip="{placement: 'bottom'}" @click.prevent="doAdd" />
 							</div>
 						</b-col>
 					</b-card-header>
-					<b-card-body class="border-top pt-1">
+					
+					<b-card-body class="border-top pt-1" v-if="activeTab === 'formations'">
+						{{ formations }}
+					</b-card-body>
+					<b-card-body class="border-top pt-1" v-if="activeTab === 'ressources'">
 						<b-row>
-							<b-col lg="6" sm="12" v-for="ressource in ressources" :key="ressource.id">
+							<b-col lg="6" sm="12" v-for="ressource in showableRessources" :key="ressource.id">
 								<b-card class="card-transaction border p-0" body-class="p-1">
 									<div class="float-end">
 										<app-button size="sm" variant="flat-secondary" icon="more-horizontal" text="" class="py-0 waves-effect waves-float waves-light" data-bs-toggle="dropdown" />
@@ -226,7 +216,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 
 import { $alert, $confirm, $toast } from '@/utils/alert'
 import { $t } from '@/plugins/i18n'
@@ -246,6 +236,10 @@ const activeTab = ref('')
 const proceeding = ref(false)
 const submitted = ref(false)
 const item = ref(false)
+const search = reactive({
+	formations: '',
+	ressources: '',
+})
 
 const formations = ref([])
 
@@ -254,6 +248,19 @@ const checkedRessources = ref([])
 const openAddRessource = ref(false)
 const openRessource = ref(false)
 const ressources = ref([])
+const showableRessources = computed(() => ressources.value.filter(({ nom }) => {
+	return search.ressources === '' ? true : nom.toLowerCase().includes(search.ressources.toLocaleLowerCase())
+}))
+
+const addBtnTooltip = computed(() => {
+	if (activeTab.value === 'ressources') {
+		return $t('attribuer_une_ressource')
+	}
+	if (activeTab.value === 'formations') {
+		return $t('assigner_une_formation')
+	}
+	return ''
+})
 
 onMounted(() => changeTab('ressources'))
 
@@ -264,6 +271,13 @@ function changeTab(tab) {
 		getFormations()
 	} else if (tab === 'ressources') {
 		getResources()
+	}
+}
+function doAdd() {
+	if (activeTab.value === 'formations') {
+		// 
+	} else if (activeTab.value === 'ressources') {
+		addRessource()
 	}
 }
 
