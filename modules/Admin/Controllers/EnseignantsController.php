@@ -4,7 +4,10 @@ namespace App\Admin\Controllers;
 
 use App\Admin\Services\UserService;
 use App\Controllers\AppController;
+use App\Entities\Ressource;
+use App\Entities\User;
 use App\Enums\Role;
+use BlitzPHP\Contracts\Http\StatusCode;
 use Dimtrovich\Validation\Exceptions\ValidationException;
 
 class EnseignantsController extends AppController
@@ -36,5 +39,45 @@ class EnseignantsController extends AppController
 		}
 
 		return back()->with('success', __('Enseignant ajouté avec succès'));
+	}
+
+	/**
+	 * Ressources affectees a un enseignant
+	 */
+	public function ressources($id)
+	{
+		$ressources = Ressource::withCount('enseignants');
+
+		if ($this->request->boolean('where-not')) {
+			$ressources = $ressources->whereDoesntHave('enseignants', fn($q) => $q->where('users.id', $id));
+		} else {
+			$ressources = $ressources->whereHas('enseignants', fn($q) => $q->where('users.id', $id));
+		}
+		
+		return $ressources->get();
+	}
+
+	/**
+	 * Affecte un/plusieurs ressources a un enseignant
+	 */
+	public function addRessources($id)
+	{
+		try {
+            $post = $this->validate([
+				'ressources'   => ['required', 'array'],
+				'ressources.*' => ['integer', 'exists:ressources,id'],
+			]);
+        }
+        catch (ValidationException $e) {
+			return $this->response->json(['errors' => $e->getErrors()?->firstOfAll() ?: $e->getMessage()], StatusCode::BAD_REQUEST);
+		}
+		/** @var User $enseignant */
+		if (empty($enseignant = User::enseignants()->find($id))) {
+			return $this->response->json(['errors' => ['default' => __('Enseignant non reconnu')]], StatusCode::NOT_FOUND);
+		}
+
+		$enseignant->ressources()->syncWithoutDetaching($post['ressources']);
+
+		return $this->response->json(['message' => __('Ressources ajoutées avec succès')]);
 	}
 }

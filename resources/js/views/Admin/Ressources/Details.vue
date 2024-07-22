@@ -46,7 +46,7 @@
 										<small>{{ enseignant.user_email }}</small>
 								  	</div>
 								</div>
-								<div class="d-flex align-items-center" style="position: relative;">
+								<div v-if="!readonly" class="d-flex align-items-center" style="position: relative;">
 									<app-button size="sm" variant="flat-danger" icon="trash" :text="$t('action.retirer')" tooltip @click.prevent="removeEnseignant(enseignant)" />
 								</div>
 							</div>
@@ -68,6 +68,7 @@ import RessourceViewer from '@/components/RessourceViewer.vue'
 defineOptions({ name: 'DetailsRessource' })
 
 const props = defineProps({
+	readonly: { default: false, type: Boolean },
 	ressource: { required: true, type: Object },
 })
 
@@ -96,7 +97,7 @@ function getEnseignants() {
 function removeEnseignant(enseignant) {
 	$confirm($t('voulez_vous_vraiment_retirer_la_ressource_X_a_Y', [props.ressource.nom, enseignant.username]), () => {
 		// eslint-disable-next-line no-undef
-		$.post(route('admin.ressources.enseignants', props.ressource.id), { _method: 'DELETE', enseignants: [enseignant.id] }).done(response => {
+		$.post(route('admin.ressources.enseignants', props.ressource.id), { _method: 'DELETE', enseignants: [enseignant.id] }).done(() => {
 			getEnseignants()
 		}).fail(({ responseJSON }) => {
 			const { errors } = responseJSON

@@ -160,7 +160,7 @@ class RessourcesController extends AppController
 
 		$ressource->enseignants()->detach($post['enseignants']);
 
-		return $this->response->json(['message' => __('Enseignants ajoutés avec succès')]);
+		return $this->response->json(['message' => __('Enseignants retirés avec succès')]);
 	}
 
 

@@ -2,9 +2,10 @@
 	"Affichage de XY sur Z elements": "Affichage de {x} à {y} sur {z} éléments",
 	"ajouter_un_apprenant": "Ajouter un apprenant",
 	"ajouter_un_enseignant": "Ajouter un enseignant",
-	"attribuer_a_un_enseignant": "Attribuer à un enseignant",
 	"apprenants": "Apprenants",
 	"assigner_une_formation": "Assigner une formation",
+	"attribuer_a_un_enseignant": "Attribuer à un enseignant",
+	"attribuer_une_ressource": "Attribuer une ressource",
 	"aucun_apprenant_enregistre": "Aucun apprenant enregistré",
 	"aucun_enseignant_enregistre": "Aucun enseignant enregistré",
 	"aucun_enseignant_affecter_a_cette_ressource": "Aucun enseignant affecté à cette ressource",
@@ -110,6 +111,7 @@
 		"nouvelle": "Nouvelle ressource",
 		"nouvelles": "Nouvelles ressources",
 		"supports": "Supports de formation",
+		"attribuer_a_l_enseignant": "Attribuer des ressources  à l'enseignant `{0}`",
 		"attribuer_aux_enseignant": "Attribuer la ressource `{0}` aux enseignants"
 	},
 	"sexe": {
@@ -149,7 +151,8 @@
 		"videos": "Vidéos"
 	},
 	"une_erreur_s_est_produite": "Une erreur s'est produite",
-	"veuillez_selectionner_les_enseignants_a_qui_vous_souhaiter_attribuer_cette_ressource": "Veuillez sélectionner les enseignants à qui vous souhaiter attribuer cette ressource",
+	"veuillez_selectionner_les_enseignants_a_qui_vous_souhaiter_attribuer_cette_ressource": "Veuillez sélectionner les enseignants à qui vous souhaitez attribuer cette ressource",
+	"veuillez_selectionner_les_ressources_que_vous_souhaitez_attribuer_a_cet_enseignant": "Veuillez sélectionner les ressources que vous souhaitez attribuer à cet enseignant",
 	"voulez_vous_vraiment_retirer_la_ressource_X_a_Y": "Voulez-vous vraiment retirer la ressource `{0}` à `{1}` ?",
 	"voulez_vous_vraiment_supprimer_la_ressource_x": "Voulez-vous vraiment supprimer la ressource `{0}` ?"
 }

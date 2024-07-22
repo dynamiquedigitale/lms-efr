@@ -127,15 +127,110 @@
 					
 					{{ formations }}
 				</b-card>
+
+				<b-card v-if="activeTab === 'ressources'" no-body>
+					<b-card-header class="row">
+						<b-col md="7"></b-col>
+						<b-col md="5">
+							<div class="d-flex align-items-center justify-content-end flex-md-row flex-column mb-3 mb-md-0">
+								<app-input-search class="me-1" />
+								<app-button :text="$t('attribuer_une_ressource')" icon="plus" :tooltip="{placement: 'bottom'}" @click.prevent="addRessource" />
+							</div>
+						</b-col>
+					</b-card-header>
+					<b-card-body class="border-top pt-1">
+						<b-row>
+							<b-col lg="6" sm="12" v-for="ressource in ressources" :key="ressource.id">
+								<b-card class="card-transaction border p-0" body-class="p-1">
+									<div class="float-end">
+										<app-button size="sm" variant="flat-secondary" icon="more-horizontal" text="" class="py-0 waves-effect waves-float waves-light" data-bs-toggle="dropdown" />
+										<div class="dropdown-menu dropdown-menu-end file-dropdown">
+											<a class="dropdown-item" href="#" @click.prevent="showRessource(ressource)">
+												<app-icon name="info" class="align-middle me-50" />
+												<span class="align-middle">Info</span>
+											</a>
+											<a class="dropdown-item text-danger" href="#" @click.prevent="removeRessource(ressource)">
+												<app-icon name="trash" class="align-middle me-50" />
+												<span class="align-middle">{{ $t('action.retirer') }}</span>
+											</a>
+										</div>
+									</div>
+									<div class="transaction-item">
+										<div class="d-flex flex-row align-items-start">
+										  	<div class="avatar bg-light-primary rounded">
+												<a class="avatar-content" :href="`#${ressource.nom}`" @click.prevent="showRessource(ressource)">
+													<img :src="$asset(`img/icons/${ressource.ext}.png`)" :alt="ressource.ext" height="35" />
+												</a>
+										  	</div>
+										  	<div class="transaction-info">
+												<h6 class="transaction-title mb-1" style="height: 3em">
+													<a class="text-inherit" :href="`#${ressource.nom}`" @click.prevent="showRessource(ressource)">{{ ressource.nom }}</a>
+												</h6>
+												<small>{{ ressource.sizeText }}</small>
+										  	</div>
+										</div>
+									</div>
+								</b-card>
+							</b-col>
+						</b-row>
+					</b-card-body>
+				</b-card>
 			</b-overlay>
 		</b-col>
 	</b-row>
+
+	<b-modal v-model="openRessource" id="app-file-manager-info-sidebar" class="modal-slide-in" hide-footer no-close-on-esc dialog-class="sidebar-lg" content-class="p-0" header-class="d-flex align-items-center justify-content-between mb-1 p-1" body-class="flex-grow-1 pb-sm-0 pb-1" @close="item = null">
+		<template #header="{ close }">
+			<h5 class="modal-title text-truncate">{{ (item || {}).nom }}</h5>
+			<div class="d-flex ms-1">
+				<app-button size="sm" variant="flat-secondary" icon="more-horizontal" text="" class="waves-effect waves-float waves-light" data-bs-toggle="dropdown" />
+				<div class="dropdown-menu dropdown-menu-end file-dropdown">
+					<a class="dropdown-item text-danger" href="#" @click.prevent="removeRessource(item)">
+						<app-icon name="trash" class="align-middle me-50" />
+						<span class="align-middle">{{ $t('action.retirer') }}</span>
+					</a>
+				</div>
+				<app-button size="sm" variant="flat-secondary" icon="x" text="" @click.prevent="close" />
+			</div>
+		</template>
+		<details-ressource v-if="openRessource" :ressource="item" readonly />
+	</b-modal>
+
+	<app-modal id="add-ressources" v-model="openAddRessource" :title="$t('ressources.attribuer_a_l_enseignant', [enseignant.username])" size="lg" @ok.prevent="processAddRessource" :disabled="!availableRessources.length" :submitted="submitted">
+		<b-alert :model-value="true" variant="primary">
+			<div class="alert-body text-center">
+				{{ $t('veuillez_selectionner_les_ressources_que_vous_souhaitez_attribuer_a_cet_enseignant') }}
+			</div>
+		</b-alert>
+		<b-overlay :show="proceeding" rounded="sm" :opacity="0.95">
+			<app-empty-items v-if="!availableRessources.length" :message="$t('aucun_enseignant_disponible_pour_etre_affecter_a_cette_ressource')" />
+			<b-row class="custom-options-checkable g-1 mt-2">
+				<b-col cols="12" md="6" v-for="ressource in availableRessources" :key="ressource.id">
+					<input v-model="checkedRessources" class="custom-option-item-check" type="checkbox" name="ressources" :value="ressource.id" :id="`ressource${ressource.id}`" />
+					<label class="custom-option-item p-1" :for="`ressource${ressource.id}`">
+						<div class="d-flex align-items-start">
+							<span class="avatar">
+								<b-img class="round" :src="$asset(`img/icons/${ressource.ext}.png`)" :alt="ressource.ext" height="40" width="40" />
+							</span>
+							<div class="ms-1">
+								<h5 class="mb-0 w-100 d-inline-block" style="height: 3.5em">{{ ressource.nom }}</h5>
+								<small class="mb-1 d-inline-block text-muted w-100">{{ ressource.sizeText }}</small>
+								<span class="badge bg-primary"><b>{{ ressource.enseignants_count }}</b> {{ $t('enseignants').toLowerCase() }}</span>
+							</div>
+						</div>
+					</label>
+				</b-col>
+			</b-row>
+		</b-overlay>
+	</app-modal>
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue'
 
+import { $alert, $confirm, $toast } from '@/utils/alert'
 import { $t } from '@/plugins/i18n'
+import DetailsRessource from '@/views/Admin/Ressources/Details.vue'
 
 defineOptions({ name: 'DetailsEnseignant' })
 
@@ -149,17 +244,26 @@ const tabs = [
 ]
 const activeTab = ref('')
 const proceeding = ref(false)
+const submitted = ref(false)
+const item = ref(false)
 
 const formations = ref([])
 
+const availableRessources = ref([])
+const checkedRessources = ref([])
+const openAddRessource = ref(false)
+const openRessource = ref(false)
+const ressources = ref([])
 
-onMounted(() => changeTab('formations'))
+onMounted(() => changeTab('ressources'))
 
 
 function changeTab(tab) {
 	activeTab.value = tab
 	if (tab === 'formations') {
 		getFormations()
+	} else if (tab === 'ressources') {
+		getResources()
 	}
 }
 
@@ -173,4 +277,68 @@ function getFormations() {
 
 }
 
+function getResources() {
+	proceeding.value = true
+	
+	// eslint-disable-next-line no-undef
+	$.get(route('admin.enseignants.ressources', props.enseignant.id)).done(data => {
+		ressources.value = data
+		proceeding.value = false
+	})
+}
+function showRessource(ressource) {
+	item.value = ressource
+	openRessource.value = true
+}
+function removeRessource(ressource) {
+	$confirm($t('voulez_vous_vraiment_retirer_la_ressource_X_a_Y', [ressource.nom, props.enseignant.username]), () => {
+		// eslint-disable-next-line no-undef
+		$.post(route('admin.ressources.enseignants', ressource.id), { _method: 'DELETE', enseignants: [props.enseignant.id] }).done(() => {
+			item.value = null
+			openRessource.value = false
+			getResources()
+			// eslint-disable-next-line vue/no-mutating-props
+			props.enseignant.ressources_count--
+		}).fail(({ responseJSON }) => {
+			const { errors } = responseJSON
+			if (errors.default) {
+				$alert.error(errors.default)
+			} else {
+				$alert.error($t('une_erreur_s_est_produite'))
+			}
+		})
+	}, { showLoaderOnConfirm: true })
+}
+function addRessource() {
+	openAddRessource.value    = true
+	availableRessources.value = []
+	checkedRessources.value   = []
+	proceeding.value          = true
+
+	// eslint-disable-next-line no-undef
+	$.get(`${route('admin.enseignants.ressources', props.enseignant.id)}?where-not=1`).done(response => {
+		availableRessources.value = response
+		proceeding.value          = false
+	})
+}
+function processAddRessource() {
+	submitted.value = true
+	// eslint-disable-next-line no-undef
+	$.post(route('admin.enseignants.ressources', props.enseignant.id), { ressources: checkedRessources.value }).done(response => {
+		openAddRessource.value = false
+		submitted.value        = false
+		$toast.success(response.message)
+		getResources()
+		// eslint-disable-next-line vue/no-mutating-props, camelcase
+		props.enseignant.ressources_count += checkedRessources.value.length
+	}).fail(({ responseJSON }) => {
+		const { errors } = responseJSON
+		if (errors.default) {
+			$alert.error(errors.default)
+		} else {
+			$alert.error($t('une_erreur_s_est_produite'))
+		}
+		submitted.value = false
+	})
+}
 </script>
