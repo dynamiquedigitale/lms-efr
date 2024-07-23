@@ -111,8 +111,14 @@ class RessourcesController extends AppController
 		} else {
 			$users = $users->whereHas('ressources', fn($q) => $q->where('ressources.id', $id));
 		}
+
+		$users = $users->get();
+
+		if ($this->request->boolean('where-not')) {
+			$users = $users->filter(fn($user) => $user->ressources_count < env('VITE_MAX_RESSOURCES_ENSEIGNANT', 10));
+		}
 		
-		return $users->get();
+		return $users;
 	}
 
 	/**

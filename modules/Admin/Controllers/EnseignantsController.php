@@ -72,8 +72,17 @@ class EnseignantsController extends AppController
 			return $this->response->json(['errors' => $e->getErrors()?->firstOfAll() ?: $e->getMessage()], StatusCode::BAD_REQUEST);
 		}
 		/** @var User $enseignant */
-		if (empty($enseignant = User::enseignants()->find($id))) {
+		if (empty($enseignant = User::enseignants()->withCount('ressources')->find($id))) {
 			return $this->response->json(['errors' => ['default' => __('Enseignant non reconnu')]], StatusCode::NOT_FOUND);
+		}
+
+		$possible = env('VITE_MAX_RESSOURCES_ENSEIGNANT', 10) - $enseignant->ressources_count;
+		$nbr      = count($post['ressources']);
+		if ($possible < $nbr) {
+			return $this->response->json(
+				['errors' => ['default' => 'Impossible d\'ajouter ' . $nbr . ' nouvelles ressources. Seules ' . $possible . ' sont autorisées à être ajouté']], 
+				StatusCode::NOT_ACCEPTABLE
+			);
 		}
 
 		$enseignant->ressources()->syncWithoutDetaching($post['ressources']);

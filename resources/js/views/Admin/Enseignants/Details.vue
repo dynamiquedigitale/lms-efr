@@ -120,7 +120,7 @@
 						<b-col md="5">
 							<div class="d-flex align-items-center justify-content-end flex-md-row flex-column mb-3 mb-md-0">
 								<app-input-search v-model="search[activeTab]" class="me-1" />
-								<app-button :text="addBtnTooltip" icon="plus" :tooltip="{placement: 'bottom'}" @click.prevent="doAdd" />
+								<app-button :text="addBtnTooltip" :disabled="addBtnDisabled" icon="plus" :tooltip="{placement: 'bottom'}" @click.prevent="doAdd" />
 							</div>
 						</b-col>
 					</b-card-header>
@@ -221,6 +221,7 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { $alert, $confirm, $toast } from '@/utils/alert'
 import { $t } from '@/plugins/i18n'
 import DetailsRessource from '@/views/Admin/Ressources/Details.vue'
+import { MAX_RESSOURCES_ENSEIGNANT } from '@/utils/constants'
 
 defineOptions({ name: 'DetailsEnseignant' })
 
@@ -260,6 +261,12 @@ const addBtnTooltip = computed(() => {
 		return $t('assigner_une_formation')
 	}
 	return ''
+})
+const addBtnDisabled = computed(() => {
+	if (activeTab.value === 'ressources') {
+		return props.enseignant.ressources_count >= MAX_RESSOURCES_ENSEIGNANT
+	}
+	return false
 })
 
 onMounted(() => changeTab('ressources'))

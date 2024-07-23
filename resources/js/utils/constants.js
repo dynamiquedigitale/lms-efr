@@ -46,3 +46,8 @@ export const API_REGISTER_PATH = import.meta.env.VITE_API_REGISTER_PATH || 'auth
  * @var {string} API_AUTH_USER_PATH Chemin pour recuperer l'utilisateur actuellement connecter
  */
 export const API_AUTH_USER_PATH = import.meta.env.VITE_API_AUTH_USER_PATH || 'auth/user'
+
+/**
+ * @var {Number} MAX_RESSOURCES_ENSEIGNANT Nombre de ressource maximale à affecter à un enseignant
+ */
+export const MAX_RESSOURCES_ENSEIGNANT = import.meta.env.VITE_MAX_RESSOURCES_ENSEIGNANT || 10
