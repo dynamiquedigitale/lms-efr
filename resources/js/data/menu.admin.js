@@ -15,8 +15,8 @@ export default [
 	},
 	{
 		icon: 'book',
-		route: 'lecons.index',
-		text: 'Leçons',
+		route: 'admin.lecons.index',
+		text: 'lecons.title',
 	},
 	{
 		icon: 'save',

@@ -24,4 +24,6 @@ Route::middleware(['session', 'force-reset'])->prefix('admin')->namespace('\App\
 		Route::delete('/(:num)/enseignants', 'removeEnseignants/$1');
 	});
 	Route::name('admin.ressources')->presenter('ressources');
+
+	Route::name('admin.lecons')->resource('lecons');
 });

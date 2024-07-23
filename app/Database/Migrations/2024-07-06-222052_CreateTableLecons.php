@@ -14,7 +14,7 @@ class CreateTableLecons extends Migration
         $this->create('lecons', function(Structure $table) {
 			$table->id();
 			$table->string('intitule', 128);
-			$table->string('description');
+			$table->string('description')->nullable();
 			$table->text('resume')->nullable();
             $table->timestamps();
 			$table->softDeletes();
