@@ -64,6 +64,7 @@ class RessourcesController extends AppController
 
 	public function delete($id = null)
 	{
+		/** @var Ressource $ressource */
 		if (empty($ressource = Ressource::find($id))) {
 			return back()->withErrors(__('Ressource non reconnue'));
 		}
@@ -71,6 +72,7 @@ class RessourcesController extends AppController
 		// on supprime la ressource au prof et au cours
 
 		Storage::delete($ressource->path);
+		$ressource->enseignants()->detach();
 		$ressource->delete();
 
 		return back()->with('success', __('Ressource supprimée avec succès'));
