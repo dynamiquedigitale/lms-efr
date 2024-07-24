@@ -21,11 +21,13 @@
 							<b-card class="border">
 								<div class="d-flex justify-content-center">
 									<div class="avatar bg-light-primary avatar-xl">
-										<span class="avatar-content">{{ lecon.abbr }}</span>
+										<span class="avatar-content" @click.prevent="showLecon(lecon)">{{ lecon.abbr }}</span>
 									</div>
 								</div>
 								<div class="my-1">
-									<h4 class="fw-bold text-center" style="height: 2.5em">{{ lecon.intitule }}</h4>
+									<h4 class="fw-bold text-center" style="height: 2.5em">
+										<a href="#" class="text-inherit" @click.prevent="showLecon(lecon)">{{ lecon.intitule }}</a>
+									</h4>
 									<div class="p-1 bg-light rounded-3 my-2" style="height: 5em">
 										<p class="fs-6">{{ lecon.description }}</p>
 									</div>
@@ -36,7 +38,7 @@
 										</li>
 								  	</ul>
 									  <div class="mt-3 d-flex justify-content-center">
-										<app-button :text="$t('details')" variant="outline-primary" />
+										<app-button :text="$t('details')" variant="outline-primary" @click.prevent="showLecon(lecon)" />
 										<div class="dropdown ms-1">
 											<app-button variant="light" icon="more-horizontal" class="btn-icon btn-wave" data-bs-toggle="dropdown" text="" />
 											<div class="dropdown-menu dropdown-menu-end">
@@ -70,14 +72,16 @@
 		</b-card>
 	</page-wrapper>
 
-	<app-modal id="user-dialog" v-model="openDialog" :title="modalTitle" size="md" no-footer @close="onCloseDialog">
+	<app-modal id="user-dialog" v-model="openDialog" :title="modalTitle" :size="action === 'details' ? 'lg' : 'md'" no-footer @close="onCloseDialog">
 		<form-lecon v-if="openDialog && action != 'details'" :action="action" :item="item" @reset="closeDialog" @completed="closeDialog" />
+		<details-lecon v-else-if="openDialog && action == 'details'" :lecon="item" />
 	</app-modal>
 </template>
 
 <script setup>
 import { computed, reactive, ref } from 'vue'
 
+import DetailsLecon from './Details.vue'
 import FormLecon from './Form.vue'
 
 import { $alert, $confirm, $toast } from '@/utils/alert'
@@ -122,17 +126,26 @@ const modalTitle = computed(() => {
  * Ouvre le formulaire d'ajout d'une lecon
  */
 function addLecon() {
-    action.value = 'create'
+    action.value     = 'create'
     openDialog.value = true
 }
 
 /**
  * Ouvre le formulaire d'edition d'une lecon
  */
-function editLecon(ressource) {
-    action.value = 'edit'
-	item.value = ressource
-    openDialog.value = true
+function editLecon(lecon) {
+	action.value     = 'edit'
+	item.value       = lecon
+	openDialog.value = true
+}
+
+/**
+ * Ouvre la modale de details de la lecon
+ */
+function showLecon(lecon) {
+	action.value     = 'details'
+	item.value       = lecon
+	openDialog.value = true
 }
 
 /**
@@ -171,15 +184,6 @@ function onCloseDialog() {
     if (action.value === 'details') {
         // refresh()
     }
-}
-
-/**
- * Refraichir la liste des beneficiaires apres une creation, suppression ou edition
- */
-function refresh() {
-    closeDialog()
-    filter.search = ''
-	findItems()
 }
 
 function findItems(limit){

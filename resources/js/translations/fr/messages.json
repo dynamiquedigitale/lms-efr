@@ -125,6 +125,9 @@
 		"attribuer_a_l_enseignant": "Attribuer des ressources  à l'enseignant `{0}`",
 		"attribuer_aux_enseignant": "Attribuer la ressource `{0}` aux enseignants"
 	},
+	"resume": {
+		"title": "Résumé"
+	},
 	"sexe": {
 		"title": "Sexe",
 		"m": "Masculin",
