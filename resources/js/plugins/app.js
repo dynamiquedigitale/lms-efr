@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import { ltrim, rtrim } from 'php-in-js/modules/string'
+import { STATUT } from '@/enums/statut'
 
 export default function(app) {
 	app.use({
@@ -20,6 +21,9 @@ export default function(app) {
 			app.config.globalProperties.$asset = (path) => {
 				return new URL(`../assets/${path}`, import.meta.url).href
 			}
+
+			// eslint-disable-next-line prefer-destructuring
+			app.config.globalProperties.$statusVariant = STATUT.variant
 		},
 	})
 

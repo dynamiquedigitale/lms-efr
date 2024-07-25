@@ -54,7 +54,7 @@
 					<app-form-group v-model="form.numero_identite" class="mt-1" :error="error.numero_identite" :label="$t(`numero_identite.${form.piece_identite || 'title'}`)" :placeholder="$t('numero_identite.placeholder')" />
 				</b-col>
 				<b-col lg="6">
-					<b-form-group v-bind="formGroupAttrs">
+					<b-form-group>
 						<template #label>
 							{{ $t('document_identite.title') }} <small class="text-danger">*</small>
 						</template>

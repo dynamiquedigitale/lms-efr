@@ -2,6 +2,7 @@
 	"Affichage de XY sur Z elements": "Affichage de {x} à {y} sur {z} éléments",
 	"ajouter_un_apprenant": "Ajouter un apprenant",
 	"ajouter_un_enseignant": "Ajouter un enseignant",
+	"ajouter_une_formation": "Ajouter une formation",
 	"ajouter_une_lecon": "Ajouter une leçon",
 	"apprenants": "Apprenants",
 	"assigner_une_formation": "Assigner une formation",
@@ -9,6 +10,7 @@
 	"attribuer_une_ressource": "Attribuer une ressource",
 	"aucun_apprenant_enregistre": "Aucun apprenant enregistré",
 	"aucun_enseignant_enregistre": "Aucun enseignant enregistré",
+	"aucune_formation_enregistree": "Aucune formation enregistrée",
 	"aucune_lecon_enregistree": "Aucune leçon enregistrée",
 	"aucun_enseignant_affecter_a_cette_ressource": "Aucun enseignant affecté à cette ressource",
 	"aucun_enseignant_disponible_pour_etre_affecter_a_cette_ressource": "Aucun enseignant disponible pour être affecter à cette ressource",
@@ -23,9 +25,17 @@
 		"valider": "Valider"
 	},
 	"autres_infos": "Autres informations",
+	"couverture": "Couverture",
 	"date_naissance": "Date de naissance",
 	"description": "Description",
 	"details": "Details",
+	"difficulte": {
+		"title": "Difficulte",
+		"avance": "Avancé",
+		"debutant": "Débutant",
+		"expert": "Expert",
+		"moyen": "Moyen"
+	},
 	"diplome": {
 		"title": "Diplôme",
 		"bac": "Bac",
@@ -46,6 +56,7 @@
 	},
 	"edition_de_l_apprenant": "Edition de l'apprenant",
 	"edition_de_l_enseignant": "Edition de l'enseignant",
+	"edition_de_la_formation": "Edition de la formation",
 	"edition_de_la_lecon": "Edition de la leçon",
 	"edition_de_la_ressource": "Edition de la ressource",
 	"email": {
@@ -74,6 +85,7 @@
 	"infos_de_base": "Informations de base",
 	"intitule": {
 		"title": "Intitulé",
+		"placeholder_formation": "Entrez le libellé de la formation",
 		"placeholder_lecon": "Entrez le libellé de la leçon"
 	},
 	"lecons": {
@@ -86,6 +98,7 @@
 	},
 	"liste_des_apprenants": "Liste des apprenants",
 	"liste_des_enseignants": "Liste des enseignants",
+	"liste_des_formations": "Liste des formations",
 	"liste_des_lecons": "Liste des leçons",
 	"nom": {
 		"title": "Nom",
@@ -97,6 +110,7 @@
 		"passport": "Numéro de passport",
 		"placeholder": "Entrez le numéro de la pièce d'identité"
 	},
+	"obectif_pedagogique": "Obectif pédagogique",
 	"parcours": {
 		"title": "Parcours"
 	},
@@ -128,6 +142,7 @@
 	"resume": {
 		"title": "Résumé"
 	},
+	"selectionnez": "Sélectionnez",
 	"sexe": {
 		"title": "Sexe",
 		"m": "Masculin",

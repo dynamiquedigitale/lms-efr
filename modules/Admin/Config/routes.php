@@ -26,4 +26,5 @@ Route::middleware(['session', 'force-reset'])->prefix('admin')->namespace('\App\
 	Route::name('admin.ressources')->presenter('ressources');
 
 	Route::name('admin.lecons')->resource('lecons');
+	Route::name('admin.formations')->resource('formations');
 });

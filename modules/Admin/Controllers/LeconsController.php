@@ -16,7 +16,9 @@ class LeconsController extends AppController
 		$items = Lecon::when($search, function ($query) use ($search) {
 				$query->whereLike('intitule', $search);
 			})
+			->sortAsc('intitule')
 			->latest()
+			->withCount('formations')
 			->paginate($this->request->query('limit', 15))
 			->toArray();
 		

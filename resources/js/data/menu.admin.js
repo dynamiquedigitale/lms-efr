@@ -10,7 +10,7 @@ export default [
 	},
 	{
 		icon: 'briefcase',
-		route: 'formations.index',
+		route: 'admin.formations.index',
 		text: 'formations.title',
 	},
 	{
