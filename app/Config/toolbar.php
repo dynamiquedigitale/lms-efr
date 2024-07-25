@@ -23,6 +23,7 @@ return [
         \BlitzPHP\Debug\Toolbar\Collectors\FilesCollector::class,
         \BlitzPHP\Debug\Toolbar\Collectors\RoutesCollector::class,
         \BlitzPHP\Debug\Toolbar\Collectors\EventsCollector::class,
+		\BlitzPHP\Database\Collectors\DatabaseCollector::class,
     ],
 
     /**
@@ -59,7 +60,7 @@ return [
      *
      * @var int
      */
-    'max_queries' => 100,
+    'max_queries' => 50,
 
     /**
      * Specifie si on doit afficher la debugbar ou pas

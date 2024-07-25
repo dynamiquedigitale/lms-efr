@@ -118,5 +118,7 @@ nb-configuration.xml
 /package-lock.json
 /yarn.lock
 /public/.vite
-/storage/app/documents
-/storage/app/ressources
+!/storage/app/avatar/default.png
+!/storage/app/avatar/f.png
+!/storage/app/avatar/m.png
+/storage/app/**

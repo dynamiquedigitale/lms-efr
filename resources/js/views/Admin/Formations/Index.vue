@@ -19,7 +19,7 @@
 					<b-row class="gy-6 mb-4">
 						<b-col cols="12" lg="4" sm="6" v-for="formation in items" :key="formation.id">
 							<b-card class="p-1 pb-0 h-100 border" no-body>
-								<a href="">
+								<a href="#" @click.prevent="showFormation(formation)">
 									<b-img fluid :src="formation.cover_url" :alt="formation.intitule" class="rounded" />
 								</a>
 								<b-card-body class="p-1 pb-0">
@@ -27,10 +27,23 @@
 										<span :class="`badge badge-light-${$statusVariant(formation.niveau)}`">{{ $t(`difficulte.${formation.niveau}`) }}</span>
 										<span><b>{{ formation.lecons_count }}</b> {{ $t('lecons.title').toLowerCase() }}</span>
 									</div>
-									<a href="#" class="h5 d-block" style="height: 2.5em">{{ formation.intitule }}</a>
+									<a href="#" class="h5 d-block" style="height: 2.5em" @click.prevent="showFormation(formation)">{{ formation.intitule }}</a>
 									<p class="mt-1" style="height: 3.5em">{{ formation.description }}</p>
-									<div class="d-flex justify-content-center mt-1">
-										<app-button :text="$t('details')" />
+									<div class="mt-3 d-flex justify-content-center">
+										<app-button :text="$t('details')" variant="outline-primary" @click.prevent="showFormation(formation)" />
+										<div class="dropdown ms-1">
+											<app-button variant="light" icon="more-horizontal" class="btn-icon btn-wave" data-bs-toggle="dropdown" text="" />
+											<div class="dropdown-menu dropdown-menu-end">
+												<a class="dropdown-item" href="#" @click.prevent="editFormation(formation)">
+													<app-icon name="edit" class="align-middle me-50" />
+													<span class="align-middle">{{ $t('action.modifier') }}</span>
+												</a>
+												<a class="dropdown-item text-danger" href="#" @click.prevent="deleteFormation(formation)">
+													<app-icon name="trash" class="align-middle me-50" />
+													<span class="align-middle">{{ $t('action.supprimer') }}</span>
+												</a>
+											</div>
+										</div>
 									</div>
 								</b-card-body>
 							</b-card>
@@ -63,8 +76,10 @@ import { computed, reactive, ref } from 'vue'
 import DetailsFormation from './Details.vue'
 import FormFormation from './Form.vue'
 
+import { $alert, $confirm, $toast } from '@/utils/alert'
 import { $t } from '@/plugins/i18n'
 import { handleSearch } from '@/utils/inertia'
+import { Inertia } from '@inertiajs/inertia'
 
 defineOptions({ name: 'AdminListFormations' })
 
@@ -105,6 +120,16 @@ function addFormation() {
     action.value = 'create'
     openDialog.value = true
 }
+
+/**
+ * Ouvre le formulaire d'edition d'une formation
+ */
+function editFormation(formation) {
+	action.value     = 'edit'
+	item.value       = formation
+	openDialog.value = true
+}
+
 /**
  * Ouvre la modale de details de la formation
  */
@@ -112,6 +137,27 @@ function showFormation(formation) {
 	item.value = formation
 	action.value = 'details'
     openDialog.value = true
+}
+
+/**
+ * Supprime une formation
+ */
+function deleteFormation(formation) {
+	$confirm($t('voulez_vous_vraiment_supprimer_la_formation_x', [formation.intitule]), () => {
+		// eslint-disable-next-line no-undef
+		Inertia.delete(route('admin.formations.delete', formation.id), {}, {
+			onError(errors) {
+				if (errors.default) {
+					$alert.error(errors.default)
+				} else {
+					$alert.error($t('une_erreur_s_est_produite'))
+				}
+			},
+			onSuccess({ props }) {
+				$toast.success(props.flash.success)
+			},
+		})
+	}, { showLoaderOnConfirm: true })
 }
 
 /**

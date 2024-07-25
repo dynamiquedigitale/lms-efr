@@ -19,12 +19,15 @@
 					:placeholder="$t('description')" 
 				/>
 				<b-form-group :label="$t('couverture')">
-					<app-file-uploader v-model="form.cover" accept="image/*" max-size="2MB" theme="list" />
+					<app-file-uploader v-model="form.cover" accept="image/*" max-size="2MB" theme="list" :disabled="action !== 'create'" />
 					<b-form-invalid-feedback v-if="error.cover != null" class="d-inline my-1">{{ error.cover }}</b-form-invalid-feedback>
 				</b-form-group>
 			</b-col>
-			<b-col lg="6">
-				<b-form-group :label="$t('obectif_pedagogique')">
+			<b-col lg="6" class="mt-1 my-lg-0">
+				<b-form-group>
+					<template #label>
+						{{ $t('obectif_pedagogique') }} <small class="text-danger">*</small>
+					</template>
 					<editor v-model="form.objectif" height="22em" @save="submitForm" />
 					<b-form-invalid-feedback v-if="error.objectif != null" class="d-inline my-1">{{ error.objectif }}</b-form-invalid-feedback>
 				</b-form-group>
@@ -45,33 +48,39 @@ import { useForm } from '@inertiajs/inertia-vue3'
 import { $alert, $toast } from '@/utils/alert'
 import { $t } from '@/plugins/i18n'
 import Editor from '@/components/efr/Editor.vue'
+import { html_entity_decode } from 'php-in-js/modules/string'
 
 defineOptions({ name: 'FormFormation' })
 
 const emit = defineEmits(['completed', 'reset'])
 
-defineProps({
+const props = defineProps({
     action: { required: true, type: String },
     item: { default: null, type: [Object, null] },
 })
 
 const submitted = ref(false)
 
-const post = {
-    cover: null,
-    description: null,
-    intitule: null,
-    niveau: null,
-	objectif: null,
-}
-const form = useForm({ ...post })
-const error = reactive({ ...post })
-
+const form = useForm({
+	cover      : props.item?.cover_url || null,
+	description: props.item?.description || null,
+	intitule   : props.item?.intitule || null,
+	niveau     : props.item?.niveau || null,
+	objectif   : html_entity_decode(props.item?.objectif || ''),
+})
+const error = reactive({
+	cover      : null,
+	description: null,
+	intitule   : null,
+	niveau     : null,
+	objectif   : null,
+})
 
 
 function submitForm() {
 	// eslint-disable-next-line no-undef
-	form.post(route('admin.formations.create'), {
+	const url = props.action === 'create' ? route('admin.formations.create') : route('admin.formations.update', props.item?.id)
+	const options = {
 		onError(errors) {
 			let message = ''
 			if (errors.default) {
@@ -108,6 +117,12 @@ function submitForm() {
 			
 			emit('completed')
     	},
-	})
+	}
+	
+	if (props.action === 'create') {
+		form.post(url, options)
+	} else {
+		form.patch(url, options)
+	}
 }
 </script>

@@ -184,6 +184,7 @@
 	"veuillez_selectionner_les_enseignants_a_qui_vous_souhaiter_attribuer_cette_ressource": "Veuillez sélectionner les enseignants à qui vous souhaitez attribuer cette ressource",
 	"veuillez_selectionner_les_ressources_que_vous_souhaitez_attribuer_a_cet_enseignant": "Veuillez sélectionner les ressources que vous souhaitez attribuer à cet enseignant",
 	"voulez_vous_vraiment_retirer_la_ressource_X_a_Y": "Voulez-vous vraiment retirer la ressource `{0}` à `{1}` ?",
+	"voulez_vous_vraiment_supprimer_la_formation_x": "Voulez-vous vraiment supprimer la formation `{0}` ?",
 	"voulez_vous_vraiment_supprimer_la_lecon_x": "Voulez-vous vraiment supprimer la leçon `{0}` ?",
 	"voulez_vous_vraiment_supprimer_la_ressource_x": "Voulez-vous vraiment supprimer la ressource `{0}` ?"
 }

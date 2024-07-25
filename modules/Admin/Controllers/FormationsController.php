@@ -5,6 +5,8 @@ namespace App\Admin\Controllers;
 use App\Controllers\AppController;
 use App\Entities\Formation;
 use BlitzPHP\Exceptions\ValidationException;
+use BlitzPHP\Facades\Storage;
+use BlitzPHP\Validation\Rule;
 
 class FormationsController extends AppController
 {
@@ -30,7 +32,7 @@ class FormationsController extends AppController
 	{
 		try {
             $post = $this->validate([
-				'intitule'    => ['required', 'string', 'max:255'],
+				'intitule'    => ['required', 'string', 'max:255', 'unique:formations'],
 				'niveau'      => ['required', 'string', 'in:debutant,moyen,avance,expert'],
 				'description' => ['required', 'string'],
 				'objectif'    => ['required', 'string'],
@@ -49,5 +51,49 @@ class FormationsController extends AppController
 		]);
 		
 		return back()->with('success', __('Formation ajoutée avec succès'));
+	}
+
+	public function delete($id = null)
+	{
+		/** @var Formation $formation */
+		if (empty($formation = Formation::find($id))) {
+			return back()->withErrors(__('Formation non reconnue'));
+		}
+
+		Storage::delete($formation->cover);
+		$formation->lecons()->detach();
+		$formation->delete();
+
+		return back()->with('success', __('Formation supprimée avec succès'));
+	}
+
+	public function update($id = null)
+	{
+		try {
+            $post = $this->validate([
+				'intitule'    => ['required', 'string', 'max:255', Rule::unique('formations')->ignore($id)],
+				'niveau'      => ['required', 'string', 'in:debutant,moyen,avance,expert'],
+				'description' => ['required', 'string'],
+				'objectif'    => ['required', 'string'],
+				// 'cover'       => ['nullable', 'image', 'max:2000'],
+			]);
+        }
+        catch (ValidationException $e) {
+            return back()->withErrors($e->getErrors()?->firstOfAll() ?: $e->getMessage());
+		}
+
+		/** @var Formation $formation */
+		if (empty($formation = Formation::find($id))) {
+			return back()->withErrors(__('Formation non reconnue'));
+		}
+
+		if ($this->request->hasFile('cover')) {
+			Storage::delete($formation->cover);
+			$post['cover'] = $this->request->file('cover')->store('formations');
+		}
+
+		$formation->update($post->all());
+
+		return back()->with('success', __('Formation éditée avec succès'));
 	}
 }
