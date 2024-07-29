@@ -25,6 +25,9 @@ Route::middleware(['session', 'force-reset'])->prefix('admin')->namespace('\App\
 	});
 	Route::name('admin.ressources')->presenter('ressources');
 
+	Route::controller('LeconsController')->prefix('lecons')->group(static function() {
+		Route::name('admin.lecons.formations')->get('/(:num)/formations', 'formations/$1');
+	});
 	Route::name('admin.lecons')->resource('lecons');
 
 	Route::controller('FormationsController')->prefix('formations')->group(static function() {

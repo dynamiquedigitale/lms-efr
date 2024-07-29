@@ -32,8 +32,20 @@
 
 			<b-overlay :show="proceeding" rounded="sm">
 				<b-card>
-					<div class="border-top pt-1" v-if="activeTab === 'formations'">
-						{{ formations }}
+					<div v-if="activeTab === 'formations'">
+						<app-empty-items v-if="!formations.length" :message="$t('cette_lecon_n_est_attachee_a_aucune_formation')" />
+						<ul class="list-group mb-1" v-for="formation in formations" :key="formation.id">
+							<li class="list-group-item d-flex align-items-start">
+								<div class="avatar bg-light-primary avatar-md me-1">
+									<b-img :src="formation.cover_url" :alt="formation.intitule" width="40" height="40" />
+								</div>
+								<div>
+									<h5 class="d-inline-block w-100">{{ formation.intitule }}</h5>
+									<span :class="`badge badge-light-${$statusVariant(formation.niveau)}`">{{ $t(`difficulte.${formation.niveau}`) }}</span>
+								</div>
+								<app-button variant="flat-danger" icon="x" tooltip class="p-0 ms-auto" @click.prevent="removeFormation(formation)" />
+							</li>
+						</ul>
 					</div>
 					<editor v-else-if="activeTab === 'resume'" v-model="content" height="22.5em" @save="updateResume" />
 				</b-card>
@@ -47,13 +59,13 @@ import { onMounted,  ref } from 'vue'
 import { html_entity_decode } from 'php-in-js/modules/string'
 import { Inertia } from '@inertiajs/inertia'
 
-import { $alert, $toast } from '@/utils/alert'
+import { $alert, $confirm, $toast } from '@/utils/alert'
 import { $t } from '@/plugins/i18n'
 import Editor from '@/components/efr/Editor.vue'
 
 defineOptions({ name: 'DetailsLecon' })
 
-const emit = defineEmits(['completed'])
+const emit = defineEmits(['completed', 'refresh'])
 
 const props = defineProps({
     lecon: { required: true, type: Object },
@@ -84,9 +96,28 @@ function getFormations() {
 
 	// eslint-disable-next-line no-undef
 	$.get(route('admin.lecons.formations', props.lecon.id)).done(data => {
-		console.log({ data })
+		formations.value = data
+		proceeding.value = false
 	})
-
+}
+function removeFormation(formation) {
+	$confirm($t('voulez_vous_vraiment_retirer_la_lecon_X_a_la_formation_Y', [props.lecon.intitule, formation.intitule]), () => {
+		// eslint-disable-next-line no-undef
+		$.post(route('admin.formations.lecons', formation.id), { _method: 'DELETE', lecons: [props.lecon.id] }).done((response) => {
+			$toast.success(response.message)
+			getFormations()
+			// eslint-disable-next-line vue/no-mutating-props, camelcase
+			props.lecon.formations_count -= 1
+			emit('refresh')
+		}).fail(({ responseJSON }) => {
+			const { errors } = responseJSON
+			if (errors.default) {
+				$alert.error(errors.default)
+			} else {
+				$alert.error($t('une_erreur_s_est_produite'))
+			}
+		})
+	}, { showLoaderOnConfirm: true })
 }
 
 function updateResume() {

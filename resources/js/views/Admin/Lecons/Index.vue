@@ -74,7 +74,7 @@
 
 	<app-modal id="user-dialog" v-model="openDialog" :title="modalTitle" :size="action === 'details' ? 'lg' : 'md'" no-footer @close="onCloseDialog">
 		<form-lecon v-if="openDialog && action != 'details'" :action="action" :item="item" @reset="closeDialog" @completed="closeDialog" />
-		<details-lecon v-else-if="openDialog && action == 'details'" :lecon="item" />
+		<details-lecon v-else-if="openDialog && action == 'details'" :lecon="item" @refresh="findItems" />
 	</app-modal>
 </template>
 

@@ -3,6 +3,7 @@
 namespace App\Admin\Controllers;
 
 use App\Controllers\AppController;
+use App\Entities\Formation;
 use App\Entities\Lecon;
 use BlitzPHP\Exceptions\ValidationException;
 use BlitzPHP\Validation\Rule;
@@ -77,5 +78,21 @@ class LeconsController extends AppController
 		$lecon->update($post->all());
 
 		return back()->with('success', __('Leçon éditée avec succès'));
+	}
+
+	/**
+	 * Formation dont fait partie une lecon
+	 */
+	public function formations($id)
+	{
+		$formations = Formation::withCount('lecons');
+
+		if ($this->request->boolean('where-not')) {
+			$formations = $formations->whereDoesntHave('lecons', fn($q) => $q->where('lecons.id', $id));
+		} else {
+			$formations = $formations->whereHas('lecons', fn($q) => $q->where('lecons.id', $id));
+		}
+		
+		return $formations->get();
 	}
 }
