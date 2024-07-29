@@ -11,6 +11,7 @@
 	"aucun_apprenant_enregistre": "Aucun apprenant enregistré",
 	"aucun_enseignant_enregistre": "Aucun enseignant enregistré",
 	"aucune_formation_enregistree": "Aucune formation enregistrée",
+	"aucune_lecon_attachee_a_cette_formation": "Aucune leçon attachée à cette formation",
 	"aucune_lecon_enregistree": "Aucune leçon enregistrée",
 	"aucun_enseignant_affecter_a_cette_ressource": "Aucun enseignant affecté à cette ressource",
 	"aucun_enseignant_disponible_pour_etre_affecter_a_cette_ressource": "Aucun enseignant disponible pour être affecter à cette ressource",
@@ -143,6 +144,7 @@
 		"title": "Résumé"
 	},
 	"selectionnez": "Sélectionnez",
+	"selectionnez_la_lecon_a_ajouter": "Sélectionnez la leçon à ajouter",
 	"sexe": {
 		"title": "Sexe",
 		"m": "Masculin",
@@ -182,7 +184,9 @@
 	"une_erreur_s_est_produite": "Une erreur s'est produite",
 	"utilisee_dans": "Utilisée dans",
 	"veuillez_selectionner_les_enseignants_a_qui_vous_souhaiter_attribuer_cette_ressource": "Veuillez sélectionner les enseignants à qui vous souhaitez attribuer cette ressource",
+	"veuillez_selectionner_la_lecon_a_ajouter": "Veuillez sélectionner le leçon à ajouter",
 	"veuillez_selectionner_les_ressources_que_vous_souhaitez_attribuer_a_cet_enseignant": "Veuillez sélectionner les ressources que vous souhaitez attribuer à cet enseignant",
+	"voulez_vous_vraiment_retirer_la_lecon_X_a_la_formation_Y": "Voulez-vous vraiment retirer la leçon `{0}` à la formation `{1}` ?",
 	"voulez_vous_vraiment_retirer_la_ressource_X_a_Y": "Voulez-vous vraiment retirer la ressource `{0}` à `{1}` ?",
 	"voulez_vous_vraiment_supprimer_la_formation_x": "Voulez-vous vraiment supprimer la formation `{0}` ?",
 	"voulez_vous_vraiment_supprimer_la_lecon_x": "Voulez-vous vraiment supprimer la leçon `{0}` ?",

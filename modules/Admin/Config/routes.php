@@ -26,5 +26,12 @@ Route::middleware(['session', 'force-reset'])->prefix('admin')->namespace('\App\
 	Route::name('admin.ressources')->presenter('ressources');
 
 	Route::name('admin.lecons')->resource('lecons');
+
+	Route::controller('FormationsController')->prefix('formations')->group(static function() {
+		Route::name('admin.formations.lecons')->get('/(:num)/lecons', 'lecons/$1');
+		Route::post('/(:num)/lecons', 'addLecons/$1');
+		Route::patch('/(:num)/lecons', 'sortLecons/$1');
+		Route::delete('/(:num)/lecons', 'removeLecons/$1');
+	});
 	Route::name('admin.formations')->resource('formations');
 });

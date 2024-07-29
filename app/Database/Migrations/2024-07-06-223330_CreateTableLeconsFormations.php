@@ -16,6 +16,7 @@ class CreateTableLeconsFormations extends Migration
 			$table->foreignId('lecon_id')->constrained();
 			$table->foreignId('formation_id')->constrained();
 			$table->unsignedInteger('rang')->default(1);
+			$table->timestamp('created_at')->nullable()->default('CURRENT_TIMESTAMP');
     
             return $table;
         });

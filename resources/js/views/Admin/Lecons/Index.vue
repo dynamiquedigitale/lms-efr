@@ -106,10 +106,7 @@ const filter = reactive({
 	search: '',
 })
 
-const items = computed(() => props.lecons.data.map(e => ({
-	...e,
-	abbr: e.intitule.split(' ').slice(0, 2).map(e => e[0]).join(''),
-}))) // Liste de tous les elements (lecons)
+const items = computed(() => props.lecons.data) // Liste de tous les elements (lecons)
 
 const modalTitle = computed(() => {
     switch (action.value) {

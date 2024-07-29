@@ -64,7 +64,7 @@
 		</b-card>
 	</page-wrapper>
 	
-	<app-modal id="formation-dialog" v-model="openDialog" :title="modalTitle" :size="modalSize" no-footer @close="onCloseDialog">
+	<app-modal id="formation-dialog" v-model="openDialog" :title="modalTitle" :size="action == 'details' ? 'md' : 'lg'" no-footer @close="onCloseDialog">
 		<form-formation v-if="openDialog && action != 'details'" :action="action" :item="item" @reset="closeDialog" @completed="closeDialog" />
 		<details-formation v-else-if="openDialog && action == 'details'" :formation="item" />
 	</app-modal>
@@ -110,8 +110,6 @@ const modalTitle = computed(() => {
             return (item.value || {}).username || ''
     }
 })
-// eslint-disable-next-line @stylistic/js/no-extra-parens
-const modalSize = computed(() => (action.value === 'details' ? 'xl' : 'lg'))
 
 /**
  * Ouvre le formulaire d'ajout d'une formation

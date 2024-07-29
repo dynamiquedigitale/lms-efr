@@ -4,6 +4,8 @@ namespace App\Admin\Controllers;
 
 use App\Controllers\AppController;
 use App\Entities\Formation;
+use App\Entities\Lecon;
+use BlitzPHP\Contracts\Http\StatusCode;
 use BlitzPHP\Exceptions\ValidationException;
 use BlitzPHP\Facades\Storage;
 use BlitzPHP\Validation\Rule;
@@ -95,5 +97,111 @@ class FormationsController extends AppController
 		$formation->update($post->all());
 
 		return back()->with('success', __('Formation éditée avec succès'));
+	}
+
+	/**
+	 * Lecons affectees a une formation
+	 */
+	public function lecons($id)
+	{
+		$lecons = Lecon::sortAsc('intitule');
+
+		if ($this->request->boolean('where-not')) {
+			$lecons = $lecons->whereDoesntHave('formations', fn($q) => $q->where('formations.id', $id));
+		} else {
+			$lecons = $lecons->with('formations')->whereHas('formations', fn($q) => $q->where('formations.id', $id));
+		}
+
+		$lecons = $lecons->get();
+
+		if (!$this->request->boolean('where-not')) {
+			$lecons = $lecons->sortBy([
+				fn($a, $b) => $a->formations[0]->pivot->rang - $b->formations[0]->pivot->rang,
+				fn($a, $b) => $a->formations[0]->pivot->created_at?->isAfter($b->formations[0]->pivot->created_at) ? 0 : 1,
+			])
+			->values();
+		}
+
+		return $lecons;
+	}
+
+	/**
+	 * Affecte un/plusieurs lecons a une formation
+	 */
+	public function addLecons($id)
+	{
+		try {
+            $post = $this->validate([
+				'lecons'   => ['required', 'array'],
+				'lecons.*' => ['integer', 'exists:lecons,id'],
+			]);
+        }
+        catch (ValidationException $e) {
+			return $this->response->json(['errors' => $e->getErrors()?->firstOfAll() ?: $e->getMessage()], StatusCode::BAD_REQUEST);
+		}
+		
+		/** @var Formation $formation */
+		if (empty($formation = Formation::find($id))) {
+			return $this->response->json(['errors' => ['default' => __('Formation non reconnue')]], StatusCode::BAD_REQUEST);
+		}
+
+		$formation->lecons()->syncWithoutDetaching($post['lecons']);
+
+		return $this->response->json(['message' => __('Leçons ajoutées avec succès')]);
+	}
+	/**
+	 * Reorganise les lecons d'une formation
+	 */
+	public function sortLecons($id)
+	{
+		try {
+            $post = $this->validate([
+				'lecons'   => ['required', 'array'],
+				'lecons.*' => ['integer', 'exists:lecons,id'],
+			]);
+        }
+        catch (ValidationException $e) {
+			return $this->response->json(['errors' => $e->getErrors()?->firstOfAll() ?: $e->getMessage()], StatusCode::BAD_REQUEST);
+		}
+
+		/** @var \BlitzPHP\Database\Connection\BaseConnection $db */
+		$db = service('database');	
+		try {
+			$db->beginTransaction();
+
+			foreach ($post['lecons'] as $k => $v) {
+				$db->table('lecons_formations')->where(['lecon_id' => $v, 'formation_id' => $id])->update(['rang' => $k + 1]);		
+			}
+
+			$db->commit();
+		} catch (\Throwable $e) {
+			$db->rollback();
+			return $this->response->json(['errors' =>  $e->getMessage()], StatusCode::INTERNAL_ERROR);
+		}
+
+		return $this->response->json(['message' => __('Ok')]);
+	}
+	/**
+	 * Retire des lecons a une formation
+	 */
+	public function removeLecons($id)
+	{
+		try {
+            $post = $this->validate([
+				'lecons'   => ['required', 'array'],
+				'lecons.*' => ['integer', 'exists:lecons,id'],
+			]);
+        }
+        catch (ValidationException $e) {
+			return $this->response->json(['errors' => $e->getErrors()?->firstOfAll() ?: $e->getMessage()], StatusCode::BAD_REQUEST);
+		}
+		/** @var Formation $formation */
+		if (empty($formation = Formation::find($id))) {
+			return $this->response->json(['errors' => ['default' => __('Formation non reconnue')]], StatusCode::NOT_FOUND);
+		}
+
+		$formation->lecons()->detach($post['lecons']);
+
+		return $this->response->json(['message' => __('Lecons retirées avec succès')]);
 	}
 }
