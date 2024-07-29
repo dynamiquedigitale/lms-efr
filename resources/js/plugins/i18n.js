@@ -13,7 +13,7 @@ export const i18n = createI18n({
 
 export const $i18n = { ...i18n.global }
 
-export const { t: $t } = $i18n
+export const { t: $t, tc: $tc } = $i18n
 
 export function changeLanguage(language) {
 	$storage.cookie.set('locale', language)

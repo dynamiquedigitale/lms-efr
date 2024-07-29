@@ -4,7 +4,9 @@
 	"ajouter_un_enseignant": "Ajouter un enseignant",
 	"ajouter_une_formation": "Ajouter une formation",
 	"ajouter_une_lecon": "Ajouter une leçon",
-	"apprenants": "Apprenants",
+	"apprenants": {
+		"title": "Apprenant | Apprenants"
+	},
 	"assigner_une_formation": "Assigner une formation",
 	"attribuer_a_un_enseignant": "Attribuer à un enseignant",
 	"attribuer_une_ressource": "Attribuer une ressource",
@@ -69,19 +71,24 @@
 	"encardrants": {
 		"title": "Encardrants"
 	},
-	"enseignants": "Enseignants",
+	"enseignants": {
+		"title": "Enseignant | Enseignants"
+	},
 	"evaluations": {
 		"title": "Evaluations",
 		"effectuees": "Evaluations effectuées"
 	},
 	"formations": {
-		"title": "Formations",
+		"title": "Formation | Formations",
 		"dispensees": "Formations dispensées",
 		"suivies": "Formations suivies"
 	},
 	"fichier": {
 		"taille": "Taille",
 		"type": "Type"
+	},
+	"filtre": {
+		"all": "Tous"
 	},
 	"informations": "Informations",
 	"infos_de_base": "Informations de base",
@@ -102,10 +109,12 @@
 	"liste_des_enseignants": "Liste des enseignants",
 	"liste_des_formations": "Liste des formations",
 	"liste_des_lecons": "Liste des leçons",
+	"liste_des_parcours": "Liste des parcours",
 	"nom": {
 		"title": "Nom",
 		"famille": "Nom de famille"
 	},
+	"nouveau_parcours": "Nouveau parcours",
 	"numero_identite": {
 		"title": "Numéro d'identité",
 		"cni": "Numéro de CNI",
@@ -114,7 +123,10 @@
 	},
 	"obectif_pedagogique": "Obectif pédagogique",
 	"parcours": {
-		"title": "Parcours"
+		"title": "Parcours",
+		"en_cours": "Parcours en cours",
+		"non_payer": "Parcours non payés",
+		"termines": "Parcours terminés"
 	},
 	"paiements": {
 		"title": "Paiements",

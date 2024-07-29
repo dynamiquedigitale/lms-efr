@@ -1,5 +1,5 @@
 <template>
-	<page-wrapper :title="$t('Liste des apprenants')" :breadcrumb="[$t('Apprenants')]">
+	<page-wrapper :title="$t('Liste des apprenants')" :breadcrumb="[$t('apprenants.title', 2)]">
 		<b-card no-body class="mb-4">
 			<b-card-header class="d-flex flex-wrap justify-content-between">
 				<b-row class="w-auto">

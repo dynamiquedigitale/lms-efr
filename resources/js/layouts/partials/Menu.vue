@@ -24,7 +24,7 @@
 				<li v-for="(item, i) in items" :class="liClass(item)" :key="i">
 					<Link v-if="!item.hasSubmenu && !item.isDivider" class="d-flex align-items-center" :href="item.url">
 						<i :data-feather="item.icon"></i>
-						<span class="menu-title text-truncate">{{ $t(item.text) }}</span>
+						<span class="menu-title text-truncate">{{ $t(item.text, 2) }}</span>
 					</Link>
 					<template v-else-if="item.isDivider">
 						<span>{{ item.text }}</span>
@@ -33,13 +33,13 @@
 					<template v-else>
 						<a class="d-flex align-items-center" href="#">
 							<i :data-feather="item.icon"></i>
-							<span class="menu-title text-truncate">{{ $t(item.text) }}</span>
+							<span class="menu-title text-truncate">{{ $t(item.text, 2) }}</span>
 						</a>
 						<ul class="menu-content">
 							<li v-for="(menu, j) in item.submenu" :key="j">
 								<Link class="d-flex align-items-center" :href="menu.url">
 									<i data-feather="circle"></i>
-									<span class="menu-item text-truncate">{{ $t(menu.text) }}</span>
+									<span class="menu-item text-truncate">{{ $t(menu.text, 2) }}</span>
 								</Link>
 							</li>
 						</ul>

@@ -25,8 +25,8 @@ export default [
 	},
 	{
 		icon: 'book-open',
-		route: 'parcours.index',
-		text: 'Parcours',
+		route: 'admin.parcours.index',
+		text: 'parcours.title',
 	},
 	{
 		divider: true,
@@ -35,12 +35,12 @@ export default [
 	{
 		icon: 'user-check',
 		route: 'admin.enseignants.index',
-		text: 'enseignants',
+		text: 'enseignants.title',
 	},
 	{
 		icon: 'user',
 		route: 'admin.apprenants.index',
-		text: 'apprenants',
+		text: 'apprenants.title',
 	},
 	{
 		icon: 'users',
