@@ -15,6 +15,7 @@ Route::middleware(['session', 'force-reset'])->prefix('admin')->namespace('\App\
 	Route::controller('EnseignantsController')->prefix('enseignants')->group(static function() {
 		Route::name('admin.enseignants.ressources')->get('/(:num)/ressources', 'ressources/$1');
 		Route::post('/(:num)/ressources', 'addRessources/$1');
+		Route::name('admin.enseignants.parcours')->get('/(:num)/parcours', 'parcours/$1');
 	});
 	Route::name('admin.enseignants')->presenter('enseignants');
 	

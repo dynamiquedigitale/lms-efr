@@ -4,6 +4,7 @@ namespace App\Admin\Controllers;
 
 use App\Admin\Services\UserService;
 use App\Controllers\AppController;
+use App\Entities\Parcours;
 use App\Entities\Ressource;
 use App\Entities\User;
 use App\Enums\Role;
@@ -92,5 +93,16 @@ class EnseignantsController extends AppController
 		$enseignant->ressources()->syncWithoutDetaching($post['ressources']);
 
 		return $this->response->json(['message' => __('Ressources ajoutées avec succès')]);
+	}
+
+	/**
+	 * Formations dispensees par un enseignants
+	 */
+	public function parcours($id)
+	{
+		return Parcours::where('enseignant_id', $id)
+			->with(['apprenant', 'formation'])
+			->withCount('cours')
+			->get();
 	}
 }

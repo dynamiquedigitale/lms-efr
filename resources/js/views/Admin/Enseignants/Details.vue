@@ -126,8 +126,70 @@
 					</b-card-header>
 					
 					<b-card-body class="border-top pt-1" v-if="activeTab === 'formations'">
-						{{ formations }}
+						<div class="card-datatable table-responsive mb-3 pt-0 border-0 overflow-y-hidden">
+							<table class="table mb-0 text-nowrap">
+								<thead class="table-light">
+									<tr>
+										<th scope="col" class="border-0"></th>
+										<th scope="col" class="border-0">{{ $t('formations.title', 1) }}</th>
+										<th scope="col" class="border-0">{{ $t('apprenants.title', 1) }}</th>
+										<th scope="col" class="border-0">{{ $t('statut.title') }}</th>
+										<th scope="col" class="border-0"></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr v-for="({ id, cours_count, progression, statut, apprenant, formation }, i) in showableParcours" :key="id">
+										<td>#{{ i + 1 }}</td>
+										<td>
+											<div class="d-lg-flex">
+												<a href="#">
+													<img :src="formation.cover_url" alt="" width="60" height="60" class="rounded">
+												</a>
+												<div class="ms-lg-1 mt-2 mt-lg-0">
+													<h4 class="mb-1 h5">
+														<a href="#" class="text-inherit text-truncate">{{ formation.intitule }}</a>
+													</h4>
+													<ul class="list-inline fs-6 mb-0">
+														<li class="list-inline-item">
+															<app-icon name="book-open" class="me-1" />
+															<b>{{ cours_count }}</b> {{ $t('lecons.title', cours_count).toLowerCase() }}
+														</li>
+														<li class="list-inline-item">
+															<app-icon name="bar-chart" class="me-1" /> 
+															{{ $t(`difficulte.${formation.niveau}`) }}
+														</li>
+													</ul>
+												</div>
+											</div>
+										</td>
+										<td>
+											<div class="d-lg-flex">
+												<a href="#">
+													<img :src="apprenant.avatar" alt="" width="60" height="60" class="rounded">
+												</a>
+												<div class="ms-lg-1 mt-2 mt-lg-0">
+													<h4 class="mb-1 h5">
+														<a href="#" class="text-inherit text-truncate">{{ apprenant.username }}</a>
+													</h4>
+													<ul class="list-inline fs-6 mb-0">
+														<li class="list-inline-item">{{ apprenant.user_email }}</li>
+													</ul>
+												</div>
+											</div>
+										</td>
+										<td>
+											<b-progress class="mb-1" :value="progression" :variant="$percentageVariant(progression)" />
+											<span :class="`w-100 badge bg-${$statusVariant(statut)}`">{{ $t(`statut.${statut}`) }}</span>
+										</td>
+										<td>
+											<app-button icon="eye" :title="$t('details')" tooltip variant="flat-primary" />
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 					</b-card-body>
+
 					<b-card-body class="border-top pt-1" v-if="activeTab === 'ressources'">
 						<b-row>
 							<b-col lg="6" sm="12" v-for="ressource in showableRessources" :key="ressource.id">
@@ -242,7 +304,15 @@ const search = reactive({
 	ressources: '',
 })
 
-const formations = ref([])
+const parcours = ref([])
+const showableParcours = computed(() => parcours.value.filter(({ formation, apprenant }) => {
+	if (search.formations === '') {
+		return true
+	}
+
+	return formation.intitule.toLowerCase().includes(search.formations.toLowerCase()) 
+		|| apprenant.username.toLowerCase().includes(search.formations.toLowerCase())
+}))
 
 const availableRessources = ref([])
 const checkedRessources = ref([])
@@ -250,7 +320,7 @@ const openAddRessource = ref(false)
 const openRessource = ref(false)
 const ressources = ref([])
 const showableRessources = computed(() => ressources.value.filter(({ nom }) => {
-	return search.ressources === '' ? true : nom.toLowerCase().includes(search.ressources.toLocaleLowerCase())
+	return search.ressources === '' ? true : nom.toLowerCase().includes(search.ressources.toLowerCase())
 }))
 
 const addBtnTooltip = computed(() => {
@@ -269,7 +339,7 @@ const addBtnDisabled = computed(() => {
 	return false
 })
 
-onMounted(() => changeTab('ressources'))
+onMounted(() => changeTab('formations'))
 
 
 function changeTab(tab) {
@@ -292,8 +362,9 @@ function getFormations() {
 	proceeding.value = true
 
 	// eslint-disable-next-line no-undef
-	$.get(route('admin.enseignants.formations', props.enseignant.id)).done(data => {
-		console.log({ data })
+	$.get(route('admin.enseignants.parcours', props.enseignant.id)).done(data => {
+		parcours.value = data
+		proceeding.value = false
 	})
 
 }
