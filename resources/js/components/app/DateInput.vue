@@ -4,7 +4,7 @@
 
 <script setup>
 import 'vue-datepicker-next/index.css'
-import 'vue-datepicker-next/locale/fr'
+// import 'vue-datepicker-next/locale/fr'
 
 import { computed } from 'vue'
 import DatePicker from 'vue-datepicker-next'
@@ -32,7 +32,7 @@ const allAttrs = computed(() => ({
     clearable: !props.unclear,
     format: props.format,
     inputClass: 'form-control',
-    lang: 'fr',
+    // lang: 'fr',
     titleFormat: 'DD MMMM YYYY',
     valueType: 'YYYY-MM-DD',
 }))

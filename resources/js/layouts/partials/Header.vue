@@ -36,7 +36,7 @@
 						<i class="ficon" data-feather="bell"></i>
 						<span class="badge rounded-pill bg-danger badge-up">5</span>
 					</a>
-                    <ul class="dropdown-menu dropdown-menu-media dropdown-menu-end">
+                    <!-- <ul class="dropdown-menu dropdown-menu-media dropdown-menu-end">
                         <li class="dropdown-menu-header">
                             <div class="dropdown-header d-flex">
                                 <h4 class="notification-title mb-0 me-auto">Notifications</h4>
@@ -184,7 +184,7 @@
                         <li class="dropdown-menu-footer">
                             <a class="btn btn-primary w-100" href="#">Read all notifications</a>
                         </li>
-                    </ul>
+                    </ul> -->
                 </li>
                 <li class="nav-item dropdown dropdown-user">
                     <a class="nav-link dropdown-toggle dropdown-user-link" id="dropdown-user" href="#" data-bs-toggle="dropdown">
@@ -217,7 +217,7 @@
         </div>
     </nav>
 	
-    <ul class="main-search-list-defaultlist d-none">
+    <!-- <ul class="main-search-list-defaultlist d-none">
         <li class="d-flex align-items-center">
             <a href="#">
                 <h6 class="section-label mt-75 mb-0">Files</h6>
@@ -376,7 +376,7 @@
                 </div>
             </a>
         </li>
-    </ul>
+    </ul> -->
     <ul class="main-search-list-defaultlist-other-list d-none">
         <li class="auto-suggestion justify-content-between">
             <a class="d-flex align-items-center justify-content-between w-100 py-50">
