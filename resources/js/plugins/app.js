@@ -23,7 +23,9 @@ export default function(app) {
 			}
 
 			// eslint-disable-next-line prefer-destructuring
-			app.config.globalProperties.$statusVariant = STATUT.variant
+			app.config.globalProperties.$statusVariant     = STATUT.variant
+			// eslint-disable-next-line prefer-destructuring
+			app.config.globalProperties.$percentageVariant = STATUT.percentageVariant
 		},
 	})
 

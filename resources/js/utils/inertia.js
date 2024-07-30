@@ -1,10 +1,8 @@
 import { Inertia } from '@inertiajs/inertia'
 import { throttle } from 'underscore'
 
-export function handleSearch(routeName, { limit, search }) {
+export function handleSearch(routeName, query) {
 	throttle(function() {
-		const query = { limit, search }
-
 		// eslint-disable-next-line no-undef
 		Inertia.get(route(routeName, query), {}, {
 			preserveState: true,

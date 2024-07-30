@@ -43,6 +43,7 @@ const props = defineProps({
     reducer: { default: null, type: [Function, null] },
     required: { default: false, type: Boolean },
     rows: { default: 2, type: Number },
+    searchable: { default: false, type: Boolean },
     selectKey: { default: 'label', type: String },
     selectMultiple: { default: false, type: Boolean },
     selector: { default: 'value', type: String },
@@ -104,6 +105,7 @@ const selectAttrs = computed(() => ({
     placeholder: props.placeholder,
     reducer: props.reducer,
     required: props.required,
+    searchable: props.searchable,
     selector: props.selector,
     state: props.state,
 }))

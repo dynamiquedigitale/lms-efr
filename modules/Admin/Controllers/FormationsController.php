@@ -9,6 +9,7 @@ use BlitzPHP\Contracts\Http\StatusCode;
 use BlitzPHP\Exceptions\ValidationException;
 use BlitzPHP\Facades\Storage;
 use BlitzPHP\Validation\Rule;
+use BlitzPHP\Wolke\Pagination\LengthAwarePaginator;
 
 class FormationsController extends AppController
 {
@@ -21,11 +22,22 @@ class FormationsController extends AppController
 			})
 			->sortAsc('intitule')
 			->latest()
-			->withCount('lecons')
-			->paginate($this->request->query('limit', 15))
-			->toArray();
+			->withCount('lecons');
 		
-		$data['formations'] = $items;
+		if (-1 == $limit = $this->request->query('limit', 15)) {
+			$items = $items->all();
+			$limit = count($items);
+
+			$items = new LengthAwarePaginator($items, $limit, $limit, 1);
+		} else {
+			$items = $items->paginate($limit);
+		}		
+		
+		$data['formations'] = $items->toArray();
+
+		if (! $this->request->hasHeader('X-Inertia') && $this->request->ajax()) {
+			return $data['formations'];
+		}
 
 		return inertia('Admin/Formations/Index', $data);
 	}

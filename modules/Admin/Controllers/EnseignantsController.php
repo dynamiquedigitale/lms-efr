@@ -27,6 +27,10 @@ class EnseignantsController extends AppController
 			$this->request->string('sortDirection', 'desc'),
 		);
 
+		if (! $this->request->hasHeader('X-Inertia') && $this->request->ajax()) {
+			return $data['enseignants'];
+		}
+
 		return inertia('Admin/Enseignants/Index', $data);
 	}
 

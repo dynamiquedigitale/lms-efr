@@ -74,10 +74,14 @@ class UserModel extends SchildUserModel
 			});
 		}
 
+		if ($perPage == -1) {
+			$total   = $builder->countAllResults(false);
+			$perPage = $total;
+		} 
 		$results = $builder->paginate(
 			$perPage, 
 			$page,
-			$total = $builder->countAllResults(false)
+			$total ??= $builder->countAllResults(false)
 		);
 
         if (empty($results)) {
@@ -110,7 +114,7 @@ class UserModel extends SchildUserModel
 
         return [
 			'total' => $total,
-			'items' => $results
+			'items' => array_values($results)
 		];
     }
 	

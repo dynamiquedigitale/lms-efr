@@ -12,6 +12,7 @@
 	"attribuer_une_ressource": "Attribuer une ressource",
 	"aucun_apprenant_enregistre": "Aucun apprenant enregistré",
 	"aucun_enseignant_enregistre": "Aucun enseignant enregistré",
+	"aucun_parcours_enregistre": "Aucun parcours enregistré",
 	"aucune_formation_enregistree": "Aucune formation enregistrée",
 	"aucune_lecon_attachee_a_cette_formation": "Aucune leçon attachée à cette formation",
 	"aucune_lecon_enregistree": "Aucune leçon enregistrée",
@@ -33,6 +34,7 @@
 	"date_naissance": "Date de naissance",
 	"description": "Description",
 	"details": "Details",
+	"details_du_parcours": "Details du parcours",
 	"difficulte": {
 		"title": "Difficulte",
 		"avance": "Avancé",
@@ -98,7 +100,7 @@
 		"placeholder_lecon": "Entrez le libellé de la leçon"
 	},
 	"lecons": {
-		"title": "Leçons"
+		"title": "Leçon | Leçons"
 	},
 	"lieu_residence": {
 		"title": "Lieu de résidence",
@@ -142,6 +144,7 @@
 		"apprenant": "Prenom de l'apprenant",
 		"enseignant": "Prenom de l'enseignant"
 	},
+	"progression": "Progression",
 	"rechercher": "Rechercher",
 	"ressources": {
 		"title": "Ressources",
@@ -170,7 +173,8 @@
 		"active": "Actif",
 		"inactive": "Inactif",
 		"incomplete": "Incomplet",
-		"pending": "En attente"
+		"pending": "En attente",
+		"unpaid": "Non payé"
 	},
 	"supplements": "Suppléments",
 	"taux_horaire": {

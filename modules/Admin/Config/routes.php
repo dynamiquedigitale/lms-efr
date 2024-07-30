@@ -37,4 +37,6 @@ Route::middleware(['session', 'force-reset'])->prefix('admin')->namespace('\App\
 		Route::delete('/(:num)/lecons', 'removeLecons/$1');
 	});
 	Route::name('admin.formations')->resource('formations');
+
+	Route::name('admin.parcours')->resource('parcours');
 });

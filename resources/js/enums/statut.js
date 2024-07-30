@@ -1,3 +1,4 @@
+/* eslint-disable sort-keys */
 export const STATUT = {
 	ACTIVE    : 'active',
 	COMPLETE  : 'complete',
@@ -6,8 +7,10 @@ export const STATUT = {
 	INVALID   : 'invalid',
 	PENDING   : 'pending',
 	SUSPENDED : 'suspended',
+	UNPAID    : 'unpaid',
 	VALID     : 'valid',
 	
+	percentageVariant,
 	variant,
 }
 
@@ -36,6 +39,7 @@ function variant(statut) {
 		case STATUT.INCOMPLETE:
 		case NIVEAU.EXPERT:
 			return 'danger'
+		case STATUT.UNPAID:
 		case STATUT.PENDING:
 		case NIVEAU.AVANCE:
 			return 'warning'
@@ -44,4 +48,21 @@ function variant(statut) {
 		default:
 			return 'light'
 	}
+}
+
+/**
+ * Variant en fonction d'un pourcentage
+ * 
+ * @param {Number} percentage
+ * @returns {String}
+ */
+function percentageVariant(percentage) {
+	if (percentage < 30) {
+		return 'danger'
+	}
+	if (percentage < 70) {
+		return 'warning'
+	}
+
+	return 'success'
 }

@@ -20,6 +20,14 @@ class MergeUsersTables extends Migration
 			return $table;
 		});
 
+		$this->modify('parcours', function(Structure $table) {
+			$table->dropForeign(['enseignant_id', 'apprenant_id']);
+			$table->foreign('enseignant_id')->on('users')->references('id')->cascadeOnDelete();
+			$table->foreign('apprenant_id')->on('users')->references('id')->cascadeOnDelete();
+			
+			return $table;
+		});
+
         $this->dropIfExists('apprenants');
         $this->dropIfExists('enseignants');
 
