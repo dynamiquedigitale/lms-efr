@@ -1,15 +1,17 @@
-/* eslint-disable sort-keys */
 export const STATUT = {
-	ACTIVE    : 'active',
-	COMPLETE  : 'complete',
-	INACTIVE  : 'inactive',
-	INCOMPLETE: 'incomplete',
-	INVALID   : 'invalid',
-	PENDING   : 'pending',
-	SUSPENDED : 'suspended',
-	UNPAID    : 'unpaid',
-	VALID     : 'valid',
+	ACTIVE     : 'active',
+	COMPLETE   : 'complete',
+	COMPLETED  : 'completed',
+	IN_PROGRESS: 'in-progress',
+	INACTIVE   : 'inactive',
+	INCOMPLETE : 'incomplete',
+	INVALID    : 'invalid',
+	PENDING    : 'pending',
+	SUSPENDED  : 'suspended',
+	UNPAID     : 'unpaid',
+	VALID      : 'valid',
 	
+	// eslint-disable-next-line sort-keys
 	percentageVariant,
 	variant,
 }

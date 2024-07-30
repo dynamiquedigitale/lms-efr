@@ -7,6 +7,7 @@ use App\Entities\Cours;
 use App\Entities\Formation;
 use App\Entities\Parcours;
 use App\Enums\Role;
+use App\Enums\Statut;
 use BlitzPHP\Exceptions\ValidationException;
 use BlitzPHP\Validation\Rule;
 
@@ -15,9 +16,15 @@ class ParcoursController extends AppController
 	public function index()
 	{
 		$search = $this->request->search;
+		$filter = $this->request->filter;
 		
 		$items = Parcours::when($search, function ($query) use ($search) {
 				$query->whereRelation('formation', fn($q) => $q->whereLike('intitule', $search));
+			})
+			->when($filter, function ($query) use ($filter) {
+				if ($filter != 'all') {
+					$query->where('statut', $filter);
+				}
 			})
 			->latest()
 			->with('formation', 'enseignant', 'apprenant')
@@ -26,6 +33,11 @@ class ParcoursController extends AppController
 			->toArray();
 		
 		$data['parcours'] = $items;
+		$data['stats']    = [];
+
+		foreach (['all', Statut::IN_PROGRESS, Statut::COMPLETED, Statut::UNPAID] as $statut) {
+			$data['stats'][$statut] = $statut === 'all' ? Parcours::count() : Parcours::where(compact('statut', 'statut'))->count();
+		}
 
 		return inertia('Admin/Parcours/Index', $data);
 	}
@@ -63,7 +75,7 @@ class ParcoursController extends AppController
 			foreach ($formation->lecons as $i => $lecon) {
 				$cours[] = [
 					'rang'     => ($i + 1),
-					'statut'   => $i == 0 ? 'in-progress' : 'inactive',
+					'statut'   => $i == 0 ? Statut::IN_PROGRESS : Statut::INACTIVE,
 					'lecon_id' => $lecon->id,
 				];
 			}

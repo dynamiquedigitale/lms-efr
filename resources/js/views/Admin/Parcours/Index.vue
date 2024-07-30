@@ -4,7 +4,20 @@
 			<b-col lg="3" sm="6">
 				<b-card body-class="d-flex align-items-center justify-content-between">
 					<div>
-						<h3 class="fw-bolder mb-75">21,459</h3>
+						<h3 class="fw-bolder mb-75">{{ stats.all }}</h3>
+						<span>{{ $t('parcours.crees') }}</span>
+					</div>
+					<div class="avatar bg-light-primary p-50">
+						<span class="avatar-content">
+							<app-icon name="briefcase" class="font-medium-4" />
+						</span>
+					</div>
+				</b-card>
+			</b-col>
+			<b-col lg="3" sm="6">
+				<b-card body-class="d-flex align-items-center justify-content-between">
+					<div>
+						<h3 class="fw-bolder mb-75">{{ stats[STATUT.IN_PROGRESS] }}</h3>
 						<span>{{ $t('parcours.en_cours') }}</span>
 					</div>
 					<div class="avatar bg-light-primary p-50">
@@ -17,7 +30,7 @@
 			<b-col lg="3" sm="6">
 				<b-card body-class="d-flex align-items-center justify-content-between">
 					<div>
-						<h3 class="fw-bolder mb-75">21,459</h3>
+						<h3 class="fw-bolder mb-75">{{ stats[STATUT.COMPLETED] }}</h3>
 						<span>{{ $t('parcours.termines') }}</span>
 					</div>
 					<div class="avatar bg-light-primary p-50">
@@ -30,25 +43,12 @@
 			<b-col lg="3" sm="6">
 				<b-card body-class="d-flex align-items-center justify-content-between">
 					<div>
-						<h3 class="fw-bolder mb-75">21,459</h3>
+						<h3 class="fw-bolder mb-75">{{ stats[STATUT.UNPAID] }}</h3>
 						<span>{{ $t('parcours.non_payer') }}</span>
 					</div>
 					<div class="avatar bg-light-primary p-50">
 						<span class="avatar-content">
-							<app-icon name="codepen" class="font-medium-4" />
-						</span>
-					</div>
-				</b-card>
-			</b-col>
-			<b-col lg="3" sm="6">
-				<b-card body-class="d-flex align-items-center justify-content-between">
-					<div>
-						<h3 class="fw-bolder mb-75">21,459</h3>
-						<span>{{ $t('parcours.termines') }}</span>
-					</div>
-					<div class="avatar bg-light-primary p-50">
-						<span class="avatar-content">
-							<app-icon name="book-open" class="font-medium-4" />
+							<app-icon name="dollar-sign" class="font-medium-4" />
 						</span>
 					</div>
 				</b-card>
@@ -66,9 +66,9 @@
 							@update:model-value="findItems()" 
 							:options="[
 								{ text: $t('filtre.all'), value: 'all' },
-								{ text: $t('parcours.en_cours'), value: 'en_cours' },
-								{ text: $t('parcours.non_payer'), value: 'non_payer' },
-								{ text: $t('parcours.termines'), value: 'termines' },
+								{ text: $t('parcours.en_cours'), value: STATUT.IN_PROGRESS },
+								{ text: $t('parcours.non_payer'), value: STATUT.UNPAID },
+								{ text: $t('parcours.termines'), value: STATUT.COMPLETED },
 							]" 
 						/>
 					</b-col>
@@ -84,6 +84,7 @@
 					<table class="table mb-0 text-nowrap">
 						<thead class="table-light">
 							<tr>
+								<th scope="col" class="border-0"></th>
 								<th scope="col" class="border-0">{{ $t('formations.title', 1) }}</th>
 								<th scope="col" class="border-0">{{ $t('apprenants.title', 1) }}</th>
 								<th scope="col" class="border-0">{{ $t('enseignants.title', 1) }}</th>
@@ -92,7 +93,8 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr v-for="{ id, cours_count, progression, statut, apprenant, enseignant, formation } in items" :key="id">
+							<tr v-for="({ id, cours_count, progression, statut, apprenant, enseignant, formation }, i) in items" :key="id">
+								<td>#{{ i + 1 }}</td>
 								<td>
 									<div class="d-lg-flex">
 										<a href="#">
@@ -179,6 +181,7 @@
 
 <script setup>
 import { computed, reactive, ref } from 'vue'
+import { Inertia } from '@inertiajs/inertia'
 
 // import DetailsParcours from './Details.vue'
 import FormParcours from './Form.vue'
@@ -186,12 +189,13 @@ import FormParcours from './Form.vue'
 import { $alert, $confirm, $toast } from '@/utils/alert'
 import { $t } from '@/plugins/i18n'
 import { handleSearch } from '@/utils/inertia'
-import { Inertia } from '@inertiajs/inertia'
+import { STATUT } from '@/enums/statut'
 
 defineOptions({ name: 'AdminListParcours' })
 
 const props = defineProps({
   	parcours: { required: true, type: Object },
+  	stats: { required: true, type: Object },
 })
 
 const openDialog = ref(false)

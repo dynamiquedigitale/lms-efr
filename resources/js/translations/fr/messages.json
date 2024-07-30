@@ -126,6 +126,7 @@
 	"obectif_pedagogique": "Obectif pédagogique",
 	"parcours": {
 		"title": "Parcours",
+		"crees": "Parcours crées",
 		"en_cours": "Parcours en cours",
 		"non_payer": "Parcours non payés",
 		"termines": "Parcours terminés"
