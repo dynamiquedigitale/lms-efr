@@ -1,54 +1,15 @@
 <template>
 	<page-wrapper :title="$t('liste_des_parcours')" :breadcrumb="[$t('parcours.title')]">
 		<b-row>
-			<b-col lg="3" sm="6">
+			<b-col lg="3" sm="6" v-for="{ icon, key } in typesParcours" :key="key">
 				<b-card body-class="d-flex align-items-center justify-content-between">
 					<div>
-						<h3 class="fw-bolder mb-75">{{ stats.all }}</h3>
-						<span>{{ $t('parcours.crees') }}</span>
+						<h3 class="fw-bolder mb-75">{{ stats[key] }}</h3>
+						<span>{{ $t(`parcours.${key == 'all' ? 'crees' : key}`) }}</span>
 					</div>
 					<div class="avatar bg-light-primary p-50">
 						<span class="avatar-content">
-							<app-icon name="briefcase" class="font-medium-4" />
-						</span>
-					</div>
-				</b-card>
-			</b-col>
-			<b-col lg="3" sm="6">
-				<b-card body-class="d-flex align-items-center justify-content-between">
-					<div>
-						<h3 class="fw-bolder mb-75">{{ stats[STATUT.IN_PROGRESS] }}</h3>
-						<span>{{ $t('parcours.en_cours') }}</span>
-					</div>
-					<div class="avatar bg-light-primary p-50">
-						<span class="avatar-content">
-							<app-icon name="briefcase" class="font-medium-4" />
-						</span>
-					</div>
-				</b-card>
-			</b-col>
-			<b-col lg="3" sm="6">
-				<b-card body-class="d-flex align-items-center justify-content-between">
-					<div>
-						<h3 class="fw-bolder mb-75">{{ stats[STATUT.COMPLETED] }}</h3>
-						<span>{{ $t('parcours.termines') }}</span>
-					</div>
-					<div class="avatar bg-light-primary p-50">
-						<span class="avatar-content">
-							<app-icon name="book-open" class="font-medium-4" />
-						</span>
-					</div>
-				</b-card>
-			</b-col>
-			<b-col lg="3" sm="6">
-				<b-card body-class="d-flex align-items-center justify-content-between">
-					<div>
-						<h3 class="fw-bolder mb-75">{{ stats[STATUT.UNPAID] }}</h3>
-						<span>{{ $t('parcours.non_payer') }}</span>
-					</div>
-					<div class="avatar bg-light-primary p-50">
-						<span class="avatar-content">
-							<app-icon name="dollar-sign" class="font-medium-4" />
+							<app-icon :name="icon" class="font-medium-4" />
 						</span>
 					</div>
 				</b-card>
@@ -64,12 +25,7 @@
 						<app-select 
 							v-model="filter.filter" 
 							@update:model-value="findItems()" 
-							:options="[
-								{ text: $t('filtre.all'), value: 'all' },
-								{ text: $t('parcours.en_cours'), value: STATUT.IN_PROGRESS },
-								{ text: $t('parcours.non_payer'), value: STATUT.UNPAID },
-								{ text: $t('parcours.termines'), value: STATUT.COMPLETED },
-							]" 
+							:options="typesParcours.map(({ key }) => ({ text: $t(key === 'all' ? 'filtre.all' : `parcours.${key}`), value: key }))" 
 						/>
 					</b-col>
 					<b-col cols="7">
@@ -197,6 +153,13 @@ const props = defineProps({
   	parcours: { required: true, type: Object },
   	stats: { required: true, type: Object },
 })
+
+const typesParcours = [
+	{ icon: 'briefcase', key: 'all' },
+	{ icon: 'book-open', key: STATUT.IN_PROGRESS },
+	{ icon: 'book', key: STATUT.COMPLETED },
+	{ icon: 'dollar-sign', key: STATUT.UNPAID },
+]
 
 const openDialog = ref(false)
 // const loading = ref(true)
