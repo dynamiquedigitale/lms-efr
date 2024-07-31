@@ -134,7 +134,6 @@
 										<th scope="col" class="border-0">{{ $t('formations.title', 1) }}</th>
 										<th scope="col" class="border-0">{{ $t('apprenants.title', 1) }}</th>
 										<th scope="col" class="border-0">{{ $t('statut.title') }}</th>
-										<th scope="col" class="border-0"></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -180,9 +179,6 @@
 										<td>
 											<b-progress class="mb-1" :value="progression" :variant="$percentageVariant(progression)" />
 											<span :class="`w-100 badge bg-${$statusVariant(statut)}`">{{ $t(`statut.${statut}`) }}</span>
-										</td>
-										<td>
-											<app-button icon="eye" :title="$t('details')" tooltip variant="flat-primary" />
 										</td>
 									</tr>
 								</tbody>
@@ -275,6 +271,10 @@
 			</b-row>
 		</b-overlay>
 	</app-modal>
+
+	<app-modal id="add-parcours" v-model="openAddParcours" :title="$t('parcours.attribuer_a_l_enseignant', [enseignant.username])" size="md" no-footer>
+		<form-parcours v-if="openAddParcours" action="create" :enseignant-id="enseignant.id" @reset="openAddParcours = false" @completed="getParcours" />
+	</app-modal>
 </template>
 
 <script setup>
@@ -283,6 +283,7 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { $alert, $confirm, $toast } from '@/utils/alert'
 import { $t } from '@/plugins/i18n'
 import DetailsRessource from '@/views/Admin/Ressources/Details.vue'
+import FormParcours from '@/views/Admin/Parcours/Form.vue'
 import { MAX_RESSOURCES_ENSEIGNANT } from '@/utils/constants'
 
 defineOptions({ name: 'DetailsEnseignant' })
@@ -298,13 +299,14 @@ const tabs = [
 const activeTab = ref('')
 const proceeding = ref(false)
 const submitted = ref(false)
-const item = ref(false)
+const item = ref(null)
 const search = reactive({
 	formations: '',
 	ressources: '',
 })
 
 const parcours = ref([])
+const openAddParcours = ref(false)
 const showableParcours = computed(() => parcours.value.filter(({ formation, apprenant }) => {
 	if (search.formations === '') {
 		return true
@@ -345,20 +347,21 @@ onMounted(() => changeTab('formations'))
 function changeTab(tab) {
 	activeTab.value = tab
 	if (tab === 'formations') {
-		getFormations()
+		getParcours()
 	} else if (tab === 'ressources') {
 		getResources()
 	}
 }
 function doAdd() {
 	if (activeTab.value === 'formations') {
-		// 
+		openAddParcours.value = true
 	} else if (activeTab.value === 'ressources') {
 		addRessource()
 	}
 }
 
-function getFormations() {
+function getParcours() {
+	openAddParcours.value = false
 	proceeding.value = true
 
 	// eslint-disable-next-line no-undef
@@ -366,7 +369,6 @@ function getFormations() {
 		parcours.value = data
 		proceeding.value = false
 	})
-
 }
 
 function getResources() {

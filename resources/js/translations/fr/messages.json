@@ -129,7 +129,8 @@
 		"crees": "Parcours crées",
 		"en_cours": "Parcours en cours",
 		"non_payer": "Parcours non payés",
-		"termines": "Parcours terminés"
+		"termines": "Parcours terminés",
+		"attribuer_a_l_enseignant": "Attribuer une formation à l'enseignant `{0}`"
 	},
 	"paiements": {
 		"title": "Paiements",

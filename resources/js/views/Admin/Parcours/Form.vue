@@ -1,6 +1,6 @@
 <template>
     <b-form @submit.prevent="submitForm" autocomplete="false" :disabled="submitted">
-		<app-form-group 
+		<b-overlay :show="fetching.formation" rounded="sm" spinner-type="grow" spinner-small><app-form-group 
 			v-model="form.formation_id" 
 			class="mb-1" type="select" select-key="intitule" 
 			required searchable 
@@ -8,8 +8,9 @@
 			:label="$t('formations.title')" 
 			:placeholder="$t('selectionnez')" 
 			:options="formations" 
-		/>
-		<app-form-group 
+			:disabled="formationId !== null" 
+		/></b-overlay>
+		<b-overlay :show="fetching.apprenant" rounded="sm" spinner-type="grow" spinner-small><app-form-group 
 			v-model="form.apprenant_id" 
 			class="mb-1" type="select" select-key="username"
 			required searchable 
@@ -17,21 +18,23 @@
 			:label="$t('apprenants.title')" 
 			:placeholder="$t('selectionnez')" 
 			:options="apprenants" 
-		/>
-		<app-form-group 
+			:disabled="apprenantId !== null" 
+		/></b-overlay>
+		<b-overlay :show="fetching.enseignant" rounded="sm" spinner-type="grow" spinner-small><app-form-group 
 			v-model="form.enseignant_id" 
 			class="mb-1" type="select" select-key="username"
 			required searchable 
 			:error="error.enseignant_id"  
 			:label="$t('enseignants.title')" 
 			:placeholder="$t('selectionnez')" 
-			:options="enseignants" 
-		/>
-		
-        <div class="w-100 d-flex justify-content-center flex-end mt-2 mb-1">
-            <app-button :text="$t('action.annuler')" variant="danger" class="me-2" @click.prevent="emit('reset')" />
-            <app-button type="submit" :text="$t(`action.${action === 'create' ? 'ajouter' : 'modifier'}`)" :loading="submitted" />
-        </div>
+			:options="enseignants"
+			:disabled="enseignantId !== null" 
+		/></b-overlay>
+			
+		<div class="w-100 d-flex justify-content-center flex-end mt-2 mb-1">
+			<app-button :text="$t('action.annuler')" variant="danger" class="me-2" @click.prevent="emit('reset')" />
+			<app-button type="submit" :text="$t(`action.${action === 'create' ? 'ajouter' : 'modifier'}`)" :loading="submitted" />
+		</div>
     </b-form>
 </template>
 
@@ -49,19 +52,27 @@ defineOptions({ name: 'FormParcours' })
 const emit = defineEmits(['completed', 'reset'])
 
 const props = defineProps({
-    action: { required: true, type: String },
+	action: { required: true, type: String },
+    apprenantId: { default: null, type: [Number] },
+    enseignantId: { default: null, type: [Number] },
+    formationId: { default: null, type: [Number] },
     item: { default: null, type: [Object, null] },
 })
 
+const fetching  = reactive({
+	apprenant : false,
+	enseignant: false,
+	formation : false,
+})
 const submitted = ref(false)
 
 const form = useForm({
 	// eslint-disable-next-line camelcase
-	apprenant_id : props.item?.apprenant_id || null,
+	apprenant_id : props.item?.apprenant_id || props.apprenantId,
 	// eslint-disable-next-line camelcase
-	enseignant_id: props.item?.enseignant_id || null,
+	enseignant_id: props.item?.enseignant_id || props.enseignantId,
 	// eslint-disable-next-line camelcase
-	formation_id : props.item?.formation_id || null,
+	formation_id : props.item?.formation_id || props.formationId,
 })
 const error = reactive({
 	// eslint-disable-next-line camelcase
@@ -85,12 +96,25 @@ onMounted(() => getItems())
 function getItems() {
 	const params = { limit: -1 }
 
+	fetching.apprenant  = true
+	fetching.enseignant = true
+	fetching.formation  = true
+
 	// eslint-disable-next-line no-undef
-	$.get(route('admin.apprenants.index'), params).done(({ data }) => apprenants.value = data)
+	$.get(route('admin.apprenants.index'), params).done(({ data }) => {
+		apprenants.value   = data
+		fetching.apprenant = false
+	})
 	// eslint-disable-next-line no-undef
-	$.get(route('admin.enseignants.index'), params).done(({ data }) => enseignants.value = data)
+	$.get(route('admin.enseignants.index'), params).done(({ data }) => {
+		enseignants.value   = data
+		fetching.enseignant = false
+	})
 	// eslint-disable-next-line no-undef
-	$.get(route('admin.formations.index'), params).done(({ data }) => formations.value = data)
+	$.get(route('admin.formations.index'), params).done(({ data }) => {
+		formations.value   = data
+		fetching.formation = false
+	})
 }
 
 function submitForm() {
