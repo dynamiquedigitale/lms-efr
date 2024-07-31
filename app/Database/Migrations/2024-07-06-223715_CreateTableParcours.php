@@ -17,8 +17,9 @@ class CreateTableParcours extends Migration
 			$table->foreignId('apprenant_id')->constrained();
 			$table->foreignId('enseignant_id')->constrained();
 			$table->foreignId('formation_id')->constrained();
-			$table->unsignedInteger('progression');
+			$table->unsignedFloat('progression')->default(0);
 			$table->enum('statut', [S::ACTIVE, S::INACTIVE, S::UNPAID, S::PENDING, S::IN_PROGRESS, S::COMPLETED])->default(S::ACTIVE);
+			$table->text('objectif')->nullable();
             $table->timestamps();
             $table->softDeletes();
     

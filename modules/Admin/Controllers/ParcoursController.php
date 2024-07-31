@@ -49,13 +49,16 @@ class ParcoursController extends AppController
 				'formation_id'  => ['required', 'integer', 'exists:formations,id'],
 				'enseignant_id' => ['required', 'integer', Rule::exists('users', 'id')->where('type', Role::ENSEIGNANT)],
 				'apprenant_id'  => ['required', 'integer', Rule::exists('users', 'id')->where('type', Role::APPRENANT)],
+				'objectif'      => ['nullable', 'string'],
+				'lecons'        => ['nullable', 'array'],
+				'lecons.*'      => ['integer', 'exists:lecons,id'],
             ]);
         }
         catch (ValidationException $e) {
             return back()->withErrors($e->getErrors()?->firstOfAll() ?: $e->getMessage());
         }
 
-		if (Parcours::where($post->except('enseignant_id'))->count()) {
+		if (Parcours::where($post->only('formation_id', 'apprenant_id'))->count()) {
 			return back()->withErrors('Cet apprenant suit déjà cette formation');
 		}
 
@@ -72,11 +75,15 @@ class ParcoursController extends AppController
 
 			$cours = [];
 
-			foreach ($formation->lecons as $i => $lecon) {
+			if (empty($lecons = $post['lecons'])) {
+				$lecons = $formation->lecons->map(fn($lecon) => $lecon->id)->all();
+			}
+
+			foreach ($lecons as $i => $lecon_id) {
 				$cours[] = [
 					'rang'     => ($i + 1),
 					'statut'   => $i == 0 ? Statut::IN_PROGRESS : Statut::INACTIVE,
-					'lecon_id' => $lecon->id,
+					'lecon_id' => $lecon_id,
 				];
 			}
 
@@ -84,7 +91,9 @@ class ParcoursController extends AppController
 				return back()->withErrors('Cette formation n\'a pas de leçon. Veuillez ajouter des leçons à la formation au préalable');
 			}
 
-			$parcours = Parcours::create($post->all() + ['progression' => 0]);
+			$parcours = Parcours::create($post->except('lecons', 'objectif') + [
+				'objectif' => $post['objectif'] ?? $formation->objectif,
+			]);
 			Cours::bulckInsert(array_map(fn($v) => $v + ['parcour_id' => $parcours->id], $cours));
 			
 			$db->commit();

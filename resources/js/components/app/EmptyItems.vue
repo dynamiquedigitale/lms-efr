@@ -4,9 +4,9 @@
 			<app-icon name="exclamation-circle" variant="danger" type="fa" size="4x" />
 		</slot>
         <br />
-        <app-button v-if="action !== null && btnPosition === 'top'" :text="btnText" @click="action" variant="secondary" class="mb-4" />
+        <app-button v-if="action !== null && btnPosition === 'top'" :text="btnText" @click="action" variant="secondary" class="mb-2" />
         <h3 class="my-2 fw-bold">{{ trim(message, '.') }}. {{ instruction }}</h3>
-        <app-button v-if="action !== null && btnPosition === 'bottom'" :text="btnText" @click="action" variant="secondary" class="mt-4" />
+        <app-button v-if="action !== null && btnPosition === 'bottom'" :text="btnText" @click="action" variant="secondary" class="mt-2" />
     </b-alert>
 </template>
 

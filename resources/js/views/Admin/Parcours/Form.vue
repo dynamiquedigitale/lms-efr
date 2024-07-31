@@ -1,35 +1,70 @@
 <template>
     <b-form @submit.prevent="submitForm" autocomplete="false" :disabled="submitted">
-		<b-overlay :show="fetching.formation" rounded="sm" spinner-type="grow" spinner-small><app-form-group 
-			v-model="form.formation_id" 
-			class="mb-1" type="select" select-key="intitule" 
-			required searchable 
-			:error="error.formation_id" 
-			:label="$t('formations.title')" 
-			:placeholder="$t('selectionnez')" 
-			:options="formations" 
-			:disabled="formationId !== null" 
-		/></b-overlay>
-		<b-overlay :show="fetching.apprenant" rounded="sm" spinner-type="grow" spinner-small><app-form-group 
-			v-model="form.apprenant_id" 
-			class="mb-1" type="select" select-key="username"
-			required searchable 
-			:error="error.apprenant_id" 
-			:label="$t('apprenants.title')" 
-			:placeholder="$t('selectionnez')" 
-			:options="apprenants" 
-			:disabled="apprenantId !== null" 
-		/></b-overlay>
-		<b-overlay :show="fetching.enseignant" rounded="sm" spinner-type="grow" spinner-small><app-form-group 
-			v-model="form.enseignant_id" 
-			class="mb-1" type="select" select-key="username"
-			required searchable 
-			:error="error.enseignant_id"  
-			:label="$t('enseignants.title')" 
-			:placeholder="$t('selectionnez')" 
-			:options="enseignants"
-			:disabled="enseignantId !== null" 
-		/></b-overlay>
+		<b-nav pills class="mb-1" v-if="form.formation_id">
+			<b-nav-item v-for="({ icon, key, title }) in tabs" :key="key" :active="activeTab == key" @click.prevent="activeTab = key">
+				<app-icon :name="icon" />
+				<span class="fw-bold">{{ title }}</span>
+			</b-nav-item>
+		</b-nav>
+
+		<div v-show="activeTab === 'details'">
+			<b-overlay :show="fetching.formation" rounded="sm" spinner-type="grow" spinner-small><app-form-group 
+				v-model="form.formation_id" 
+				class="mb-1" type="select" select-key="intitule" 
+				required searchable 
+				:error="error.formation_id" 
+				:label="$t('formations.title')" 
+				:placeholder="$t('selectionnez')" 
+				:options="formations" 
+				:disabled="formationId !== null" 
+			/></b-overlay>
+			<b-overlay :show="fetching.apprenant" rounded="sm" spinner-type="grow" spinner-small><app-form-group 
+				v-model="form.apprenant_id" 
+				class="mb-1" type="select" select-key="username"
+				required searchable 
+				:error="error.apprenant_id" 
+				:label="$t('apprenants.title')" 
+				:placeholder="$t('selectionnez')" 
+				:options="apprenants" 
+				:disabled="apprenantId !== null" 
+			/></b-overlay>
+			<b-overlay :show="fetching.enseignant" rounded="sm" spinner-type="grow" spinner-small><app-form-group 
+				v-model="form.enseignant_id" 
+				class="mb-1" type="select" select-key="username"
+				required searchable 
+				:error="error.enseignant_id"  
+				:label="$t('enseignants.title')" 
+				:placeholder="$t('selectionnez')" 
+				:options="enseignants"
+				:disabled="enseignantId !== null" 
+			/></b-overlay>
+		</div>
+		<div v-show="activeTab === 'objectif'">
+			<editor v-model="form.objectif" height="18em" @save="submitForm" />
+		</div>
+		<div v-show="activeTab === 'lecons'" style="max-height: 18em" class="overflow-y-auto">
+			<app-empty-items 
+				v-if="!form.lecons.length" 
+				:message="$t('aucune_lecon_attachee_au_parcours')"
+				:btn-text="$t('action.reinitialiser_la_liste')"
+				instruction=""
+				:action="refreshListLecon"
+			/>
+			<draggable v-else v-model="form.lecons" item-key="id" ghost-class="bg-primary">
+				<template #item="{ element: lecon }">
+					<ul class="list-group mb-1">
+						<li class="list-group-item d-flex align-items-center">
+							<i class="fas fa-up-down"></i>
+							<div class="avatar bg-light-primary avatar-md mx-1">
+								<span class="avatar-content">{{ lecon.abbr }}</span>
+							</div>
+							<span>{{ lecon.intitule }}</span>
+							<app-button variant="flat-danger" icon="x" tooltip class="p-0 ms-auto" @click.prevent="removeLecon(lecon)" />
+						</li>
+					</ul>
+				</template>
+			</draggable>
+		</div>
 			
 		<div class="w-100 d-flex justify-content-center flex-end mt-2 mb-1">
 			<app-button :text="$t('action.annuler')" variant="danger" class="me-2" @click.prevent="emit('reset')" />
@@ -39,11 +74,14 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
+import draggable from 'vuedraggable'
+import { html_entity_decode } from 'php-in-js/modules/string'
 import { useForm } from '@inertiajs/inertia-vue3'
 
 import { $alert, $toast } from '@/utils/alert'
 import { $t } from '@/plugins/i18n'
+import Editor from '@/components/efr/Editor.vue'
 
 const { $ } = window
 
@@ -59,6 +97,13 @@ const props = defineProps({
     item: { default: null, type: [Object, null] },
 })
 
+const tabs = [
+	{ icon: 'info', key: 'details', title: $t('details') },
+	{ icon: 'file', key: 'objectif', title: $t('obectif_pedagogique') },
+	{ icon: 'book-open', key: 'lecons', title: $t('lecons.title') },
+]
+const activeTab = ref('details')
+
 const fetching  = reactive({
 	apprenant : false,
 	enseignant: false,
@@ -73,6 +118,8 @@ const form = useForm({
 	enseignant_id: props.item?.enseignant_id || props.enseignantId,
 	// eslint-disable-next-line camelcase
 	formation_id : props.item?.formation_id || props.formationId,
+	lecons: [],
+	objectif: props.item?.objectif || null,
 })
 const error = reactive({
 	// eslint-disable-next-line camelcase
@@ -86,6 +133,12 @@ const error = reactive({
 const apprenants  = ref([])
 const enseignants = ref([])
 const formations  = ref([])
+
+watch(() => form.formation_id, (val) => {
+	const objectif      = formations.value.find(({ id }) => id == val)?.objectif
+	      form.objectif = html_entity_decode(objectif)
+	refreshListLecon()
+})
 
 
 onMounted(() => getItems())
@@ -114,6 +167,19 @@ function getItems() {
 	$.get(route('admin.formations.index'), params).done(({ data }) => {
 		formations.value   = data
 		fetching.formation = false
+	})
+}
+
+/**
+ * Retire les lecons lors de la creation du parcours
+ */
+function removeLecon(lecon) {
+	form.lecons = [...form.lecons].filter(({ id }) => id != lecon.id)
+}
+function refreshListLecon() {
+	// eslint-disable-next-line no-undef
+	$.get(route('admin.formations.lecons', form.formation_id)).done(data => {
+		form.lecons = data
 	})
 }
 
@@ -160,9 +226,15 @@ function submitForm() {
 	}
 	
 	if (props.action === 'create') {
-		form.post(url, options)
+		form.transform(data => ({
+			...data,
+			lecons: data.lecons.map(({ id }) => id),
+		})).post(url, options)
 	} else {
-		form.patch(url, options)
+		form.transform(data => ({
+			...data,
+			lecons: data.lecons.map(({ id }) => id),
+		})).patch(url, options)
 	}
 }
 </script>

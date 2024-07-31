@@ -15,6 +15,7 @@
 	"aucun_parcours_enregistre": "Aucun parcours enregistré",
 	"aucune_formation_enregistree": "Aucune formation enregistrée",
 	"aucune_lecon_attachee_a_cette_formation": "Aucune leçon attachée à cette formation",
+	"aucune_lecon_attachee_au_parcours": "Aucune leçon attachée au parcours",
 	"aucune_lecon_enregistree": "Aucune leçon enregistrée",
 	"aucun_enseignant_affecter_a_cette_ressource": "Aucun enseignant affecté à cette ressource",
 	"aucun_enseignant_disponible_pour_etre_affecter_a_cette_ressource": "Aucun enseignant disponible pour être affecter à cette ressource",
@@ -24,6 +25,7 @@
 		"editer": "Editer",
 		"modifier": "Modifier",
 		"renommer": "Renommer",
+		"reinitialiser_la_liste": "Réinitialiser la liste",
 		"retirer": "Retirer",
 		"supprimer": "Supprimer",
 		"valider": "Valider"
