@@ -213,6 +213,7 @@
 	"veuillez_selectionner_la_lecon_a_ajouter": "Veuillez sélectionner le leçon à ajouter",
 	"veuillez_selectionner_les_ressources_que_vous_souhaitez_attribuer_a_cet_enseignant": "Veuillez sélectionner les ressources que vous souhaitez attribuer à cet enseignant",
 	"voulez_vous_vraiment_retirer_la_lecon_X_a_la_formation_Y": "Voulez-vous vraiment retirer la leçon `{0}` à la formation `{1}` ?",
+	"voulez_vous_vraiment_retirer_la_lecon_X_au_parcours_Y": "Voulez-vous vraiment retirer la leçon `{0}` au parcours `{1}` ?",
 	"voulez_vous_vraiment_retirer_la_ressource_X_a_Y": "Voulez-vous vraiment retirer la ressource `{0}` à `{1}` ?",
 	"voulez_vous_vraiment_supprimer_la_formation_x": "Voulez-vous vraiment supprimer la formation `{0}` ?",
 	"voulez_vous_vraiment_supprimer_la_lecon_x": "Voulez-vous vraiment supprimer la leçon `{0}` ?",

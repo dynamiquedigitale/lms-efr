@@ -94,7 +94,7 @@
 												<app-icon name="edit" class="align-middle me-50" />
 												<span class="align-middle">{{ $t('action.editer') }}</span>
 											</a>
-											<a class="dropdown-item text-danger" href="#" @click.prevent>
+											<a class="dropdown-item text-danger" href="#" @click.prevent="removeCours(cour)">
 												<app-icon name="trash-2" class="align-middle me-50" />
 												<span class="align-middle">{{ $t('action.retirer') }}</span>
 											</a>
@@ -122,7 +122,7 @@
 import { computed, onMounted, ref } from 'vue'
 import draggable from 'vuedraggable'
 
-import { $alert, $toast } from '@/utils/alert'
+import { $alert, $confirm, $toast } from '@/utils/alert'
 import { $t } from '@/plugins/i18n'
 import Editor from '@/components/efr/Editor.vue'
 import { html_entity_decode } from 'php-in-js/modules/string'
@@ -242,5 +242,23 @@ function processEditCours() {
 		}
 		submitted.value = false
 	})
+}
+/**
+ * Supprime un cour
+ */
+function removeCours(cour) {
+	$confirm($t('voulez_vous_vraiment_retirer_la_lecon_X_au_parcours_Y', [cour.lecon.intitule, formation.value.intitule]), () => {
+		// eslint-disable-next-line no-undef
+		$.post(route('admin.cours.delete', cour.id), { _method: 'DELETE' }).done(() => {
+			getCours()
+		}).fail(({ responseJSON }) => {
+			const { errors } = responseJSON
+			if (errors.default) {
+				$alert.error(errors.default)
+			} else {
+				$alert.error($t('une_erreur_s_est_produite'))
+			}
+		})
+	}, { showLoaderOnConfirm: true })
 }
 </script>

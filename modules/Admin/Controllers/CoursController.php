@@ -32,6 +32,18 @@ class CoursController extends AppController
 		return $this->response->json(['message' => __('Cours édité avec succès')]);
 	}
 
+	public function delete($id = null)
+	{
+		/** @var Cours $cours */
+		if (empty($cours = Cours::find($id))) {
+			return $this->response->json(['errors' => ['default' => __('Cours non reconnu')]], StatusCode::NOT_FOUND);
+		}
+
+		$cours->delete();
+
+		return $this->response->json(['message' => __('Cours supprimé avec succès')]);
+	}
+
 	/**
 	 * Liste des cours d'un parcours
 	 * 
