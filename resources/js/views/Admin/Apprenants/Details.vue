@@ -103,28 +103,92 @@
 			</b-nav>
 
 			<b-overlay :show="proceeding" rounded="sm">
-				<b-card v-if="activeTab === 'formations'" no-body>
+				<b-card no-body>
 					<b-card-header class="row">
-						<b-col md="2"></b-col>
-						<b-col md="8">
+						<b-col md="7"></b-col>
+						<b-col md="5">
 							<div class="d-flex align-items-center justify-content-end flex-md-row flex-column mb-3 mb-md-0">
-								<app-input-search />
-								<app-button :text="$t('assigner_une_formation')" icon="plus" :tooltip="{placement: 'bottom'}" />
+								<app-input-search v-model="search[activeTab]" class="me-1" />
+								<app-button :text="addBtnTooltip" icon="plus" :tooltip="{placement: 'bottom'}" @click.prevent="doAdd" />
 							</div>
 						</b-col>
 					</b-card-header>
 					
-					{{ formations }}
+					<b-card-body class="border-top pt-1" v-if="activeTab === 'parcours'">
+						<div class="card-datatable table-responsive mb-3 pt-0 border-0 overflow-y-hidden">
+							<table class="table mb-0 text-nowrap">
+								<thead class="table-light">
+									<tr>
+										<th scope="col" class="border-0"></th>
+										<th scope="col" class="border-0">{{ $t('formations.title') }}</th>
+										<th scope="col" class="border-0">{{ $t('enseignants.title') }}</th>
+										<th scope="col" class="border-0">{{ $t('statut.title') }}</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr v-for="({ id, cours_count, progression, statut, enseignant, formation }, i) in showableParcours" :key="id">
+										<td>#{{ i + 1 }}</td>
+										<td>
+											<div class="d-lg-flex">
+												<a href="#">
+													<img :src="formation.cover_url" alt="" width="60" height="60" class="rounded">
+												</a>
+												<div class="ms-lg-1 mt-2 mt-lg-0">
+													<h4 class="mb-1 h5">
+														<a href="#" class="text-inherit text-truncate">{{ formation.intitule }}</a>
+													</h4>
+													<ul class="list-inline fs-6 mb-0">
+														<li class="list-inline-item">
+															<app-icon name="book-open" class="me-1" />
+															<b>{{ cours_count }}</b> {{ $t('lecons.title', cours_count).toLowerCase() }}
+														</li>
+														<li class="list-inline-item">
+															<app-icon name="bar-chart" class="me-1" /> 
+															{{ $t(`difficulte.${formation.niveau}`) }}
+														</li>
+													</ul>
+												</div>
+											</div>
+										</td>
+										<td>
+											<div class="d-lg-flex">
+												<a href="#">
+													<img :src="enseignant.avatar" alt="" width="60" height="60" class="rounded">
+												</a>
+												<div class="ms-lg-1 mt-2 mt-lg-0">
+													<h4 class="mb-1 h5">
+														<a href="#" class="text-inherit text-truncate">{{ enseignant.username }}</a>
+													</h4>
+													<ul class="list-inline fs-6 mb-0">
+														<li class="list-inline-item">{{ enseignant.user_email }}</li>
+													</ul>
+												</div>
+											</div>
+										</td>
+										<td>
+											<b-progress class="mb-1" :value="progression" :variant="$percentageVariant(progression)" />
+											<span :class="`w-100 badge bg-${$statusVariant(statut)}`">{{ $t(`statut.${statut}`) }}</span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</b-card-body>
 				</b-card>
 			</b-overlay>
 		</b-col>
 	</b-row>
+
+	<app-modal id="add-parcours" v-model="openAddParcours" :title="$t('parcours.attribuer_a_l_apprenant', [apprenant.username])" size="md" no-footer>
+		<form-parcours v-if="openAddParcours" action="create" :apprenant-id="apprenant.id" @reset="openAddParcours = false" @completed="getParcours" />
+	</app-modal>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 
 import { $t } from '@/plugins/i18n'
+import FormParcours from '@/views/Admin/Parcours/Form.vue'
 
 defineOptions({ name: 'DetailsApprenant' })
 
@@ -133,35 +197,61 @@ const props = defineProps({
 })
 
 const tabs = [
-	{ icon: 'briefcase', key: 'formations', title: $t('formations.suivies') },
+	{ icon: 'briefcase', key: 'parcours', title: $t('formations.suivies') },
 	{ icon: 'check', key: 'evaluations', title: $t('evaluations.effectuees') },
-	{ icon: 'users', key: 'encardrants', title: $t('encardrants.title') },
 	{ icon: 'dollar-sign', key: 'paiements', title: $t('paiements.effectues') },
 ]
 const activeTab = ref('')
 const proceeding = ref(false)
+const search = reactive({
+	parcours: '',
+	ressources: '',
+})
 
-const formations = ref([])
+const parcours = ref([])
+const openAddParcours = ref(false)
+const showableParcours = computed(() => parcours.value.filter(({ formation, enseignant }) => {
+	if (search.parcours === '') {
+		return true
+	}
+
+	return formation.intitule.toLowerCase().includes(search.parcours.toLowerCase()) 
+		|| enseignant.username.toLowerCase().includes(search.parcours.toLowerCase())
+}))
+
+const addBtnTooltip = computed(() => {
+	if (activeTab.value === 'parcours') {
+		return $t('assigner_une_formation')
+	}
+	return ''
+})
 
 
-onMounted(() => changeTab('formations'))
+onMounted(() => changeTab('parcours'))
 
 
 function changeTab(tab) {
 	activeTab.value = tab
-	if (tab === 'formations') {
-		getFormations()
+	if (tab === 'parcours') {
+		getParcours()
+	}
+}
+function doAdd() {
+	if (activeTab.value === 'parcours') {
+		openAddParcours.value = true
 	}
 }
 
-function getFormations() {
+
+function getParcours() {
+	openAddParcours.value = false
 	proceeding.value = true
 
 	// eslint-disable-next-line no-undef
-	$.get(route('admin.apprenants.formations', props.apprenant.id)).done(data => {
-		console.log({ data })
+	$.get(route('admin.apprenants.parcours', props.apprenant.id)).done(data => {
+		parcours.value = data
+		proceeding.value = false
 	})
-
 }
 
 </script>

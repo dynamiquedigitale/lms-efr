@@ -4,6 +4,7 @@ namespace App\Admin\Controllers;
 
 use App\Admin\Services\UserService;
 use App\Controllers\AppController;
+use App\Entities\Parcours;
 use App\Enums\Role;
 use BlitzPHP\Exceptions\ValidationException;
 
@@ -45,9 +46,11 @@ class ApprenantsController extends AppController
 	/**
 	 * Liste des formations suivies par un apprenant
 	 */
-	public function formations($id) 
+	public function parcours($id)
 	{
-		return compact('id');
-		// return Parcour::where('user_id', $id)->withCount(['cours', 'examens'])->get();
+		return Parcours::where('apprenant_id', $id)
+			->with(['enseignant', 'formation'])
+			->withCount('cours')
+			->get();
 	}
 }

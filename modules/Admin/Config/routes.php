@@ -8,7 +8,7 @@ Route::middleware(['session', 'force-reset'])->prefix('admin')->namespace('\App\
 	Route::name('admin.home')->get('/', 'Home::index');
 
 	Route::controller('ApprenantsController')->prefix('apprenants')->group(static function() {
-		Route::name('admin.apprenants.formations')->get('/(:num)/formations', 'formations/$1');
+		Route::name('admin.apprenants.parcours')->get('/(:num)/parcours', 'parcours/$1');
 	});
 	Route::name('admin.apprenants')->presenter('apprenants');
 	
