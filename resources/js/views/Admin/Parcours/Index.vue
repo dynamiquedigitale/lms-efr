@@ -104,7 +104,9 @@
 									</div>
 								</td>
 								<td>
-									<b-progress class="mb-1" :value="progression" :variant="$percentageVariant(progression)" />
+									<b-progress class="mb-1">
+										<b-progress-bar :value="progression" :class="`bg-${$percentageVariant(progression)}`" />
+									</b-progress>
 									<span :class="`w-100 badge bg-${$statusVariant(statut)}`">{{ $t(`statut.${statut}`) }}</span>
 								</td>
 								<td>
@@ -129,7 +131,7 @@
 		</b-card>
 	</page-wrapper>
 
-	<app-modal id="parcours-dialog" v-model="openDialog" :title="modalTitle" :size="action == 'details' ? 'xl' : 'md'" no-footer @close="closeDialog">
+	<app-modal id="parcours-dialog" v-model="openDialog" :title="modalTitle" :size="action == 'details' ? 'lg' : 'md'" no-footer @close="closeDialog">
 		<form-parcours v-if="openDialog && action != 'details'" :action="action" :item="item" @reset="closeDialog" @completed="closeDialog" />
 		<details-parcours v-else-if="openDialog && action == 'details'" :parcours="item" />
 	</app-modal>
@@ -139,7 +141,7 @@
 import { computed, reactive, ref } from 'vue'
 import { Inertia } from '@inertiajs/inertia'
 
-// import DetailsParcours from './Details.vue'
+import DetailsParcours from './Details.vue'
 import FormParcours from './Form.vue'
 
 import { $alert, $confirm, $toast } from '@/utils/alert'

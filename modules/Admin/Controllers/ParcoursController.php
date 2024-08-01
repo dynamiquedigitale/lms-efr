@@ -105,4 +105,30 @@ class ParcoursController extends AppController
 		
 		return back()->with('success', __('Parcours crée avec succès'));
 	}
+
+	public function update($id = null)
+	{
+		try {
+            $post = $this->validate([
+				'formation_id'  => ['nullable', 'integer', 'exists:formations,id'],
+				'enseignant_id' => ['nullable', 'integer', Rule::exists('users', 'id')->where('type', Role::ENSEIGNANT)],
+				'apprenant_id'  => ['nullable', 'integer', Rule::exists('users', 'id')->where('type', Role::APPRENANT)],
+				'objectif'      => ['nullable', 'string'],
+				'progression'   => ['nullable', 'float'],
+				'statut'        => ['nullable', Rule::in([Statut::ACTIVE, Statut::INACTIVE, Statut::UNPAID, Statut::PENDING, Statut::IN_PROGRESS, Statut::COMPLETED])],
+            ]);
+        }
+        catch (ValidationException $e) {
+            return back()->withErrors($e->getErrors()?->firstOfAll() ?: $e->getMessage());
+		}
+
+		/** @var Parcous $parcours */
+		if (empty($parcours = Parcours::find($id))) {
+			return back()->withErrors(__('Parcours non reconnu'));
+		}
+
+		$parcours->update(array_filter($post->all()));
+
+		return back()->with('success', __('Parcours éditée avec succès'));	
+	}
 }

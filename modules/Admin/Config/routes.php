@@ -40,4 +40,10 @@ Route::middleware(['session', 'force-reset'])->prefix('admin')->namespace('\App\
 	Route::name('admin.formations')->resource('formations');
 
 	Route::name('admin.parcours')->resource('parcours');
+	
+	Route::controller('CoursController')->prefix('cours')->group(static function() {
+		Route::name('admin.cours.sort')->patch('/(:num)/sort', 'sort/$1');
+		Route::name('admin.cours.parcours')->get('/(:num)/parcours', 'parcours/$1');
+	});
+	Route::name('admin.cours')->resource('cours');
 });

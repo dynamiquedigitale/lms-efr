@@ -30,7 +30,7 @@
 			<p>I'm the second tab</p>
 		</b-tab>
 		<b-tab>
-			<template #title><app-icon name="users" /><span class="align-middle ms-25">{{ $t('enseignants') }}</span></template>
+			<template #title><app-icon name="users" /><span class="align-middle ms-25">{{ $t('enseignants.title') }}</span></template>
 			<b-overlay :show="loading" rounded="sm" :opacity="0.95">
 				<app-empty-items v-if="!enseignants.length" :message="$t('aucun_enseignant_affecter_a_cette_ressource')" />
 				<b-row class="">

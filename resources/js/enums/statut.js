@@ -46,6 +46,7 @@ function variant(statut) {
 		case NIVEAU.AVANCE:
 			return 'warning'
 		case NIVEAU.MOYEN:
+		case STATUT.IN_PROGRESS:
 			return 'info'
 		default:
 			return 'light'

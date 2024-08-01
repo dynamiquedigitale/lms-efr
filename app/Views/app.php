@@ -12,6 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500;1,600">
 	<link rel="stylesheet" href="<?= lib_css_url('vendors.min.css') ?>">
+	<link rel="stylesheet" href="<?= lib_css_url('bootstrap/bootstrap-5.3.min.css') ?>" />
 	<link rel="stylesheet" href="<?= lib_css_url('bootstrap/bootstrap.min.css') ?>" />
     <link rel="stylesheet" href="<?= lib_css_url('bootstrap/bootstrap-extended.min.css') ?>" />
     <link rel="stylesheet" href="<?= lib_css_url('fontawesome/fontawesome.css') ?>" />

@@ -176,6 +176,7 @@
 		"title": "Statut",
 		"active": "Actif",
 		"inactive": "Inactif",
+		"in-progress": "En cours",
 		"incomplete": "Incomplet",
 		"pending": "En attente",
 		"unpaid": "Non payé"

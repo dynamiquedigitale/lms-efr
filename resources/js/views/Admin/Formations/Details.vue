@@ -46,7 +46,7 @@
 					</div>
 				</b-form-group>
 				<app-empty-items v-if="!lecons.length" :message="$t('aucune_lecon_attachee_a_cette_formation')" />
-				<draggable v-else v-model="lecons" item-key="id" ghost-class="bg-primary" @update="sortLecon">
+				<draggable v-else v-model="lecons" item-key="id" @update="sortLecon">
 					<template #item="{ element: lecon }">
 						<ul class="list-group mb-1">
 							<li class="list-group-item d-flex align-items-center">
