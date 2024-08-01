@@ -114,6 +114,9 @@
 	"liste_des_formations": "Liste des formations",
 	"liste_des_lecons": "Liste des leçons",
 	"liste_des_parcours": "Liste des parcours",
+	"meetings": {
+		"title": "Meeting | Meetings"
+	},
 	"nom": {
 		"title": "Nom",
 		"famille": "Nom de famille"
@@ -161,7 +164,8 @@
 		"attribuer_aux_enseignant": "Attribuer la ressource `{0}` aux enseignants"
 	},
 	"resume": {
-		"title": "Résumé"
+		"title": "Résumé",
+		"modifier_avec_succes": "Résumé modifié avec succès"
 	},
 	"selectionnez": "Sélectionnez",
 	"selectionnez_la_lecon_a_ajouter": "Sélectionnez la leçon à ajouter",

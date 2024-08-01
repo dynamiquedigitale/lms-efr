@@ -139,12 +139,10 @@
 
 <script setup>
 import { computed, reactive, ref } from 'vue'
-import { Inertia } from '@inertiajs/inertia'
 
 import DetailsParcours from './Details.vue'
 import FormParcours from './Form.vue'
 
-import { $alert, $confirm, $toast } from '@/utils/alert'
 import { $t } from '@/plugins/i18n'
 import { handleSearch } from '@/utils/inertia'
 import { STATUT } from '@/enums/statut'
@@ -207,41 +205,12 @@ function showParcours(id) {
 }
 
 /**
- * Supprime une lecon
- */
-function deleteLecon(lecon) {
-	$confirm($t('voulez_vous_vraiment_supprimer_la_lecon_x', [lecon.intitule]), () => {
-		// eslint-disable-next-line no-undef
-		Inertia.delete(route('admin.lecons.delete', lecon.id), {}, {
-			onError(errors) {
-				if (errors.default) {
-					$alert.error(errors.default)
-				} else {
-					$alert.error($t('une_erreur_s_est_produite'))
-				}
-			},
-			onSuccess({ props }) {
-				$toast.success(props.flash.success)
-			},
-		})
-	}, { showLoaderOnConfirm: true })
-}
-
-/**
  * Provoque la fermeture de la modale
  */
  function closeDialog() {
     openDialog.value = false
     item.value = null
     action.value = null
-}
-/**
- * Lorsque la modale est effectivement fermee
- */
-function onCloseDialog() {
-    if (action.value === 'details') {
-        // refresh()
-    }
 }
 
 function findItems(limit){

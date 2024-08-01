@@ -4,12 +4,34 @@ namespace App\Admin\Controllers;
 
 use App\Controllers\AppController;
 use App\Entities\Cours;
+use App\Enums\Statut;
 use BlitzPHP\Contracts\Http\StatusCode;
 use BlitzPHP\Exceptions\ValidationException;
 use BlitzPHP\Validation\Rule;
 
 class CoursController extends AppController
 {
+	public function update($id = null)
+	{
+		try {
+            $post = $this->validate([
+				'contenu' => ['nullable', 'string'],
+				'statut'  => ['nullable', Rule::in([Statut::INACTIVE, Statut::IN_PROGRESS, Statut::COMPLETE])],
+            ]);
+        }
+        catch (ValidationException $e) {
+			return $this->response->json(['errors' => $e->getErrors()?->firstOfAll() ?: $e->getMessage()], StatusCode::BAD_REQUEST);
+		}
+		/** @var Cours $cours */
+		if (empty($cours = Cours::find($id))) {
+			return $this->response->json(['errors' => ['default' => __('Cours non reconnu')]], StatusCode::NOT_FOUND);
+		}
+
+		$cours->update(array_filter($post->all()));
+		
+		return $this->response->json(['message' => __('Cours édité avec succès')]);
+	}
+
 	/**
 	 * Liste des cours d'un parcours
 	 * 

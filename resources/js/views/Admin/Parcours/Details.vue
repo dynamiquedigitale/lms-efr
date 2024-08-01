@@ -90,7 +90,7 @@
 									<div class="dropdown ms-1 float-end">
 										<app-button variant="light" icon="more-horizontal" class="p-0" data-bs-toggle="dropdown" text="" />
 										<div class="dropdown-menu dropdown-menu-end">
-											<a class="dropdown-item" href="#" @click.prevent>
+											<a class="dropdown-item" href="#" @click.prevent="editCours(cour)">
 												<app-icon name="edit" class="align-middle me-50" />
 												<span class="align-middle">{{ $t('action.editer') }}</span>
 											</a>
@@ -112,6 +112,10 @@
 		</div>
 		<editor v-else-if="activeTab === 'objectif'" v-model="objectif" height="25em" @save="updateObjectif" />
 	</b-overlay>
+
+	<app-modal id="edit" v-model="openEditDialog" :title="editDialogTitle" @ok="processEdit" :submitted="submitted" @close="openEditDialog = false">
+		<editor v-if="manipulate == 'cours'" v-model="contenuCours" height="26em" @save="processEditCours" />
+	</app-modal>
 </template>
 
 <script setup>
@@ -134,17 +138,31 @@ const tabs = [
 	{ icon: 'info', key: 'details', title: $t('details') },
 	{ icon: 'file', key: 'objectif', title: $t('obectif_pedagogique') },
 	{ icon: 'book-open', key: 'cours', title: $t('lecons.title', 2) },
+	{ icon: 'video', key: 'meetings', title: $t('meetings.title', 2) },
 ]
 const activeTab = ref('')
 const proceeding = ref(false)
+const submitted = ref(false)
 
-const objectif = ref(html_entity_decode(props.parcours.objectif))
+const objectif = ref(html_entity_decode(props.parcours.objectif || ''))
 
 const apprenant  = computed(() => props.parcours.apprenant)
 const enseignant = computed(() => props.parcours.enseignant)
 const formation  = computed(() => props.parcours.formation)
 
+const openEditDialog = ref(false)
+const manipulate = ref(null) 
+const item = ref(null) // element en cours de manipulation (cours, meeting)
+const editDialogTitle = computed(() => {
+	if (manipulate.value === 'cours') {
+		return $t('resume.title') + ': ' + item.value.lecon.intitule
+	}
+	return ''
+})
+
 const cours = ref([])
+const contenuCours = ref(null)
+
 
 
 onMounted(() => changeTab('details'))
@@ -179,6 +197,12 @@ function updateObjectif() {
 	})
 }
 
+function processEdit() {
+	if (manipulate.value === 'cours') {
+		processEditCours()
+	}
+}
+
 /**
  * Recupere la liste des cours du parcours
  */
@@ -196,5 +220,27 @@ function getCours() {
 function sortCours() {
 	// eslint-disable-next-line no-undef
 	$.post(route('admin.cours.sort', props.parcours.id), { _method: 'PATCH', cours: [...cours.value].map(({ id }) => id) })
+}
+function editCours(cour) {
+	item.value           = cour
+	manipulate.value     = 'cours'
+	contenuCours.value   = html_entity_decode(cour.contenu || '')
+	openEditDialog.value = true
+}
+function processEditCours() {
+	submitted.value = true
+	// eslint-disable-next-line no-undef
+	$.post(route('admin.cours.update', item.value.id), { _method: 'PATCH', contenu: contenuCours.value }).done(() => {
+		submitted.value = false
+		$toast.success($t('resume.modifier_avec_succes'))
+	}).fail(({ responseJSON }) => {
+		const { errors } = responseJSON
+		if (errors.default) {
+			$alert.error(errors.default)
+		} else {
+			$alert.error($t('une_erreur_s_est_produite'))
+		}
+		submitted.value = false
+	})
 }
 </script>
