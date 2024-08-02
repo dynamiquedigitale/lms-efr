@@ -17,9 +17,9 @@ jobs:
         with:
           command: |
             cd ${{ env.root }}/
-            rm ./package-lock.json
-            rm ./composer.lock
-            mv ./.env.staging ./.env
+            [ -e ./package-lock.json ] && rm -- ./package-lock.json
+            [ -e ./composer.lock ] && rm -- ./composer.lock
+            [ -f ./env.staging ] && mv ./.env.staging ./.env
             [ -d ./vendor ] && rm -rf ./vendor
             [ -d ./public ] && rm -rf ./public
           host: ${{ secrets.FTP_SERVER }}
