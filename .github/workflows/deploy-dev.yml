@@ -41,10 +41,20 @@ jobs:
         with:
           args: zip -qq -r ./vendor.zip ./vendor
 
-      - name: Build assets
-        run: |
-          npm install
-          npm run build
+      - name: Set Node.js 20.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.x
+
+      - name: Install npm dependencies
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install
+
+      - name: Build assets bundle
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: build
  
       - name: Create zipped assets directory
         uses: montudor/action-zip@v0.1.0
