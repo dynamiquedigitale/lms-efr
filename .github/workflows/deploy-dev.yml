@@ -64,11 +64,17 @@ jobs:
           args: zip -qq -r ./public.zip ./dist
 
       - name: FTP-Deploy-Action
-        uses: SamKirkland/FTP-Deploy-Action@3.1.1
+        uses: SamKirkland/FTP-Deploy-Action@master
         with:
-          ftp-server: sftp://${{ secrets.FTP_SERVER }}:${{ env.port }}/${{ env.root }}/
-          ftp-username: ${{ secrets.FTP_USERNAME }}
-          ftp-password: ${{ secrets.FTP_PASSWORD }}
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: ${{ env.port }}
+          protocol: ftps
+          server-dir: ${{ env.root }}/
+          exclude: |
+           **/resources/js/**
+           **/.git*/**
 
   post-deploy:
     runs-on: ubuntu-latest
