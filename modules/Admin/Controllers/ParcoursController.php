@@ -80,11 +80,14 @@ class ParcoursController extends AppController
 			}
 
 			foreach ($lecons as $i => $lecon_id) {
-				$cours[] = [
+				$cours[$i] = [
 					'rang'     => ($i + 1),
 					'statut'   => $i == 0 ? Statut::IN_PROGRESS : Statut::INACTIVE,
 					'lecon_id' => $lecon_id,
 				];
+				if (!empty($lecon = $formation->lecons->find($lecon_id))) {
+					$cours[$i]['contenu'] = $lecon->resume;
+				}
 			}
 
 			if ($cours === []) {
