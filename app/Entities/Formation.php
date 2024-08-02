@@ -15,6 +15,11 @@ class Formation extends AppEntity
 	{
 		return $this->belongsToMany(Lecon::class, 'lecons_formations');
 	}
+	
+	public function parcours()
+	{
+		return $this->hasMany(Parcours::class);
+	}
 
 	public function getCoverUrlAttribute(): string
 	{

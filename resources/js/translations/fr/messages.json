@@ -135,8 +135,9 @@
 		"in-progress": "Parcours en cours",
 		"unpaid": "Parcours non payés",
 		"completed": "Parcours terminés",
+		"attribuer_a_l_apprenant": "Attribuer une formation à l'apprenant `{0}`",
 		"attribuer_a_l_enseignant": "Attribuer une formation à l'enseignant `{0}`",
-		"attribuer_a_l_apprenant": "Attribuer une formation à l'apprenant `{0}`"
+		"attribuer_a_la_formation": "Attribuer une formation à la formation `{0}`"
 	},
 	"paiements": {
 		"title": "Paiements",

@@ -117,7 +117,7 @@ const form = useForm({
 	// eslint-disable-next-line camelcase
 	enseignant_id: props.item?.enseignant_id || props.enseignantId,
 	// eslint-disable-next-line camelcase
-	formation_id : props.item?.formation_id || props.formationId,
+	formation_id : props.item?.formation_id || null,
 	lecons: [],
 	objectif: props.item?.objectif || null,
 })
@@ -166,6 +166,10 @@ function getItems() {
 	// eslint-disable-next-line no-undef
 	$.get(route('admin.formations.index'), params).done(({ data }) => {
 		formations.value   = data
+		if (props.formationId) {
+			// eslint-disable-next-line prefer-destructuring, camelcase
+			form.formation_id = props.formationId
+		}
 		fetching.formation = false
 	})
 }

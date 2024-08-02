@@ -5,6 +5,7 @@ namespace App\Admin\Controllers;
 use App\Controllers\AppController;
 use App\Entities\Formation;
 use App\Entities\Lecon;
+use App\Entities\Parcours;
 use BlitzPHP\Contracts\Http\StatusCode;
 use BlitzPHP\Exceptions\ValidationException;
 use BlitzPHP\Facades\Storage;
@@ -22,7 +23,7 @@ class FormationsController extends AppController
 			})
 			->sortAsc('intitule')
 			->latest()
-			->withCount('lecons');
+			->withCount(['lecons', 'parcours']);
 		
 		if (-1 == $limit = $this->request->query('limit', 15)) {
 			$items = $items->all();
@@ -215,5 +216,16 @@ class FormationsController extends AppController
 		$formation->lecons()->detach($post['lecons']);
 
 		return $this->response->json(['message' => __('Lecons retirées avec succès')]);
+	}
+
+	/**
+	 * Parcours utilisant une formation
+	 */
+	public function parcours($id)
+	{
+		return Parcours::where('formation_id', $id)
+			->with(['apprenant', 'enseignant'])
+			->withCount('cours')
+			->get();
 	}
 }

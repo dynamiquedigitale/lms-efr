@@ -36,6 +36,7 @@ Route::middleware(['session', 'force-reset'])->prefix('admin')->namespace('\App\
 		Route::post('/(:num)/lecons', 'addLecons/$1');
 		Route::patch('/(:num)/lecons', 'sortLecons/$1');
 		Route::delete('/(:num)/lecons', 'removeLecons/$1');
+		Route::name('admin.formations.parcours')->get('/(:num)/parcours', 'parcours/$1');
 	});
 	Route::name('admin.formations')->resource('formations');
 

@@ -5,7 +5,7 @@
 			<span class="fw-bold">{{ title }}</span>
 			<span class="badge bg-secondary rounded-pill ms-1" v-if="['lecons', 'parcours'].includes(key)">{{ formation[`${key}_count`] || 0 }}</span>
 		</b-nav-item>
-		<b-nav-item link-class="btn-flat-primary btn-icon waves-effect border" v-if="activeTab === 'lecons'" icon @click.prevent="action = 'add-lecons'">
+		<b-nav-item link-class="btn-flat-primary btn-icon waves-effect border" v-if="['lecons', 'parcours'].includes(activeTab)" icon @click.prevent="doAdd">
 			<app-icon name="plus" style="margin: 0 !important" />
 		</b-nav-item>
 	</b-nav>
@@ -26,9 +26,59 @@
 			  	</b-col>
 			</b-row>
 
-			<div v-else-if="activeTab === 'parcours'">
-				
-			</div>
+			<b-card-body class="border-top pt-1" v-if="activeTab === 'parcours'">
+				<div class="card-datatable table-responsive mb-3 pt-0 border-0 overflow-y-hidden">
+					<table class="table mb-0 text-nowrap">
+						<thead class="table-light">
+							<tr>
+								<th scope="col" class="border-0"></th>
+								<th scope="col" class="border-0">{{ $t('apprenants.title') }}</th>
+								<th scope="col" class="border-0">{{ $t('enseignants.title') }}</th>
+								<th scope="col" class="border-0">{{ $t('statut.title') }}</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="({ id, progression, statut, enseignant, apprenant }, i) in showableParcours" :key="id">
+								<td>#{{ i + 1 }}</td>
+								<td>
+									<div class="d-lg-flex">
+										<a href="#">
+											<img :src="apprenant.avatar" alt="" width="60" height="60" class="rounded">
+										</a>
+										<div class="ms-lg-1 mt-2 mt-lg-0">
+											<h4 class="mb-1 h5">
+												<a href="#" class="text-inherit text-truncate">{{ apprenant.username }}</a>
+											</h4>
+											<ul class="list-inline fs-6 mb-0">
+												<li class="list-inline-item">{{ apprenant.user_email }}</li>
+											</ul>
+										</div>
+									</div>
+								</td>
+								<td>
+									<div class="d-lg-flex">
+										<a href="#">
+											<img :src="enseignant.avatar" alt="" width="60" height="60" class="rounded">
+										</a>
+										<div class="ms-lg-1 mt-2 mt-lg-0">
+											<h4 class="mb-1 h5">
+												<a href="#" class="text-inherit text-truncate">{{ enseignant.username }}</a>
+											</h4>
+											<ul class="list-inline fs-6 mb-0">
+												<li class="list-inline-item">{{ enseignant.user_email }}</li>
+											</ul>
+										</div>
+									</div>
+								</td>
+								<td>
+									<b-progress class="mb-1" :value="progression" :variant="$percentageVariant(progression)" />
+									<span :class="`w-100 badge bg-${$statusVariant(statut)}`">{{ $t(`statut.${statut}`) }}</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</b-card-body>
 
 			<b-card-body v-else-if="activeTab === 'lecons'">
 				<b-form-group :label="$t('selectionnez_la_lecon_a_ajouter')" class="mb-1" v-if="action == 'add-lecons'">
@@ -64,14 +114,19 @@
 			</b-card-body>
 		</b-card>
 	</b-overlay>
+
+	<app-modal id="add-parcours" v-model="openAddParcours" :title="$t('parcours.attribuer_a_la_formation', [formation.intitule])" size="md" no-footer>
+		<form-parcours v-if="openAddParcours" action="create" :formation-id="formation.id" @reset="openAddParcours = false" @completed="getParcours" />
+	</app-modal>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import draggable from 'vuedraggable'
 
 import { $alert, $confirm, $toast } from '@/utils/alert'
 import { $t } from '@/plugins/i18n'
+import FormParcours from '@/views/Admin/Parcours/Form.vue'
 
 defineOptions({ name: 'DetailsFormation' })
 
@@ -90,10 +145,24 @@ const tabs = [
 const activeTab = ref('')
 const proceeding = ref(false)
 const action = ref('')
+const search = reactive({
+	parcours: '',
+})
 
 const availableLecons = ref([])
 const addedLecon = ref(null)
 const lecons = ref([])
+
+const parcours = ref([])
+const openAddParcours = ref(false)
+const showableParcours = computed(() => parcours.value.filter(({ apprenant, enseignant }) => {
+	if (search.parcours === '') {
+		return true
+	}
+
+	return apprenant.username.toLowerCase().includes(search.parcours.toLowerCase()) 
+		|| enseignant.username.toLowerCase().includes(search.parcours.toLowerCase())
+}))
 
 onMounted(() => changeTab('details'))
 
@@ -103,6 +172,16 @@ function changeTab(tab) {
 
 	if (tab === 'lecons') {
 		getLecons()
+	} else if (tab === 'parcours') {
+		getParcours()
+	}
+}
+
+function doAdd() {
+	if (activeTab.value === 'lecons') {
+		action.value = 'add-lecons'
+	} else if (activeTab.value === 'parcours') {
+		openAddParcours.value = true
 	}
 }
 
@@ -171,5 +250,16 @@ function removeLecon(lecon) {
 			}
 		})
 	}, { showLoaderOnConfirm: true })
+}
+
+function getParcours() {
+	openAddParcours.value = false
+	proceeding.value = true
+
+	// eslint-disable-next-line no-undef
+	$.get(route('admin.formations.parcours', props.formation.id)).done(data => {
+		parcours.value = data
+		proceeding.value = false
+	})
 }
 </script>
