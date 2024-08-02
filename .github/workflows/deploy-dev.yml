@@ -1,0 +1,80 @@
+name: Deployment to dev server
+
+env:
+   port: 22
+   root: dev-lms-efr
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove unnecessary files
+        uses: fifsky/ssh-action@master
+        with:
+          command: |
+            cd ${{ env.root }}/
+            rm ./package-lock.json
+            rm ./composer.lock
+            mv ./.env.staging ./.env
+            [ -d ./vendor ] && rm -rf ./vendor
+            [ -d ./public ] && rm -rf ./public
+          host: ${{ secrets.FTP_SERVER }}
+          user: ${{ secrets.FTP_USERNAME }}
+          pass: ${{ secrets.FTP_PASSWORD }}
+          port: ${{ env.port }}
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - uses: actions/checkout@v2.1.0
+        with:
+          fetch-depth: 2
+
+      - name: Install Composer Dependencies
+        run: composer install --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+
+      - name: Create zipped vendor directory
+        uses: montudor/action-zip@v0.1.0
+        with:
+          args: zip -qq -r ./vendor.zip ./vendor
+
+      - name: Build assets
+        run: npm run build
+ 
+      - name: Create zipped assets directory
+        uses: montudor/action-zip@v0.1.0
+        with:
+          args: zip -qq -r ./public.zip ./dist
+
+      - name: FTP-Deploy-Action
+        uses: SamKirkland/FTP-Deploy-Action@3.1.1
+        with:
+          ftp-server: sftp://${{ secrets.FTP_SERVER }}:${{ env.port }}/${{ env.root }}/
+          ftp-username: ${{ secrets.FTP_USERNAME }}
+          ftp-password: ${{ secrets.FTP_PASSWORD }}
+
+  post-deploy:
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - name: Run migrations and seeders, clear cache for views, config and routes
+        uses: fifsky/ssh-action@master
+        with:
+          command: |
+            cd ${{ env.root }}/
+            unzip -qq ./vendor.zip
+            unzip -qq ./public.zip
+            rm -f vendor.zip
+            rm -f public.zip
+            php klinge migrate --all
+            php klinge cache:clear
+          host: ${{ secrets.FTP_SERVER }}
+          user: ${{ secrets.FTP_USERNAME }}
+          key: ${{ secrets.FTP_PASSWORD }}
+          port: ${{ env.port }}
