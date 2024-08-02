@@ -51,6 +51,8 @@ jobs:
         with:
           cmd: install
 
+      - run: cp -f .env.staging .env 
+
       - name: Build assets bundle
         uses: borales/actions-yarn@v4
         with:
@@ -81,6 +83,7 @@ jobs:
             unzip -qq ./public.zip
             rm -f vendor.zip
             rm -f public.zip
+            cp -f ./.env.staging ./.env
             php klinge migrate --all
             php klinge cache:clear
           host: ${{ secrets.FTP_SERVER }}

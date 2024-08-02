@@ -9,12 +9,12 @@ export default defineConfig(() => {
 
 	return {
 		build: {
-			assetsDir: env.VITE_BUILD_DIR,
+			assetsDir: env.VITE_BUILD_DIR || 'build',
 			emptyOutDir: false,
 			manifest: true,
 			outDir: './dist/',
 			rollupOptions: {
-				input: `./${env.VITE_RESOURCES_DIR}/${env.VITE_ENTRY_FILE}`,
+				input: `./${env.VITE_RESOURCES_DIR || 'resources/js'}/${env.VITE_ENTRY_FILE || 'main.js'}`,
 			},
 		},
 		plugins: [

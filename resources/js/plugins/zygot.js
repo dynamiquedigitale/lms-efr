@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { ZygotVue }  from 'zygot'
 
 export default function(app) {
