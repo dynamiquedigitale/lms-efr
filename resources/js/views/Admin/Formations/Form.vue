@@ -26,7 +26,7 @@
 			<b-col lg="6" class="mt-1 my-lg-0">
 				<b-form-group>
 					<template #label>
-						{{ $t('obectif_pedagogique') }} <small class="text-danger">*</small>
+						{{ $t('objectif.pedagogique') }} <small class="text-danger">*</small>
 					</template>
 					<editor v-model="form.objectif" height="22em" @save="submitForm" />
 					<b-form-invalid-feedback v-if="error.objectif != null" class="d-inline my-1">{{ error.objectif }}</b-form-invalid-feedback>

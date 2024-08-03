@@ -128,7 +128,9 @@
 		"passport": "Numéro de passport",
 		"placeholder": "Entrez le numéro de la pièce d'identité"
 	},
-	"obectif_pedagogique": "Obectif pédagogique",
+	"objectif": {
+		"pedagogique": "Objectif pédagogique"
+	},
 	"parcours": {
 		"title": "Parcours",
 		"crees": "Parcours crées",

@@ -136,7 +136,7 @@ const props = defineProps({
 
 const tabs = [
 	{ icon: 'info', key: 'details', title: $t('details') },
-	{ icon: 'file', key: 'objectif', title: $t('obectif_pedagogique') },
+	{ icon: 'file', key: 'objectif', title: $t('objectif.pedagogique') },
 	{ icon: 'book-open', key: 'cours', title: $t('lecons.title', 2) },
 	{ icon: 'video', key: 'meetings', title: $t('meetings.title', 2) },
 ]
