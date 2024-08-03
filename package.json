@@ -11,9 +11,15 @@
         "format": "prettier --write resources/js/"
     },
     "dependencies": {
+        "@fullcalendar/core": "^6.1.15",
+        "@fullcalendar/daygrid": "^6.1.15",
+        "@fullcalendar/list": "^6.1.15",
+        "@fullcalendar/timegrid": "^6.1.15",
+        "@fullcalendar/vue3": "^6.1.15",
         "@inertiajs/inertia": "^0.11.1",
         "@inertiajs/inertia-vue3": "^0.6.0",
         "@inertiajs/progress": "^0.2.7",
+        "@popperjs/core": "^2.11.8",
         "@tinymce/tinymce-vue": "^5",
         "@videojs-player/vue": "^1.0.0",
         "bootstrap-vue-next": "^0.23.3",
@@ -24,6 +30,7 @@
         "pinia": "^2.1.7",
         "sweetalert2": "^11.12.1",
         "underscore": "^1.13.6",
+        "v-calendar": "^3.1.2",
         "v-viewer": "^3.0.13",
         "video.js": "^8.16.1",
         "viewerjs": "^1.11.6",

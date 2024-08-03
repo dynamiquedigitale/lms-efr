@@ -18,8 +18,8 @@ class CreateTableMeetings extends Migration
 			$table->foreignId('cour_id')->nullable()->constrained();
 			$table->string('libelle', 128);
 			$table->string('objectif');
-			$table->unsignedInteger('quota_horaire');
-			$table->unsignedInteger('prix_horaire');
+			$table->unsignedInteger('quota_horaire')->nullable();
+			$table->unsignedInteger('prix_horaire')->nullable();
 			$table->dateTime('date_deb');
 			$table->unsignedInteger('duree');
 			$table->string('key');

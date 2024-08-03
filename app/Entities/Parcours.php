@@ -28,4 +28,9 @@ class Parcours extends AppEntity
 	{
 		return $this->hasMany(Cours::class, 'parcour_id');
 	}
+
+	public function meetings()
+	{
+		return $this->hasMany(Meeting::class);
+	}
 }

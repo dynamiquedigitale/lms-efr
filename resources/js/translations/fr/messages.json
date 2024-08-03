@@ -32,6 +32,10 @@
 	},
 	"autres_infos": "Autres informations",
 	"cette_lecon_n_est_attachee_a_aucune_formation": "Cette lecon n'est attachée à aucune formation",
+	"concernes": "Concernés",
+	"cours": {
+		"title": "Cours | Cours | {count} cours"
+	},
 	"couverture": "Couverture",
 	"date_naissance": "Date de naissance",
 	"description": "Description",
@@ -92,7 +96,14 @@
 		"type": "Type"
 	},
 	"filtre": {
+		"title": "Filtre",
 		"all": "Tous"
+	},
+	"form": {
+		"date_deb": "Date de début",
+		"duree": "Durée",
+		"en_minutes": "En minutes",
+		"libelle": "Libellé"
 	},
 	"informations": "Informations",
 	"infos_de_base": "Informations de base",
@@ -113,9 +124,16 @@
 	"liste_des_enseignants": "Liste des enseignants",
 	"liste_des_formations": "Liste des formations",
 	"liste_des_lecons": "Liste des leçons",
+	"liste_des_meetings": "Liste des meetings",
 	"liste_des_parcours": "Liste des parcours",
 	"meetings": {
-		"title": "Meeting | Meetings"
+		"title": "Meeting | Meetings",
+		"date_deb": "Date de tenue du meeting",
+		"duree": "Durée prévue pour le meeting",
+		"libelle": "Libellé du meeting",
+		"nouveau": "Nouveau meeting",
+		"objectif": "Objectif du meeting",
+		"programmer": "Programmer un meeting"
 	},
 	"nom": {
 		"title": "Nom",
@@ -129,6 +147,7 @@
 		"placeholder": "Entrez le numéro de la pièce d'identité"
 	},
 	"objectif": {
+		"title": "Objectif",
 		"pedagogique": "Objectif pédagogique"
 	},
 	"parcours": {

@@ -9,6 +9,7 @@ Route::middleware(['session', 'force-reset'])->prefix('admin')->namespace('\App\
 
 	Route::controller('ApprenantsController')->prefix('apprenants')->group(static function() {
 		Route::name('admin.apprenants.parcours')->get('/(:num)/parcours', 'parcours/$1');
+		Route::name('admin.apprenants.list')->get('/list', 'list');
 	});
 	Route::name('admin.apprenants')->presenter('apprenants');
 	
@@ -47,4 +48,6 @@ Route::middleware(['session', 'force-reset'])->prefix('admin')->namespace('\App\
 		Route::name('admin.cours.parcours')->get('/(:num)/parcours', 'parcours/$1');
 	});
 	Route::name('admin.cours')->resource('cours');
+
+	Route::name('admin.meetings')->resource('meetings');
 });

@@ -39,6 +39,30 @@ class User extends SchildUser
     {
         $query->where('type', Role::ENSEIGNANT);
     }
+	
+	/**
+     * apprenants
+     */
+    public function scopeApprenants(Builder $query): void
+    {
+        $query->where('type', Role::APPRENANT);
+    }
+
+	/**
+	 * Parcours suivis par un apprenant
+	 */
+	public function parcours_apprenant()
+	{
+		return $this->hasMany(Parcours::class, 'apprenant_id');
+	}
+	
+	/**
+	 * Parcours dispensés par un enseignant
+	 */
+	public function parcours_enseignant()
+	{
+		return $this->hasMany(Parcours::class, 'enseignant_id');
+	}
 
 	/**
 	 * Ressources affectees a l'enseignant

@@ -53,8 +53,8 @@ export default [
 	},
 	{
 		icon: 'calendar',
-		route: 'meetings.index',
-		text: 'Meetings',
+		route: 'admin.meetings.index',
+		text: 'meetings.title',
 	},
 	{
 		icon: 'mail',
