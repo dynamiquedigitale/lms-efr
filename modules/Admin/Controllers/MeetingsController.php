@@ -4,7 +4,9 @@ namespace App\Admin\Controllers;
 
 use App\Controllers\AppController;
 use App\Entities\Meeting;
+use App\Enums\Statut;
 use BlitzPHP\Exceptions\ValidationException;
+use BlitzPHP\Validation\Rule;
 
 class MeetingsController extends AppController
 {
@@ -54,5 +56,33 @@ class MeetingsController extends AppController
 		$meeting->delete();
 
 		return back()->with('success', __('Meeting supprimé avec succès'));
+	}
+
+	public function update($id = null)
+	{
+		try {
+            $post = $this->validate([
+				'cour_id'    => ['nullable', 'integer', 'exists:cours,id'],
+				'date_deb'   => ['required', 'datetime', 'after:today'],
+				'duree'      => ['required', 'integer', 'min:10'],
+				'libelle'    => ['required', 'string', 'max:128'],
+				'objectif'   => ['required', 'string'],
+				'statut'     => ['nullable', Rule::in(Statut::SCHEDULED, Statut::CANCELLED)],
+			]);
+        }
+        catch (ValidationException $e) {
+            return back()->withErrors($e->getErrors()?->firstOfAll() ?: $e->getMessage());
+		}
+
+		/** @var Meeting $meeting */
+		if (empty($meeting = Meeting::find($id))) {
+			return back()->withErrors(__('Meeting non reconnu'));
+		}
+
+		$meeting->update(array_filter($post->all()));
+
+		service('event')->trigger('meeting.update', $meeting);
+
+		return back()->with('success', __('Meeting modifié avec succès'));
 	}
 }

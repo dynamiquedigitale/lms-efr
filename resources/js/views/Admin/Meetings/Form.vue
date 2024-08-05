@@ -5,6 +5,7 @@
 				v-model="form.apprenant_id" 
 				class="mb-1" type="select" select-key="username"
 				required searchable 
+				:disabled="action == 'edit'"
 				:error="error.apprenant_id" 
 				:label="$t('apprenants.title')" 
 				:placeholder="$t('selectionnez')" 
@@ -14,6 +15,7 @@
 				v-model="form.parcour_id" 
 				class="mb-1" type="select"
 				required searchable 
+				:disabled="action == 'edit'"
 				:error="error.parcour_id" 
 				:label="$t('formations.title')" 
 				:placeholder="$t('selectionnez')" 
@@ -43,13 +45,22 @@
 				:label="$t('form.date_deb')" 
 				:placeholder="$t('meetings.date_deb')" 
 			/>
-			<app-form-group 
-				v-model="form.duree" 
-				class="mb-1" type="number" :min="10" :step="5"
-				required :disabled="cantFill" :error="error.duree"
-				:label="`${$t('form.duree')} (${$t('form.en_minutes')})`" 
-				:placeholder="$t('meetings.duree')" 
-			/>
+			<b-row>
+				<b-col><app-form-group 
+					v-model="form.duree" 
+					class="mb-1" type="number" :min="10" :step="5"
+					required :disabled="cantFill" :error="error.duree"
+					:label="`${$t('form.duree')} (${$t('form.en_minutes')})`" 
+					:placeholder="$t('meetings.duree')" 
+				/></b-col>
+				<b-col lg="6"><b-form-group :label="$t('statut.title')" class="mb-1" label-for="statut">
+					<app-select 
+						v-model="form.statut"
+						id="statut"
+						:options="[STATUT.SCHEDULED, STATUT.CANCELLED].map(value => ({ text: $t(`statut.${value}`), value }))" 
+					/>
+				</b-form-group></b-col>
+			</b-row>
 			<app-form-group 
 				v-model="form.objectif" 
 				type="textarea" rows="4" no-resize
@@ -89,16 +100,17 @@ const submitted = ref(false)
 
 const form = useForm({
 	// eslint-disable-next-line camelcase
-	apprenant_id: props.item?.apprenant_id || null,
+	apprenant_id: null,
 	// eslint-disable-next-line camelcase
-	cour_id: props.item?.cour_id || null,
+	cour_id: props.item?.cours?.id || null,
 	// eslint-disable-next-line camelcase
 	date_deb: props.item?.date_deb || null,
 	duree: props.item?.duree || null,
 	libelle: props.item?.libelle || null,
 	objectif: props.item?.objectif || null,
 	// eslint-disable-next-line camelcase
-	parcour_id: props.item?.parcour_id || null,
+	parcour_id: null,
+	statut: props.item?.statut || null,
 })
 const error = reactive({
 	// eslint-disable-next-line camelcase
@@ -143,6 +155,10 @@ function getApprenants() {
 	$.get(route('admin.apprenants.list'), params).done(data => {
 		apprenants.value   = data
 		fetching.apprenant = false
+		if (props.item?.parcours.apprenant_id) {
+			// eslint-disable-next-line camelcase
+			form.apprenant_id = props.item?.parcours.apprenant_id
+		}
 	})
 }
 /**
@@ -161,8 +177,12 @@ function getParcoursApprenant(apprenant_id) {
 		parcours.value = data.map(({ id, formation, enseignant, cours }) => ({
 			cours,
 			id,
-			text: `${formation.intitule} - ${enseignant.username} - ${$t('cours.title', cours.length)}`,
+			text: `${formation.intitule} | ${enseignant.username}`,
 		}))
+		if (props.item?.parcour_id) {
+			// eslint-disable-next-line camelcase
+			form.parcour_id = props.item?.parcour_id
+		}
 		fetching.parcours = false
 	})
 }

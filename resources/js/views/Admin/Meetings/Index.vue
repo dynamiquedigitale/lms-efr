@@ -47,11 +47,10 @@
 				<template v-if="action === 'details' && item != null">
 					<app-button size="sm" variant="flat-secondary" icon="more-horizontal" text="" class="waves-effect waves-float waves-light" data-bs-toggle="dropdown" />
 					<div class="dropdown-menu dropdown-menu-end file-dropdown">
-						<a class="dropdown-item" href="#" @click.prevent="editMeeting(item)">
+						<a class="dropdown-item" href="#" @click.prevent="editMeeting(item)" v-if="[STATUT.SCHEDULED, STATUT.CANCELLED].includes(item.statut)">
 							<app-icon name="edit" class="align-middle me-50" />
 							<span class="align-middle">{{ $t('action.editer') }}</span>
 						</a>
-						<div class="dropdown-divider"></div>
 						<a class="dropdown-item text-danger" href="#" @click.prevent="deleteMeeting(item)">
 							<app-icon name="trash" class="align-middle me-50" />
 							<span class="align-middle">{{ $t('action.supprimer') }}</span>
@@ -195,7 +194,7 @@ function addMeeting(startDate = undefined) {
 	}
 }
 function editMeeting(meeting) {
-	item.value       = meeting
+	item.value       = { ...meeting }
 	action.value     = 'edit'
 	openDialog.value = true
 }
