@@ -202,7 +202,6 @@ import FormRessource from './Form.vue'
 
 import { $alert, $confirm, $toast } from '@/utils/alert'
 import { $t } from '@/plugins/i18n'
-import { handleSearch } from '@/utils/inertia'
 import { humanFileSize } from '@/utils/helpers'
 import { Inertia } from '@inertiajs/inertia'
 
@@ -344,13 +343,6 @@ function deleteRessource(ressource) {
 	}, { showLoaderOnConfirm: true })
 }
 
-function findItems(limit){
-	handleSearch('admin.ressources.index', {
-		limit: limit || filter.limit,
-		search: filter.search,
-	})
-}
-
 /**
  * Provoque la fermeture de la modale
  */
@@ -358,15 +350,6 @@ function findItems(limit){
     openDialog.value = false
     // item.value = null
     // action.value = null
-}
-
-/**
- * Refraichir la liste des beneficiaires apres une creation, suppression ou edition
- */
- function refresh() {
-    closeDialog()
-    filter.search = ''
-	findItems()
 }
 
 /**
