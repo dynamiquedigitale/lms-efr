@@ -14,7 +14,7 @@ class Meeting extends AppEntity
 
 	public function parcours()
 	{
-		return $this->belongsTo(Parcours::class);
+		return $this->belongsTo(Parcours::class, 'parcour_id');
 	}
 	
 }

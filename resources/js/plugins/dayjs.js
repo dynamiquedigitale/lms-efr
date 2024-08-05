@@ -2,6 +2,8 @@ import dayjs from 'dayjs'
 
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import isBetween from 'dayjs/plugin/isBetween'
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
 import 'dayjs/locale/fr'
@@ -13,6 +15,8 @@ import { $i18n } from './i18n'
 dayjs.extend(customParseFormat)
 dayjs.extend(relativeTime)
 dayjs.extend(isBetween)
+dayjs.extend(isSameOrAfter)
+dayjs.extend(isSameOrBefore)
 
 let { locale } = $i18n
 if (!AVAILABLE_LOCALES.includes(locale)) {

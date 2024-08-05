@@ -89,16 +89,16 @@ const submitted = ref(false)
 
 const form = useForm({
 	// eslint-disable-next-line camelcase
-	apprenant_id: null,
+	apprenant_id: props.item?.apprenant_id || null,
 	// eslint-disable-next-line camelcase
-	cour_id: null,
+	cour_id: props.item?.cour_id || null,
 	// eslint-disable-next-line camelcase
-	date_deb: null,
-	duree: null,
-	libelle: null,
-	objectif: null,
+	date_deb: props.item?.date_deb || null,
+	duree: props.item?.duree || null,
+	libelle: props.item?.libelle || null,
+	objectif: props.item?.objectif || null,
 	// eslint-disable-next-line camelcase
-	parcour_id: null,
+	parcour_id: props.item?.parcour_id || null,
 })
 const error = reactive({
 	// eslint-disable-next-line camelcase

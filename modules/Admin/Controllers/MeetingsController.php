@@ -12,8 +12,7 @@ class MeetingsController extends AppController
 	{
 		$items = Meeting::latest()
 			->with(['parcours' => fn($q) => $q->with('apprenant', 'enseignant', 'formation')])
-			->paginate($this->request->query('limit', 15))
-			->toArray();
+			->get();
 		
 		$data['meetings'] = $items;
 

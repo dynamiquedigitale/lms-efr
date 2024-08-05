@@ -202,10 +202,14 @@
 	"statut": {
 		"title": "Statut",
 		"active": "Actif",
+		"cancelled": "Annulé",
+		"completed": "Terminé",
+		"expired": "Expiré",
 		"inactive": "Inactif",
 		"in-progress": "En cours",
 		"incomplete": "Incomplet",
 		"pending": "En attente",
+		"scheduled": "Programmé",
 		"unpaid": "Non payé"
 	},
 	"supplements": "Suppléments",
