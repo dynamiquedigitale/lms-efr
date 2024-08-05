@@ -101,8 +101,10 @@
 	},
 	"form": {
 		"date_deb": "Date de début",
+		"debut": "Début",
 		"duree": "Durée",
 		"en_minutes": "En minutes",
+		"fin": "Fin",
 		"libelle": "Libellé"
 	},
 	"informations": "Informations",
@@ -130,15 +132,20 @@
 		"title": "Meeting | Meetings",
 		"date_deb": "Date de tenue du meeting",
 		"duree": "Durée prévue pour le meeting",
+		"edition": "Edition du meeting",
 		"libelle": "Libellé du meeting",
 		"nouveau": "Nouveau meeting",
 		"objectif": "Objectif du meeting",
 		"programmer": "Programmer un meeting"
 	},
+	"memos": {
+		"title": "Memo | Memos"
+	},
 	"nom": {
 		"title": "Nom",
 		"famille": "Nom de famille"
 	},
+	"non_defini": "Non défini",
 	"nouveau_parcours": "Nouveau parcours",
 	"numero_identite": {
 		"title": "Numéro d'identité",
@@ -244,5 +251,6 @@
 	"voulez_vous_vraiment_retirer_la_ressource_X_a_Y": "Voulez-vous vraiment retirer la ressource `{0}` à `{1}` ?",
 	"voulez_vous_vraiment_supprimer_la_formation_x": "Voulez-vous vraiment supprimer la formation `{0}` ?",
 	"voulez_vous_vraiment_supprimer_la_lecon_x": "Voulez-vous vraiment supprimer la leçon `{0}` ?",
+	"voulez_vous_vraiment_supprimer_le_meeting_x": "Voulez-vous vraiment supprimer le meeting `{0}` ?",
 	"voulez_vous_vraiment_supprimer_la_ressource_x": "Voulez-vous vraiment supprimer la ressource `{0}` ?"
 }

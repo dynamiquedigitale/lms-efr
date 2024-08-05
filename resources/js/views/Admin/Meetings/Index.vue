@@ -42,12 +42,27 @@
 
 	<b-modal v-model="openDialog" id="app-meeting" class="modal-slide-in event-sidebar" hide-footer no-close-on-esc no-close-on-backdrop dialog-class="sidebar-lg" content-class="p-0" header-class="d-flex align-items-center justify-content-between mb-1 p-1" body-class="flex-grow-1 pb-sm-0 pb-1" @close="closeDialog">
 		<template #header="{ close }">
-			<h5 class="modal-title text-truncate">{{ $t('meetings.nouveau') }}</h5>
+			<h5 class="modal-title text-truncate">{{ modalTitle }}</h5>
 			<div class="d-flex ms-1">
+				<template v-if="action === 'details' && item != null">
+					<app-button size="sm" variant="flat-secondary" icon="more-horizontal" text="" class="waves-effect waves-float waves-light" data-bs-toggle="dropdown" />
+					<div class="dropdown-menu dropdown-menu-end file-dropdown">
+						<a class="dropdown-item" href="#" @click.prevent="editMeeting(item)">
+							<app-icon name="edit" class="align-middle me-50" />
+							<span class="align-middle">{{ $t('action.editer') }}</span>
+						</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item text-danger" href="#" @click.prevent="deleteMeeting(item)">
+							<app-icon name="trash" class="align-middle me-50" />
+							<span class="align-middle">{{ $t('action.supprimer') }}</span>
+						</a>
+					</div>
+				</template>
 				<app-button size="sm" variant="flat-secondary" icon="x" text="" @click.prevent="close" />
 			</div>
 		</template>
-		<form-meeting v-if="openDialog && action === 'create'" :action="action" :item="item" @reset="closeDialog" @completed="closeDialog" />
+		<form-meeting v-if="openDialog && ['create', 'edit'].includes(action)" :action="action" :item="item" @reset="closeDialog" @completed="closeDialog" />
+		<details-meeting v-if="openDialog && action === 'details'" :meeting="item" :meet-status="meetStatus" />
 	</b-modal>
 </template>
 
@@ -57,6 +72,8 @@ import 'v-calendar/style.css'
 
 import { computed, onMounted, ref, watch } from 'vue'
 import { Calendar } from 'v-calendar'
+import { Inertia } from '@inertiajs/inertia'
+
 import dayGridPlugin from '@fullcalendar/daygrid'
 import enLocale from '@fullcalendar/core/locales/en-gb'
 import frLocale from '@fullcalendar/core/locales/fr'
@@ -65,8 +82,12 @@ import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
 import timeGridPlugin from '@fullcalendar/timegrid'
 
-import { $dayjs } from '@/plugins/dayjs'
+import DetailsMeeting from './Details.vue'
 import FormMeeting from './Form.vue'
+
+import { $alert, $confirm, $toast } from '@/utils/alert'
+import { $dayjs } from '@/plugins/dayjs'
+import { $t } from '@/plugins/i18n'
 import { STATUT } from '@/enums/statut'
 
 defineOptions({ name: 'AdminListMeetings' })
@@ -83,11 +104,7 @@ const meetStatus = {
 	[STATUT.CANCELLED]  : 'danger',
 }	
 const calendarOptions = {
-	customButtons: {
-		sidebarToggle: {
-			text: 'Sidebar',
-		},
-	},
+	customButtons: { sidebarToggle: { text: 'Sidebar' } },
 	dateClick: handleDateClick,
 	datesSet: () => fullcalendar_S(),
 	eventClassNames({ event: e }) {
@@ -107,6 +124,16 @@ const calendarOptions = {
 	viewDidMount: () => fullcalendar_S(),
 }
 
+const modalTitle = computed(() => {
+	if (action.value === 'create') {
+		return $t('meetings.nouveau')
+	}
+	if (action.value === 'details') {
+		return (item.value || {}).libelle
+	}
+	return $t('meetings.edition')
+})
+
 const events = computed(() => props.meetings.filter(({ statut }) => selectedStatut.value.includes(statut)).map(meet => {
 	return {
 		end  : $dayjs(meet.date_deb).add(meet.duree, 'minutes').format('YYYY-MM-DD HH:mm:ss'),
@@ -118,12 +145,10 @@ const events = computed(() => props.meetings.filter(({ statut }) => selectedStat
 }))
 
 const calendarAttributes = computed(() => events.value.map(meet => ({
-	dates: meet.start, // Date
-	dot: { class: `bg-${meetStatus[meet.extendedProps.statut]}` },
-	key: meet.id,
-	popover: {
-      	label: meet.title,
-    },
+	dates  : meet.start,
+	dot    : { class: `bg-${meetStatus[meet.extendedProps.statut]}` },
+	key    : meet.id,
+	popover: { label: meet.title },
 })))
 
 const fullCalendar = ref(null)
@@ -158,14 +183,6 @@ onMounted(() => {
 	initJqueryPlugins()
 })
 
-
-function handleCalendarDayClick({ startDate }) {
-	startDate = $dayjs(startDate).format('YYYY-MM-DD')
-
-	const calendarApi = fullCalendar.value.getApi()
-	calendarApi.changeView(calendarApi.view.type, startDate)
-}
-
 function addMeeting(startDate = undefined) {
 	action.value = 'create'
 	openDialog.value = true
@@ -177,9 +194,44 @@ function addMeeting(startDate = undefined) {
 		}
 	}
 }
+function editMeeting(meeting) {
+	item.value       = meeting
+	action.value     = 'edit'
+	openDialog.value = true
+}
+function deleteMeeting(meeting) {
+	$confirm($t('voulez_vous_vraiment_supprimer_le_meeting_x', [meeting.libelle]), () => {
+		// eslint-disable-next-line no-undef
+		Inertia.delete(route('admin.meetings.delete', meeting.id), {
+			onError(errors) {
+				if (errors.default) {
+					$alert.error(errors.default)
+				} else {
+					$alert.error($t('une_erreur_s_est_produite'))
+				}
+			},
+			onSuccess({ props }) {
+				$toast.success(props.flash.success)
+				closeDialog()
+			},
+		})
+	}, { showLoaderOnConfirm: true })
+}
+
+
+function handleCalendarDayClick({ startDate }) {
+	const calendarApi = fullCalendar.value.getApi()
+	calendarApi.changeView(calendarApi.view.type, startDate)
+}
+
 function handleEventClick({ event, jsEvent }) {
 	jsEvent.preventDefault()
-    console.log({ event })
+	const meet = props.meetings.find(({ key }) => key === event.id)
+	if (meet) {
+		item.value       = meet
+		action.value     = 'details'
+		openDialog.value = true
+	}
 }
 function handleDateClick({ date, jsEvent }) {
 	jsEvent.preventDefault()

@@ -12,6 +12,11 @@ class Meeting extends AppEntity
 		];
     }
 
+	public function cours()
+	{
+		return $this->belongsTo(Cours::class, 'cour_id');
+	}
+	
 	public function parcours()
 	{
 		return $this->belongsTo(Parcours::class, 'parcour_id');

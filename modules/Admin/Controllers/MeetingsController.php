@@ -12,6 +12,7 @@ class MeetingsController extends AppController
 	{
 		$items = Meeting::latest()
 			->with(['parcours' => fn($q) => $q->with('apprenant', 'enseignant', 'formation')])
+			->with('cours.lecon')
 			->get();
 		
 		$data['meetings'] = $items;
@@ -39,5 +40,19 @@ class MeetingsController extends AppController
 		service('event')->trigger('meeting.create', $meeting);
 
 		return back()->with('success', __('Meeting programmé avec succès'));
+	}
+
+	public function delete($id = null)
+	{
+		/** @var Meeting $meeting */
+		if (empty($meeting = Meeting::find($id))) {
+			return back()->withErrors(__('Meeting non reconnu'));
+		}
+
+		// @todo on supprime les memos associes
+
+		$meeting->delete();
+
+		return back()->with('success', __('Meeting supprimé avec succès'));
 	}
 }
